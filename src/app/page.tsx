@@ -166,9 +166,9 @@ export default function Home() {
         logger.debug("Fetching packages from API...");
         const apiUrl =
           process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-        
+
         // Check if API URL is valid
-        if (!apiUrl || apiUrl === 'undefined') {
+        if (!apiUrl || apiUrl === "undefined") {
           logger.warn("API URL not configured, using fallback packages");
           setPackages(fallbackPackages);
           setUsingFallbackPackages(true);
@@ -177,7 +177,7 @@ export default function Home() {
           );
           return;
         }
-        
+
         logger.debug("API URL:", apiUrl);
 
         const controller = new AbortController();
@@ -260,7 +260,9 @@ export default function Home() {
             );
           } else if (response.status >= 500) {
             handlePackagesError(
-              new Error("Server temporarily unavailable. Using default packages.")
+              new Error(
+                "Server temporarily unavailable. Using default packages."
+              )
             );
           } else {
             handlePackagesError(
@@ -274,11 +276,14 @@ export default function Home() {
         setUsingFallbackPackages(true);
 
         // Check if it's a timeout error
-        if (error instanceof Error && error.name === 'AbortError') {
+        if (error instanceof Error && error.name === "AbortError") {
           handlePackagesError(
             new Error("Request timed out. Using default packages.")
           );
-        } else if (error instanceof TypeError && error.message.includes("fetch")) {
+        } else if (
+          error instanceof TypeError &&
+          error.message.includes("fetch")
+        ) {
           handlePackagesError(
             new Error("Unable to connect to server. Using default packages.")
           );
@@ -770,7 +775,7 @@ export default function Home() {
         )}
 
         {/* Testimonials Section */}
-        <section id="about" className="py-24 bg-gray-50">
+        <section id="testimonials" className="py-24 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">

@@ -20,12 +20,33 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { name: "Home", href: "/" },
-    { name: "Features", href: "#features" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "About", href: "#about" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/", sectionId: null },
+    { name: "Features", href: "#features", sectionId: "features" },
+    { name: "Pricing", href: "#packages", sectionId: "packages" },
+    { name: "Testimonials", href: "#testimonials", sectionId: "testimonials" },
+    { name: "Contact", href: "#contact", sectionId: "contact" },
   ];
+
+  const handleNavClick = (e: React.MouseEvent, item: typeof navItems[0]) => {
+    e.preventDefault();
+    
+    if (item.sectionId) {
+      // Smooth scroll to section
+      const element = document.getElementById(item.sectionId);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    } else if (item.href === "/") {
+      // Navigate to home page
+      window.location.href = "/";
+    }
+    
+    // Close mobile menu if open
+    setIsMenuOpen(false);
+  };
 
   return (
     <motion.header
@@ -92,15 +113,15 @@ export default function Header() {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-8">
               {navItems.map((item) => (
-                <Link
+                <button
                   key={item.name}
-                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
                   className={`text-sm font-medium transition-colors duration-300 hover:text-blue-600 ${
                     isScrolled ? "text-gray-700" : "text-white/90"
                   }`}
                 >
                   {item.name}
-                </Link>
+                </button>
               ))}
             </div>
 
@@ -195,13 +216,12 @@ export default function Header() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
                       >
-                        <Link
-                          href={item.href}
-                          onClick={() => setIsMenuOpen(false)}
-                          className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300"
+                        <button
+                          onClick={(e) => handleNavClick(e, item)}
+                          className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300 w-full text-left"
                         >
                           {item.name}
-                        </Link>
+                        </button>
                       </motion.div>
                     ))}
                     <div className="pt-4 border-t border-gray-200 space-y-3">
