@@ -416,271 +416,267 @@ export default function ExistingAdsSelector({
   if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-        onClick={onClose}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-gray-900 rounded-xl w-full max-w-6xl max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
       >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-gray-900 rounded-xl w-full max-w-6xl max-h-[90vh] overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-700">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                <Target className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-white">
-                  Select Existing Ad to Improve
-                </h2>
-                <p className="text-white/70">
-                  Choose an ad to analyze and optimize for better performance
-                </p>
-              </div>
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+              <Target className="w-6 h-6 text-white" />
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 text-white/70 hover:text-white transition-colors"
+            <div>
+              <h2 className="text-2xl font-bold text-white">
+                Select Existing Ad to Improve
+              </h2>
+              <p className="text-white/70">
+                Choose an ad to analyze and optimize for better performance
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-white/70 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Filters */}
+        <div className="p-6 border-b border-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search ads..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <select
+              value={selectedPlatform}
+              onChange={(e) => setSelectedPlatform(e.target.value as any)}
+              className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <X className="w-6 h-6" />
-            </button>
+              <option value="all">All Platforms</option>
+              <option value="facebook">Facebook</option>
+              <option value="google">Google</option>
+            </select>
+
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value as any)}
+              className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="performance">Sort by Performance</option>
+              <option value="spend">Sort by Spend</option>
+              <option value="date">Sort by Date</option>
+              <option value="name">Sort by Name</option>
+            </select>
           </div>
+        </div>
 
-          {/* Filters */}
-          <div className="p-6 border-b border-gray-700">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search ads..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <select
-                value={selectedPlatform}
-                onChange={(e) => setSelectedPlatform(e.target.value as any)}
-                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">All Platforms</option>
-                <option value="facebook">Facebook</option>
-                <option value="google">Google</option>
-              </select>
-
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value as any)}
-                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="paused">Paused</option>
-                <option value="completed">Completed</option>
-              </select>
-
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="performance">Sort by Performance</option>
-                <option value="spend">Sort by Spend</option>
-                <option value="date">Sort by Date</option>
-                <option value="name">Sort by Name</option>
-              </select>
+        {/* Ads List */}
+        <div className="p-6 max-h-96 overflow-y-auto">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <RefreshCw className="w-8 h-8 text-white/50 animate-spin" />
+              <span className="ml-3 text-white/70">Loading ads...</span>
             </div>
-          </div>
-
-          {/* Ads List */}
-          <div className="p-6 max-h-96 overflow-y-auto">
-            {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <RefreshCw className="w-8 h-8 text-white/50 animate-spin" />
-                <span className="ml-3 text-white/70">Loading ads...</span>
-              </div>
-            ) : error ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                  <div className="text-red-400 mb-4">
-                    <AlertCircle className="w-12 h-12 mx-auto" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    Error Loading Ads
-                  </h3>
-                  <p className="text-gray-400 mb-4">{error}</p>
-                  <button
-                    onClick={fetchAds}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Try Again
-                  </button>
+          ) : error ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="text-red-400 mb-4">
+                  <AlertCircle className="w-12 h-12 mx-auto" />
                 </div>
-              </div>
-            ) : connectedAccounts.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Target className="w-8 h-8 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-3">
-                  Connect Your Ad Accounts
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Error Loading Ads
                 </h3>
-                <p className="text-white/70 mb-6 max-w-md mx-auto">
-                  To view and select your existing ads, you need to connect your
-                  Facebook and Google Ads accounts first.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <button
-                    onClick={() => {
-                      onClose();
-                      onConnectAccount?.();
-                    }}
-                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2"
-                  >
-                    <Target className="w-5 h-5" />
-                    <span>Connect Accounts</span>
-                  </button>
-                  <button
-                    onClick={onClose}
-                    className="px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
+                <p className="text-gray-400 mb-4">{error}</p>
+                <button
+                  onClick={fetchAds}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Try Again
+                </button>
               </div>
-            ) : filteredAds.length === 0 ? (
-              <div className="text-center py-12">
-                <Target className="w-12 h-12 text-white/30 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-white mb-2">
-                  No ads found
-                </h3>
-                <p className="text-white/70">
-                  Try adjusting your filters or search terms
-                </p>
+            </div>
+          ) : connectedAccounts.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Target className="w-8 h-8 text-blue-400" />
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredAds.map((ad) => (
-                  <motion.div
-                    key={ad.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6 hover:bg-gray-800/70 transition-colors cursor-pointer"
-                    onClick={() => handleAdSelect(ad)}
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className={`p-2 rounded-lg ${
-                            ad.platform === "facebook"
-                              ? "bg-blue-500/20"
-                              : "bg-green-500/20"
-                          }`}
-                        >
-                          {ad.platform === "facebook" ? (
-                            <Facebook className="w-5 h-5 text-blue-400" />
-                          ) : (
-                            <SearchIcon className="w-5 h-5 text-green-400" />
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-white">
-                            {ad.name}
-                          </h3>
-                          <p className="text-sm text-white/70 capitalize">
-                            {ad.platform} • {ad.objective}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs border ${getStatusColor(
-                            ad.status
-                          )}`}
-                        >
-                          {ad.status}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <h4 className="text-white font-medium mb-1">
-                        {ad.headline}
-                      </h4>
-                      <p className="text-white/70 text-sm line-clamp-2">
-                        {ad.description}
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <div className="text-white/70 text-xs">Impressions</div>
-                        <div className="text-white font-semibold">
-                          {ad.impressions.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-white/70 text-xs">Clicks</div>
-                        <div className="text-white font-semibold">
-                          {ad.clicks.toLocaleString()}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-white/70 text-xs">CTR</div>
-                        <div
-                          className={`font-semibold ${getPerformanceColor(
-                            ad.ctr,
-                            "ctr"
-                          )}`}
-                        >
-                          {ad.ctr.toFixed(2)}%
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-white/70 text-xs">ROAS</div>
-                        <div
-                          className={`font-semibold ${getPerformanceColor(
-                            ad.roas,
-                            "roas"
-                          )}`}
-                        >
-                          {ad.roas.toFixed(1)}x
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="text-white/70 text-sm">
-                        Spent: ${ad.spent.toLocaleString()}
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleImproveAd(ad);
-                        }}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+              <h3 className="text-xl font-semibold text-white mb-3">
+                Connect Your Ad Accounts
+              </h3>
+              <p className="text-white/70 mb-6 max-w-md mx-auto">
+                To view and select your existing ads, you need to connect your
+                Facebook and Google Ads accounts first.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => {
+                    onClose();
+                    onConnectAccount?.();
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <Target className="w-5 h-5" />
+                  <span>Connect Accounts</span>
+                </button>
+                <button
+                  onClick={onClose}
+                  className="px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : filteredAds.length === 0 ? (
+            <div className="text-center py-12">
+              <Target className="w-12 h-12 text-white/30 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-white mb-2">
+                No ads found
+              </h3>
+              <p className="text-white/70">
+                Try adjusting your filters or search terms
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredAds.map((ad) => (
+                <motion.div
+                  key={ad.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6 hover:bg-gray-800/70 transition-colors cursor-pointer"
+                  onClick={() => handleAdSelect(ad)}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          ad.platform === "facebook"
+                            ? "bg-blue-500/20"
+                            : "bg-green-500/20"
+                        }`}
                       >
-                        <Brain className="w-4 h-4" />
-                        <span>Improve Ad</span>
-                      </button>
+                        {ad.platform === "facebook" ? (
+                          <Facebook className="w-5 h-5 text-blue-400" />
+                        ) : (
+                          <SearchIcon className="w-5 h-5 text-green-400" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-white">{ad.name}</h3>
+                        <p className="text-sm text-white/70 capitalize">
+                          {ad.platform} • {ad.objective}
+                        </p>
+                      </div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </div>
-        </motion.div>
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs border ${getStatusColor(
+                          ad.status
+                        )}`}
+                      >
+                        {ad.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <h4 className="text-white font-medium mb-1">
+                      {ad.headline}
+                    </h4>
+                    <p className="text-white/70 text-sm line-clamp-2">
+                      {ad.description}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="text-white/70 text-xs">Impressions</div>
+                      <div className="text-white font-semibold">
+                        {ad.impressions.toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white/70 text-xs">Clicks</div>
+                      <div className="text-white font-semibold">
+                        {ad.clicks.toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white/70 text-xs">CTR</div>
+                      <div
+                        className={`font-semibold ${getPerformanceColor(
+                          ad.ctr,
+                          "ctr"
+                        )}`}
+                      >
+                        {ad.ctr.toFixed(2)}%
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white/70 text-xs">ROAS</div>
+                      <div
+                        className={`font-semibold ${getPerformanceColor(
+                          ad.roas,
+                          "roas"
+                        )}`}
+                      >
+                        {ad.roas.toFixed(1)}x
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="text-white/70 text-sm">
+                      Spent: ${ad.spent.toLocaleString()}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleImproveAd(ad);
+                      }}
+                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                    >
+                      <Brain className="w-4 h-4" />
+                      <span>Improve Ad</span>
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
       </motion.div>
-    </AnimatePresence>
+    </motion.div>
   );
 }

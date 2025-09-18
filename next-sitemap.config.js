@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || "https://lunaluna-ai.com",
+  siteUrl: process.env.NEXT_PUBLIC_APP_URL || "https://lunaais.com",
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: ["/admin/*", "/auth/*", "/api/*"],
@@ -12,7 +12,7 @@ module.exports = {
         disallow: ["/admin/", "/auth/", "/api/"],
       },
     ],
-    additionalSitemaps: ["https://lunaluna-ai.com/sitemap.xml"],
+    additionalSitemaps: ["https://lunaais.com/sitemap.xml"],
   },
   transform: async (config, path) => {
     // Custom transform for different page types

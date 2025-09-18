@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorDisplay, LoadingWithError } from "@/components/ErrorDisplay";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { logger } from "@/lib/console-utils";
 import {
   ArrowRight,
   Zap,
@@ -83,6 +84,7 @@ export default function Home() {
     }>
   >([]);
   const [packagesLoading, setPackagesLoading] = useState(true);
+  const [usingFallbackPackages, setUsingFallbackPackages] = useState(false);
 
   // Fallback packages if API fails
   const fallbackPackages = [
@@ -161,9 +163,25 @@ export default function Home() {
 
     const fetchPackages = async () => {
       try {
-        console.log("Fetching packages from API...");
-        const apiUrl = "http://127.0.0.1:8000/api";
-        console.log("API URL:", apiUrl);
+        logger.debug("Fetching packages from API...");
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        
+        // Check if API URL is valid
+        if (!apiUrl || apiUrl === 'undefined') {
+          logger.warn("API URL not configured, using fallback packages");
+          setPackages(fallbackPackages);
+          setUsingFallbackPackages(true);
+          handlePackagesError(
+            new Error("API not configured. Using default packages.")
+          );
+          return;
+        }
+        
+        logger.debug("API URL:", apiUrl);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
         const response = await fetch(`${apiUrl}/packages`, {
           method: "GET",
@@ -173,94 +191,102 @@ export default function Home() {
             "X-Requested-With": "XMLHttpRequest",
           },
           mode: "cors",
+          signal: controller.signal,
         });
 
-        console.log("Packages API Response Status:", response.status);
+        clearTimeout(timeoutId);
+
+        logger.debug("Packages API Response Status:", response.status);
 
         if (response.ok) {
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             try {
               const data = await response.json();
-              console.log("Fetched packages data:", data);
+              logger.debug("Fetched packages data:", data);
 
               // The API returns { success: true, packages: [...] }
               if (data.success && Array.isArray(data.packages)) {
                 setPackages(data.packages);
+                setUsingFallbackPackages(false);
                 clearPackagesError();
-                console.log(
+                logger.debug(
                   "Successfully loaded packages:",
                   data.packages.length
                 );
               } else if (Array.isArray(data)) {
                 // Handle case where API returns packages array directly
                 setPackages(data);
+                setUsingFallbackPackages(false);
                 clearPackagesError();
-                console.log(
+                logger.debug(
                   "Successfully loaded packages (direct array):",
                   data.length
                 );
               } else {
-                console.error("Invalid packages data structure:", data);
+                logger.warn("Invalid packages data structure:", data);
                 setPackages(fallbackPackages);
+                setUsingFallbackPackages(true);
                 handlePackagesError(
                   new Error("API returned invalid data structure")
                 );
               }
             } catch (jsonError) {
-              console.error("Failed to parse JSON response:", jsonError);
+              logger.warn("Failed to parse JSON response:", jsonError);
               setPackages(fallbackPackages);
-              handlePackagesError(jsonError);
+              setUsingFallbackPackages(true);
+              handlePackagesError(new Error("Failed to parse server response"));
             }
           } else {
-            console.error("Response is not JSON, content-type:", contentType);
+            logger.warn("Response is not JSON, content-type:", contentType);
             setPackages(fallbackPackages);
+            setUsingFallbackPackages(true);
             handlePackagesError(new Error("Server returned non-JSON response"));
           }
         } else {
-          console.error(
+          logger.warn(
             "Failed to fetch packages:",
             response.status,
             response.statusText
           );
 
-          try {
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-              const errorData = await response.json();
-              console.error("Error response data:", errorData);
-              setPackages(fallbackPackages);
-              handlePackagesError(
-                new Error(
-                  errorData.message || errorData.error || response.statusText
-                )
-              );
-            } else {
-              const text = await response.text();
-              console.error("Error response text:", text);
-              setPackages(fallbackPackages);
-              handlePackagesError(
-                new Error(
-                  `Server error (${response.status}): ${
-                    text || response.statusText
-                  }`
-                )
-              );
-            }
-          } catch (parseError) {
-            console.error("Failed to parse error response:", parseError);
-            setPackages(fallbackPackages);
+          // Use fallback packages and show appropriate error
+          setPackages(fallbackPackages);
+          setUsingFallbackPackages(true);
+
+          if (response.status === 404) {
             handlePackagesError(
-              new Error(
-                `Server error (${response.status}): ${response.statusText}`
-              )
+              new Error("Packages endpoint not found. Using default packages.")
+            );
+          } else if (response.status >= 500) {
+            handlePackagesError(
+              new Error("Server temporarily unavailable. Using default packages.")
+            );
+          } else {
+            handlePackagesError(
+              new Error("Unable to load packages. Using default packages.")
             );
           }
         }
       } catch (error) {
-        console.error("Network error fetching packages:", error);
+        logger.warn("Error fetching packages:", error);
         setPackages(fallbackPackages);
-        handlePackagesError(error);
+        setUsingFallbackPackages(true);
+
+        // Check if it's a timeout error
+        if (error instanceof Error && error.name === 'AbortError') {
+          handlePackagesError(
+            new Error("Request timed out. Using default packages.")
+          );
+        } else if (error instanceof TypeError && error.message.includes("fetch")) {
+          handlePackagesError(
+            new Error("Unable to connect to server. Using default packages.")
+          );
+        } else {
+          handlePackagesError(
+            new Error("Failed to load packages. Using default packages.")
+          );
+        }
       } finally {
         setPackagesLoading(false);
       }
@@ -451,30 +477,20 @@ export default function Home() {
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white to-transparent opacity-5 animate-pulse"></div>
           </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-20 lg:py-24">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
+              className="space-y-8"
             >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="inline-flex items-center px-6 py-3 rounded-full bg-white bg-opacity-20 backdrop-blur-sm border border-white border-opacity-30 text-white text-sm font-medium mb-8"
-              >
-                <Star className="w-4 h-4 text-yellow-400 mr-2" />
-                Trusted by 10,000+ businesses worldwide
-              </motion.div>
-
               {/* Main Heading */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
                 Transform Your
-                <span className="block bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mt-2">
+                <span className="block bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mt-4 mb-2">
                   Advertising
                 </span>
-                <span className="block text-4xl md:text-5xl lg:text-6xl mt-4">
+                <span className="block text-4xl md:text-5xl lg:text-6xl mt-6">
                   with AI
                 </span>
               </h1>
@@ -484,7 +500,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-xl md:text-2xl text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed"
+                className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed"
               >
                 Create, optimize, and scale your ad campaigns with the power of
                 artificial intelligence. Get better results in less time.
@@ -495,7 +511,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex justify-center mb-16"
+                className="flex justify-center"
               >
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
@@ -637,6 +653,20 @@ export default function Home() {
                 Select the perfect plan for your business needs. All packages
                 include our core AI features.
               </p>
+
+              {/* Fallback packages notification */}
+              {usingFallbackPackages && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-6 inline-flex items-center px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm"
+                >
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  <span>
+                    Using default packages. Server connection unavailable.
+                  </span>
+                </motion.div>
+              )}
             </div>
 
             <LoadingWithError

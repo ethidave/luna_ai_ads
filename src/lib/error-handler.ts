@@ -1,4 +1,6 @@
 // Centralized error handling utilities
+import { logger } from './console-utils';
+
 export interface ErrorInfo {
   message: string;
   code?: string;
@@ -112,12 +114,19 @@ export function getErrorMessage(error: any): string {
     return ErrorMessages[error.code as keyof typeof ErrorMessages];
   }
   
-  if (error?.message) {
+  if (error?.message && typeof error.message === 'string') {
     return error.message;
   }
   
   if (typeof error === 'string') {
     return error;
+  }
+  
+  if (error?.toString && typeof error.toString === 'function') {
+    const stringified = error.toString();
+    if (stringified !== '[object Object]') {
+      return stringified;
+    }
   }
   
   return ErrorMessages.UNKNOWN_ERROR;
@@ -182,10 +191,15 @@ export function logError(error: any, context?: string, userId?: string): void {
     action: context,
   };
   
-  // Log to console in development
-  if (process.env.NODE_ENV === 'development') {
-    console.error('Error logged:', errorInfo);
-  }
+  // Log to console using centralized logger
+  logger.warn('Error logged:', {
+    message: errorInfo.message,
+    code: errorInfo.code,
+    status: errorInfo.status,
+    context: errorInfo.action,
+    timestamp: errorInfo.timestamp,
+    userId: errorInfo.userId
+  });
   
   // In production, you would send this to your error tracking service
   // Example: Sentry.captureException(error, { extra: errorInfo });

@@ -82,7 +82,10 @@ export interface PaymentSettings {
     enabled: boolean;
     clientId: string;
     clientSecret: string;
+    webhookId: string;
     sandbox: boolean;
+    currency: string;
+    webhookUrl: string;
   };
   flutterwave: {
     enabled: boolean;

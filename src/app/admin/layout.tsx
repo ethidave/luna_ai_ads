@@ -30,15 +30,6 @@ interface AdminLayoutProps {
 
 const navigationItems = [
   {
-    id: "dashboard",
-    name: "Dashboard",
-    icon: Home,
-    href: "/admin",
-    color: "text-blue-400",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20",
-  },
-  {
     id: "users",
     name: "Users",
     icon: Users,
@@ -46,15 +37,6 @@ const navigationItems = [
     color: "text-green-400",
     bgColor: "bg-green-500/10",
     borderColor: "border-green-500/20",
-  },
-  {
-    id: "packages",
-    name: "Packages",
-    icon: Package,
-    href: "/admin/packages",
-    color: "text-purple-400",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/20",
   },
   {
     id: "campaigns",
@@ -121,15 +103,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Determine active item based on current pathname
   const getActiveItem = () => {
-    if (pathname === "/admin") return "dashboard";
+    if (pathname === "/admin") return "users";
     if (pathname.startsWith("/admin/users")) return "users";
-    if (pathname.startsWith("/admin/packages")) return "packages";
     if (pathname.startsWith("/admin/campaigns")) return "campaigns";
     if (pathname.startsWith("/admin/analytics")) return "analytics";
     if (pathname.startsWith("/admin/payments")) return "payments";
     if (pathname.startsWith("/admin/reports")) return "reports";
     if (pathname.startsWith("/admin/settings")) return "settings";
-    return "dashboard";
+    return "users";
   };
 
   const activeItem = getActiveItem();
@@ -445,7 +426,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </button>
               <h2 className="text-2xl font-bold text-white capitalize">
                 {navigationItems.find((item) => item.id === activeItem)?.name ||
-                  "Dashboard"}
+                  "Users"}
               </h2>
             </div>
 

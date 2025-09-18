@@ -51,91 +51,105 @@ const apiClient = new ApiClient();
 
 export const laravelPackageService = {
   async getPackages(): Promise<ApiResponse<{ packages: Package[] }>> {
-    try {
-      const response = await apiClient.get('/packages');
+    const response = await apiClient.get<{ packages: Package[] }>('/packages');
+    
+    if (response.success) {
       return {
         success: true,
-        data: { packages: response.data?.packages || [] }
+        data: { packages: response.data?.packages || [] },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch packages'
+        error: response.error || 'Failed to fetch packages'
       };
     }
   },
 
   async getAvailablePackages(): Promise<ApiResponse<{ packages: Package[] }>> {
-    try {
-      const response = await apiClient.get('/packages/available');
+    const response = await apiClient.get<{ packages: Package[] }>('/packages/available');
+    
+    if (response.success) {
       return {
         success: true,
-        data: { packages: response.data?.packages || [] }
+        data: { packages: response.data?.packages || [] },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch available packages'
+        error: response.error || 'Failed to fetch available packages'
       };
     }
   },
 
   async getCurrentPackage(): Promise<ApiResponse<{ package: Package | null; subscription: Subscription | null }>> {
-    try {
-      const response = await apiClient.get('/packages/current');
+    const response = await apiClient.get<{ package: Package | null; subscription: Subscription | null }>('/packages/current');
+    
+    if (response.success) {
       return {
         success: true,
         data: {
-          package: response.data.package || null,
-          subscription: response.data.subscription || null
-        }
+          package: response.data?.package || null,
+          subscription: response.data?.subscription || null
+        },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch current package'
+        error: response.error || 'Failed to fetch current package'
       };
     }
   },
 
   async purchasePackage(data: PurchasePackageData): Promise<ApiResponse<{ subscription: Subscription }>> {
-    try {
-      const response = await apiClient.post('/packages/purchase', data);
+    const response = await apiClient.post<{ subscription: Subscription }>('/packages/purchase', data);
+    
+    if (response.success) {
       return {
         success: true,
-        data: { subscription: response.data.subscription }
+        data: { subscription: response.data?.subscription! },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to purchase package'
+        error: response.error || 'Failed to purchase package'
       };
     }
   },
 
   async cancelPackage(): Promise<ApiResponse<{}>> {
-    try {
-      const response = await apiClient.post('/packages/cancel');
-      return { success: true };
-    } catch (error: any) {
+    const response = await apiClient.post('/packages/cancel');
+    
+    if (response.success) {
+      return { 
+        success: true,
+        message: response.message
+      };
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to cancel package'
+        error: response.error || 'Failed to cancel package'
       };
     }
   },
 
   async getPackageUpgrades(): Promise<ApiResponse<{ upgrades: Package[] }>> {
-    try {
-      const response = await apiClient.get('/packages/upgrades');
+    const response = await apiClient.get<{ upgrades: Package[] }>('/packages/upgrades');
+    
+    if (response.success) {
       return {
         success: true,
-        data: { upgrades: response.data.upgrades || [] }
+        data: { upgrades: response.data?.upgrades || [] },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch package upgrades'
+        error: response.error || 'Failed to fetch package upgrades'
       };
     }
   },

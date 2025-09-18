@@ -14,8 +14,8 @@ export const usePackages = () => {
       setError(null);
       const response = await laravelPackageService.getPackages();
       
-      if (response.success && response.packages) {
-        setPackages(response.packages);
+      if (response.success && response.data?.packages) {
+        setPackages(response.data.packages);
       } else {
         setError(response.error || 'Failed to fetch packages');
       }
@@ -32,8 +32,8 @@ export const usePackages = () => {
       setError(null);
       const response = await laravelPackageService.getAvailablePackages();
       
-      if (response.success && response.packages) {
-        setPackages(response.packages);
+      if (response.success && response.data?.packages) {
+        setPackages(response.data.packages);
       } else {
         setError(response.error || 'Failed to fetch available packages');
       }
@@ -50,8 +50,8 @@ export const usePackages = () => {
       const response = await laravelPackageService.getCurrentPackage();
       
       if (response.success) {
-        setCurrentPackage(response.package || null);
-        setCurrentSubscription(response.subscription || null);
+        setCurrentPackage(response.data?.package || null);
+        setCurrentSubscription(response.data?.subscription || null);
       } else {
         setError(response.error || 'Failed to fetch current package');
       }
@@ -65,11 +65,11 @@ export const usePackages = () => {
       setError(null);
       const response = await laravelPackageService.purchasePackage(data);
       
-      if (response.success && response.subscription) {
-        setCurrentSubscription(response.subscription);
+      if (response.success && response.data?.subscription) {
+        setCurrentSubscription(response.data.subscription);
         // Refresh current package
         await fetchCurrentPackage();
-        return { success: true, subscription: response.subscription };
+        return { success: true, subscription: response.data.subscription };
       } else {
         setError(response.error || 'Failed to purchase package');
         return { success: false, error: response.error };
@@ -106,8 +106,8 @@ export const usePackages = () => {
       setError(null);
       const response = await laravelPackageService.getPackageUpgrades();
       
-      if (response.success && response.upgrades) {
-        return { success: true, upgrades: response.upgrades };
+      if (response.success && response.data?.upgrades) {
+        return { success: true, upgrades: response.data.upgrades };
       } else {
         setError(response.error || 'Failed to fetch package upgrades');
         return { success: false, error: response.error };

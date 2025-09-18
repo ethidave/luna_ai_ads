@@ -291,6 +291,20 @@ export default function RegisterPage() {
                           </p>
                         </div>
                       )}
+                      {error.includes("Cannot connect to server") && (
+                        <div className="mt-2 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+                          <p className="text-yellow-300 text-xs">
+                            <strong>Backend not running:</strong> Please ensure
+                            the Laravel backend is running on port 8000.
+                          </p>
+                          <p className="text-yellow-200 text-xs mt-1">
+                            Run:{" "}
+                            <code className="bg-yellow-600/30 px-1 rounded">
+                              php artisan serve
+                            </code>
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

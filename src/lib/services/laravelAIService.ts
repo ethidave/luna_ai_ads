@@ -11,196 +11,222 @@ const apiClient = new ApiClient();
 
 export const laravelAIService = {
   async analyzeCampaign(campaignData: any, platform: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/analyze-campaign', { ...campaignData, platform });
+    const response = await apiClient.post<any>('/ai/analyze-campaign', { ...campaignData, platform });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to analyze campaign'
+        error: response.error || 'Failed to analyze campaign'
       };
     }
   },
 
   async generateCopy(prompt: string, platform: string, tone?: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/generate-copy', { prompt, platform, tone });
+    const response = await apiClient.post<any>('/ai/generate-copy', { prompt, platform, tone });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to generate copy'
+        error: response.error || 'Failed to generate copy'
       };
     }
   },
 
   async generateHashtags(content: string, platform: string, count?: number): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/generate-hashtags', { content, platform, count });
+    const response = await apiClient.post<any>('/ai/generate-hashtags', { content, platform, count });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to generate hashtags'
+        error: response.error || 'Failed to generate hashtags'
       };
     }
   },
 
   async generateTags(content: string, platform: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/generate-tags', { content, platform });
+    const response = await apiClient.post<any>('/ai/generate-tags', { content, platform });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to generate tags'
+        error: response.error || 'Failed to generate tags'
       };
     }
   },
 
   async optimizeContent(content: string, platform: string, objective?: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/optimize-content', { content, platform, objective });
+    const response = await apiClient.post<any>('/ai/optimize-content', { content, platform, objective });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to optimize content'
+        error: response.error || 'Failed to optimize content'
       };
     }
   },
 
   async getTrends(platform: string, industry?: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/trends', { platform, industry });
+    const response = await apiClient.post<any>('/ai/trends', { platform, industry });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to get trends'
+        error: response.error || 'Failed to get trends'
       };
     }
   },
 
   async getOptimalPostTime(platform: string, audienceData?: any): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/optimal-post-time', { platform, audienceData });
+    const response = await apiClient.post<any>('/ai/optimal-post-time', { platform, audienceData });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to get optimal post time'
+        error: response.error || 'Failed to get optimal post time'
       };
     }
   },
 
   async generateContentIdeas(topic: string, platform: string, count?: number): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/content-ideas', { topic, platform, count });
+    const response = await apiClient.post<any>('/ai/content-ideas', { topic, platform, count });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to generate content ideas'
+        error: response.error || 'Failed to generate content ideas'
       };
     }
   },
 
   async analyzeEngagement(content: string, platform: string, metrics?: any): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/analyze-engagement', { content, platform, metrics });
+    const response = await apiClient.post<any>('/ai/analyze-engagement', { content, platform, metrics });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to analyze engagement'
+        error: response.error || 'Failed to analyze engagement'
       };
     }
   },
 
   async analyzeWebsite(url: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/analyze-website', { url });
+    const response = await apiClient.post<any>('/ai/analyze-website', { url });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to analyze website'
+        error: response.error || 'Failed to analyze website'
       };
     }
   },
 
   async generateImage(prompt: string): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/generate-image', { prompt });
+    const response = await apiClient.post<any>('/ai/generate-image', { prompt });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to generate image'
+        error: response.error || 'Failed to generate image'
       };
     }
   },
 
   async predictPerformance(content: string, platform: string, audienceData?: any): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/performance-prediction', { content, platform, audienceData });
+    const response = await apiClient.post<any>('/ai/performance-prediction', { content, platform, audienceData });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to predict performance'
+        error: response.error || 'Failed to predict performance'
       };
     }
   },
 
   async getPackageRecommendation(userData: any, goals: any): Promise<AIResponse<any>> {
-    try {
-      const response = await apiClient.post('/ai/package-recommendation', { userData, goals });
+    const response = await apiClient.post<any>('/ai/package-recommendation', { userData, goals });
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to get package recommendation'
+        error: response.error || 'Failed to get package recommendation'
       };
     }
   },

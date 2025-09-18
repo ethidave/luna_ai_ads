@@ -79,10 +79,7 @@ import {
   Star,
 } from "lucide-react";
 import CampaignsSection from "@/components/dashboard/CampaignsSection";
-import AnalyticsSection from "@/components/dashboard/AnalyticsSection";
 import EnhancedAnalyticsSection from "@/components/dashboard/EnhancedAnalyticsSection";
-import AudienceSection from "@/components/dashboard/AudienceSection";
-import AdCreationWizard from "@/components/dashboard/AdCreationWizard";
 import CampaignCreationModal from "@/components/dashboard/CampaignCreationModal";
 import ExistingAdsSelector from "@/components/dashboard/ExistingAdsSelector";
 import AccountConnectionModal from "@/components/dashboard/AccountConnectionModal";

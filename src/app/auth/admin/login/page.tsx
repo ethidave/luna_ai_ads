@@ -103,7 +103,7 @@ function AdminLoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="admin@lunaai.com"
+                placeholder="Enter your email"
               />
             </div>
 
@@ -155,24 +155,6 @@ function AdminLoginForm() {
               )}
             </motion.button>
           </form>
-
-          {/* Admin Credentials Info */}
-          <div className="mt-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <h3 className="text-blue-400 font-medium mb-2">
-              Admin Credentials
-            </h3>
-            <div className="text-sm text-blue-300 space-y-1">
-              <p>
-                <strong>Email:</strong> admin@lunaai.com
-              </p>
-              <p>
-                <strong>Password:</strong> password
-              </p>
-            </div>
-            <p className="text-xs text-blue-400/70 mt-2">
-              Use these credentials to access the admin panel
-            </p>
-          </div>
         </div>
       </motion.div>
     </div>

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorDisplay } from "@/components/ErrorDisplay";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { logger } from "@/lib/console-utils";
 import {
   Eye,
   EyeOff,
@@ -37,7 +38,7 @@ export default function LoginPage() {
   const { error, handleError, clearError } = useErrorHandler({
     context: "Login",
     onError: (error) => {
-      console.error("Login error:", error);
+      logger.warn("Login error:", error);
     },
   });
 
@@ -69,10 +70,14 @@ export default function LoginPage() {
           router.push("/dashboard");
         }
       } else {
-        handleError(new Error(result.error || "Invalid email or password"));
+        const errorMessage = result.error || "Invalid email or password";
+        handleError(new Error(errorMessage));
       }
     } catch (error) {
-      handleError(error);
+      logger.warn("Login error:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      handleError(new Error(errorMessage));
     } finally {
       setIsLoading(false);
     }
@@ -204,6 +209,23 @@ export default function LoginPage() {
                   size="md"
                   className="mb-6"
                 />
+
+                {error &&
+                  error.message &&
+                  error.message.includes("Cannot connect to server") && (
+                    <div className="mb-6 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+                      <p className="text-yellow-300 text-xs">
+                        <strong>Backend not running:</strong> Please ensure the
+                        Laravel backend is running on port 8000.
+                      </p>
+                      <p className="text-yellow-200 text-xs mt-1">
+                        Run:{" "}
+                        <code className="bg-yellow-600/30 px-1 rounded">
+                          php artisan serve
+                        </code>
+                      </p>
+                    </div>
+                  )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>

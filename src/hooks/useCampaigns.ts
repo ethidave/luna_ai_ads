@@ -12,8 +12,8 @@ export const useCampaigns = () => {
       setError(null);
       const response = await laravelCampaignService.getCampaigns();
       
-      if (response.success && response.campaigns) {
-        setCampaigns(response.campaigns);
+      if (response.success && response.data?.campaigns) {
+        setCampaigns(response.data.campaigns);
       } else {
         setError(response.error || 'Failed to fetch campaigns');
       }
@@ -29,9 +29,9 @@ export const useCampaigns = () => {
       setError(null);
       const response = await laravelCampaignService.createCampaign(data);
       
-      if (response.success && response.campaign) {
-        setCampaigns(prev => [response.campaign!, ...prev]);
-        return { success: true, campaign: response.campaign };
+      if (response.success && response.data?.campaign) {
+        setCampaigns(prev => [response.data!.campaign, ...prev]);
+        return { success: true, campaign: response.data.campaign };
       } else {
         setError(response.error || 'Failed to create campaign');
         return { success: false, error: response.error };
@@ -48,13 +48,13 @@ export const useCampaigns = () => {
       setError(null);
       const response = await laravelCampaignService.updateCampaign(id, data);
       
-      if (response.success && response.campaign) {
+      if (response.success && response.data?.campaign) {
         setCampaigns(prev => 
           prev.map(campaign => 
-            campaign.id === id ? response.campaign! : campaign
+            campaign.id === id ? response.data!.campaign : campaign
           )
         );
-        return { success: true, campaign: response.campaign };
+        return { success: true, campaign: response.data.campaign };
       } else {
         setError(response.error || 'Failed to update campaign');
         return { success: false, error: response.error };

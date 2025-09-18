@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -21,9 +22,11 @@ import LunaLogo from "./LunaLogo";
 
 export default function DashboardHeader() {
   const { user, loading: authLoading, logout } = useAuth();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +37,26 @@ export default function DashboardHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle click outside to close user menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
+
   const navItems = [
     { name: "Overview", href: "/dashboard", icon: Home },
     { name: "Campaigns", href: "/dashboard#campaigns", icon: Target },
@@ -42,7 +65,27 @@ export default function DashboardHeader() {
   ];
 
   const handleSignOut = async () => {
-    await logout();
+    try {
+      await logout();
+      setIsUserMenuOpen(false);
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const handleNavigation = (href: string) => {
+    setIsUserMenuOpen(false);
+    if (href.startsWith("#")) {
+      // Handle hash navigation within the same page
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Handle regular navigation
+      router.push(href);
+    }
   };
 
   if (authLoading) {
@@ -134,9 +177,15 @@ export default function DashboardHeader() {
             {/* Desktop User Menu */}
             <div className="hidden lg:flex items-center space-x-4">
               {/* User Menu */}
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  onClick={() => {
+                    console.log(
+                      "User menu clicked, current state:",
+                      isUserMenuOpen
+                    );
+                    setIsUserMenuOpen(!isUserMenuOpen);
+                  }}
                   className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
                 >
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
@@ -162,6 +211,9 @@ export default function DashboardHeader() {
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
                       className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50"
+                      onAnimationStart={() =>
+                        console.log("Dropdown animating in")
+                      }
                     >
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900">
@@ -170,33 +222,8 @@ export default function DashboardHeader() {
                         <p className="text-xs text-gray-500">{user?.email}</p>
                       </div>
 
-                      <div className="py-2">
-                        <Link
-                          href="/dashboard"
-                          className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          <Home className="w-4 h-4" />
-                          <span>Dashboard</span>
-                        </Link>
-
-                        <Link
-                          href="/dashboard/settings"
-                          className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          <Settings className="w-4 h-4" />
-                          <span>Settings</span>
-                        </Link>
-
-                        <Link
-                          href="/dashboard/packages"
-                          className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          <Crown className="w-4 h-4" />
-                          <span>Packages</span>
-                        </Link>
+                      <div className="py-2 space-y-1">
+                        {/* No menu items - only signout */}
                       </div>
 
                       <div className="border-t border-gray-100 py-2">
@@ -283,17 +310,11 @@ export default function DashboardHeader() {
                     })}
 
                     <div className="pt-4 border-t border-gray-200 space-y-3">
-                      <Link
-                        href="/dashboard/settings"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300"
-                      >
-                        <Settings className="w-5 h-5" />
-                        <span>Settings</span>
-                      </Link>
-
                       <button
-                        onClick={handleSignOut}
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMenuOpen(false);
+                        }}
                         className="flex items-center space-x-3 text-red-600 hover:text-red-700 font-medium py-2 transition-colors duration-300 w-full text-left"
                       >
                         <LogOut className="w-5 h-5" />

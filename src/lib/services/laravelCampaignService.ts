@@ -37,133 +37,153 @@ const apiClient = new ApiClient();
 
 export const laravelCampaignService = {
   async getCampaigns(): Promise<ApiResponse<{ campaigns: Campaign[] }>> {
-    try {
-      const response = await apiClient.get('/campaigns');
+    const response = await apiClient.get<{ campaigns: Campaign[] }>('/campaigns');
+    
+    if (response.success) {
       return {
         success: true,
-        data: { campaigns: response.data?.campaigns || [] }
+        data: { campaigns: response.data?.campaigns || [] },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch campaigns'
+        error: response.error || 'Failed to fetch campaigns'
       };
     }
   },
 
   async getCampaignById(id: number): Promise<ApiResponse<{ campaign: Campaign }>> {
-    try {
-      const response = await apiClient.get(`/campaigns/${id}`);
+    const response = await apiClient.get<{ campaign: Campaign }>(`/campaigns/${id}`);
+    
+    if (response.success) {
       return {
         success: true,
-        data: { campaign: response.data?.campaign || response.data }
+        data: { campaign: response.data?.campaign || response.data! },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch campaign'
+        error: response.error || 'Failed to fetch campaign'
       };
     }
   },
 
   async createCampaign(campaignData: CreateCampaignData): Promise<ApiResponse<{ campaign: Campaign }>> {
-    try {
-      const response = await apiClient.post('/campaigns', campaignData);
+    const response = await apiClient.post<{ campaign: Campaign }>('/campaigns', campaignData);
+    
+    if (response.success) {
       return {
         success: true,
-        data: { campaign: response.data?.campaign || response.data }
+        data: { campaign: response.data?.campaign || response.data! },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to create campaign'
+        error: response.error || 'Failed to create campaign'
       };
     }
   },
 
   async updateCampaign(id: number, campaignData: UpdateCampaignData): Promise<ApiResponse<{ campaign: Campaign }>> {
-    try {
-      const response = await apiClient.put(`/campaigns/${id}`, campaignData);
+    const response = await apiClient.put<{ campaign: Campaign }>(`/campaigns/${id}`, campaignData);
+    
+    if (response.success) {
       return {
         success: true,
-        data: { campaign: response.data?.campaign || response.data }
+        data: { campaign: response.data?.campaign || response.data! },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to update campaign'
+        error: response.error || 'Failed to update campaign'
       };
     }
   },
 
   async deleteCampaign(id: number): Promise<ApiResponse<{}>> {
-    try {
-      await apiClient.delete(`/campaigns/${id}`);
-      return { success: true };
-    } catch (error: any) {
+    const response = await apiClient.delete(`/campaigns/${id}`);
+    
+    if (response.success) {
+      return { 
+        success: true,
+        message: response.message
+      };
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to delete campaign'
+        error: response.error || 'Failed to delete campaign'
       };
     }
   },
 
   async getCampaignAnalytics(id: number): Promise<ApiResponse<any>> {
-    try {
-      const response = await apiClient.get(`/campaigns/${id}/analytics`);
+    const response = await apiClient.get<any>(`/campaigns/${id}/analytics`);
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch analytics'
+        error: response.error || 'Failed to fetch analytics'
       };
     }
   },
 
   async getDashboardData(): Promise<ApiResponse<any>> {
-    try {
-      const response = await apiClient.get('/dashboard/data');
+    const response = await apiClient.get<any>('/dashboard/data');
+    
+    if (response.success) {
       return {
         success: true,
-        data: response.data
+        data: response.data,
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch dashboard data'
+        error: response.error || 'Failed to fetch dashboard data'
       };
     }
   },
 
   async getSocialMediaAccounts(): Promise<ApiResponse<{ accounts: any[] }>> {
-    try {
-      const response = await apiClient.get('/social-media/accounts');
+    const response = await apiClient.get<{ accounts: any[] }>('/social-media/accounts');
+    
+    if (response.success) {
       return {
         success: true,
-        data: { accounts: response.data.accounts || [] }
+        data: { accounts: response.data?.accounts || [] },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch social media accounts'
+        error: response.error || 'Failed to fetch social media accounts'
       };
     }
   },
 
   async getSocialMediaPosts(): Promise<ApiResponse<{ posts: any[] }>> {
-    try {
-      const response = await apiClient.get('/social-media/posts');
+    const response = await apiClient.get<{ posts: any[] }>('/social-media/posts');
+    
+    if (response.success) {
       return {
         success: true,
-        data: { posts: response.data.posts || [] }
+        data: { posts: response.data?.posts || [] },
+        message: response.message
       };
-    } catch (error: any) {
+    } else {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch social media posts'
+        error: response.error || 'Failed to fetch social media posts'
       };
     }
   },

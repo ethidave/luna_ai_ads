@@ -580,1022 +580,1014 @@ export default function CampaignCreationModal({
   if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
+    <motion.div
+      key="campaign-creation-modal"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    >
       <motion.div
-        key="campaign-creation-modal"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto"
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 max-w-6xl w-full max-h-[90vh] overflow-y-auto"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                <Target className="w-6 h-6 text-white" />
-              </div>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+              <Target className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">
+                Analyze Campaign
+              </h2>
+              <p className="text-white/70">
+                Set up campaign analysis for Facebook and Google Ads
+                optimization
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-white/70 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-white text-sm">Step {currentStep} of 6</span>
+            <span className="text-white/70 text-sm">
+              {Math.round((currentStep / 6) * 100)}% Complete
+            </span>
+          </div>
+          <div className="w-full bg-white/10 rounded-full h-2">
+            <div
+              className="h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300"
+              style={{ width: `${(currentStep / 6) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Validation Errors */}
+        {validationErrors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 bg-red-500/20 border border-red-500/30 rounded-lg p-4"
+          >
+            <div className="flex items-center space-x-2 mb-2">
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <h4 className="text-red-400 font-semibold">
+                Please fix the following errors:
+              </h4>
+            </div>
+            <ul className="text-red-300 text-sm space-y-1">
+              {validationErrors.map((error, index) => (
+                <li key={index} className="flex items-center space-x-2">
+                  <div className="w-1 h-1 bg-red-400 rounded-full" />
+                  <span>{error}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+
+        {/* Step 1: Basic Information */}
+        {currentStep === 1 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Campaign Information
+              </h3>
+              <p className="text-white/70">
+                Provide basic details about your campaign
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h2 className="text-2xl font-bold text-white">
-                  Analyze Campaign
-                </h2>
-                <p className="text-white/70">
-                  Set up campaign analysis for Facebook and Google Ads
+                <label className="block text-white font-medium mb-2">
+                  Campaign Name
+                </label>
+                <input
+                  type="text"
+                  value={campaignData.name}
+                  onChange={(e) =>
+                    setCampaignData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  placeholder="e.g., Summer Sale 2024"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-white font-medium mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={campaignData.description}
+                  onChange={(e) =>
+                    setCampaignData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  placeholder="Describe your campaign goals and strategy..."
+                  rows={3}
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-white font-medium mb-2">
+                  Website URL (Optional)
+                </label>
+                <div className="relative">
+                  <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-5 h-5" />
+                  <input
+                    type="url"
+                    value={campaignData.websiteUrl}
+                    onChange={(e) =>
+                      setCampaignData((prev) => ({
+                        ...prev,
+                        websiteUrl: e.target.value,
+                      }))
+                    }
+                    placeholder="https://yourwebsite.com"
+                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <p className="text-white/50 text-sm mt-1">
+                  Optional: Add your website URL for better analysis and
                   optimization
                 </p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 text-white/70 hover:text-white transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+                {campaignData.websiteUrl && (
+                  <button
+                    onClick={analyzeWebsite}
+                    disabled={isAnalyzingWebsite}
+                    className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  >
+                    {isAnalyzingWebsite ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Brain className="w-4 h-4" />
+                    )}
+                    <span>
+                      {isAnalyzingWebsite ? "Analyzing..." : "Analyze Website"}
+                    </span>
+                  </button>
+                )}
 
-          {/* Progress Bar */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-white text-sm">
-                Step {currentStep} of 6
-              </span>
-              <span className="text-white/70 text-sm">
-                {Math.round((currentStep / 6) * 100)}% Complete
-              </span>
-            </div>
-            <div className="w-full bg-white/10 rounded-full h-2">
-              <div
-                className="h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300"
-                style={{ width: `${(currentStep / 6) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Validation Errors */}
-          {validationErrors.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 bg-red-500/20 border border-red-500/30 rounded-lg p-4"
-            >
-              <div className="flex items-center space-x-2 mb-2">
-                <AlertCircle className="w-5 h-5 text-red-400" />
-                <h4 className="text-red-400 font-semibold">
-                  Please fix the following errors:
-                </h4>
-              </div>
-              <ul className="text-red-300 text-sm space-y-1">
-                {validationErrors.map((error, index) => (
-                  <li key={index} className="flex items-center space-x-2">
-                    <div className="w-1 h-1 bg-red-400 rounded-full" />
-                    <span>{error}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-
-          {/* Step 1: Basic Information */}
-          {currentStep === 1 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  Campaign Information
-                </h3>
-                <p className="text-white/70">
-                  Provide basic details about your campaign
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-white font-medium mb-2">
-                    Campaign Name
-                  </label>
-                  <input
-                    type="text"
-                    value={campaignData.name}
-                    onChange={(e) =>
-                      setCampaignData((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                    placeholder="e.g., Summer Sale 2024"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-white font-medium mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    value={campaignData.description}
-                    onChange={(e) =>
-                      setCampaignData((prev) => ({
-                        ...prev,
-                        description: e.target.value,
-                      }))
-                    }
-                    placeholder="Describe your campaign goals and strategy..."
-                    rows={3}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-white font-medium mb-2">
-                    Website URL (Optional)
-                  </label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-5 h-5" />
-                    <input
-                      type="url"
-                      value={campaignData.websiteUrl}
-                      onChange={(e) =>
-                        setCampaignData((prev) => ({
-                          ...prev,
-                          websiteUrl: e.target.value,
-                        }))
-                      }
-                      placeholder="https://yourwebsite.com"
-                      className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <p className="text-white/50 text-sm mt-1">
-                    Optional: Add your website URL for better analysis and
-                    optimization
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <p className="text-white/70 text-sm mb-3">
+                    Or select an existing ad to improve:
                   </p>
-                  {campaignData.websiteUrl && (
-                    <button
-                      onClick={analyzeWebsite}
-                      disabled={isAnalyzingWebsite}
-                      className="mt-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-                    >
-                      {isAnalyzingWebsite ? (
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Brain className="w-4 h-4" />
-                      )}
-                      <span>
-                        {isAnalyzingWebsite
-                          ? "Analyzing..."
-                          : "Analyze Website"}
-                      </span>
-                    </button>
-                  )}
-
-                  <div className="mt-4 pt-4 border-t border-white/10">
-                    <p className="text-white/70 text-sm mb-3">
-                      Or select an existing ad to improve:
-                    </p>
-                    <button
-                      onClick={() => setShowExistingAdsSelector(true)}
-                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
-                    >
-                      <Target className="w-4 h-4" />
-                      <span>Select Existing Ad</span>
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setShowExistingAdsSelector(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2"
+                  >
+                    <Target className="w-4 h-4" />
+                    <span>Select Existing Ad</span>
+                  </button>
                 </div>
               </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
+        )}
 
-          {/* Step 2: Platform Selection (Facebook & Google Only) */}
-          {currentStep === 2 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  Select Platforms
-                </h3>
-                <p className="text-white/70">
-                  Choose which platforms you want to advertise on
-                </p>
-              </div>
+        {/* Step 2: Platform Selection (Facebook & Google Only) */}
+        {currentStep === 2 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Select Platforms
+              </h3>
+              <p className="text-white/70">
+                Choose which platforms you want to advertise on
+              </p>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {platforms.map((platform) => (
-                  <div
-                    key={platform.id}
-                    onClick={() => handlePlatformToggle(platform.id)}
-                    className={`p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
-                      campaignData.platforms.includes(platform.id)
-                        ? "border-blue-500 bg-blue-500/20"
-                        : "border-white/20 bg-white/5 hover:bg-white/10"
-                    }`}
-                  >
-                    <div className="flex items-start space-x-4">
-                      <div
-                        className={`p-3 rounded-lg bg-gradient-to-r ${platform.color}`}
-                      >
-                        <platform.icon className="w-6 h-6 text-white" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {platforms.map((platform) => (
+                <div
+                  key={platform.id}
+                  onClick={() => handlePlatformToggle(platform.id)}
+                  className={`p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                    campaignData.platforms.includes(platform.id)
+                      ? "border-blue-500 bg-blue-500/20"
+                      : "border-white/20 bg-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div
+                      className={`p-3 rounded-lg bg-gradient-to-r ${platform.color}`}
+                    >
+                      <platform.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-white font-semibold mb-1">
+                        {platform.name}
+                      </h4>
+                      <p className="text-white/70 text-sm mb-3">
+                        {platform.description}
+                      </p>
+                      <div className="space-y-1">
+                        {platform.features.map((feature, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center space-x-2"
+                          >
+                            <div className="w-1 h-1 bg-white/70 rounded-full" />
+                            <span className="text-white/70 text-xs">
+                              {feature}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex-1">
-                        <h4 className="text-white font-semibold mb-1">
-                          {platform.name}
-                        </h4>
-                        <p className="text-white/70 text-sm mb-3">
-                          {platform.description}
-                        </p>
-                        <div className="space-y-1">
-                          {platform.features.map((feature, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center space-x-2"
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 3: Campaign Objective */}
+        {currentStep === 3 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Campaign Objective
+              </h3>
+              <p className="text-white/70">
+                What do you want to achieve with this campaign?
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {objectives.map((objective) => (
+                <div
+                  key={objective.id}
+                  onClick={() =>
+                    setCampaignData((prev) => ({
+                      ...prev,
+                      objective: objective.id,
+                    }))
+                  }
+                  className={`p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                    campaignData.objective === objective.id
+                      ? "border-blue-500 bg-blue-500/20"
+                      : "border-white/20 bg-white/5 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                      <objective.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold mb-1">
+                        {objective.name}
+                      </h4>
+                      <p className="text-white/70 text-sm mb-3">
+                        {objective.description}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {objective.platforms.map((platformId) => {
+                          const platform = platforms.find(
+                            (p) => p.id === platformId
+                          );
+                          return platform ? (
+                            <span
+                              key={platformId}
+                              className="px-2 py-1 bg-white/10 rounded-full text-white text-xs"
                             >
-                              <div className="w-1 h-1 bg-white/70 rounded-full" />
-                              <span className="text-white/70 text-xs">
-                                {feature}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                              {platform.name}
+                            </span>
+                          ) : null;
+                        })}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-          {/* Step 3: Campaign Objective */}
-          {currentStep === 3 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  Campaign Objective
-                </h3>
-                <p className="text-white/70">
-                  What do you want to achieve with this campaign?
-                </p>
-              </div>
+        {/* Step 4: Target Audience */}
+        {currentStep === 4 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Target Audience
+              </h3>
+              <p className="text-white/70">
+                Define who you want to reach with your ads
+              </p>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {objectives.map((objective) => (
-                  <div
-                    key={objective.id}
-                    onClick={() =>
-                      setCampaignData((prev) => ({
-                        ...prev,
-                        objective: objective.id,
-                      }))
-                    }
-                    className={`p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:scale-105 ${
-                      campaignData.objective === objective.id
-                        ? "border-blue-500 bg-blue-500/20"
-                        : "border-white/20 bg-white/5 hover:bg-white/10"
-                    }`}
-                  >
-                    <div className="flex items-start space-x-4">
-                      <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                        <objective.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h4 className="text-white font-semibold mb-1">
-                          {objective.name}
-                        </h4>
-                        <p className="text-white/70 text-sm mb-3">
-                          {objective.description}
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {objective.platforms.map((platformId) => {
-                            const platform = platforms.find(
-                              (p) => p.id === platformId
-                            );
-                            return platform ? (
-                              <span
-                                key={platformId}
-                                className="px-2 py-1 bg-white/10 rounded-full text-white text-xs"
-                              >
-                                {platform.name}
-                              </span>
-                            ) : null;
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Demographics */}
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-white font-semibold mb-4">
+                    Demographics
+                  </h4>
 
-          {/* Step 4: Target Audience */}
-          {currentStep === 4 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  Target Audience
-                </h3>
-                <p className="text-white/70">
-                  Define who you want to reach with your ads
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Demographics */}
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-white font-semibold mb-4">
-                      Demographics
-                    </h4>
-
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Age Range
-                        </label>
-                        <div className="flex items-center space-x-4">
-                          <input
-                            type="number"
-                            value={campaignData.targetAudience.age.min}
-                            onChange={(e) =>
-                              setCampaignData((prev) => ({
-                                ...prev,
-                                targetAudience: {
-                                  ...prev.targetAudience,
-                                  age: {
-                                    ...prev.targetAudience.age,
-                                    min: parseInt(e.target.value),
-                                  },
-                                },
-                              }))
-                            }
-                            className="w-20 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                          <span className="text-white/70">to</span>
-                          <input
-                            type="number"
-                            value={campaignData.targetAudience.age.max}
-                            onChange={(e) =>
-                              setCampaignData((prev) => ({
-                                ...prev,
-                                targetAudience: {
-                                  ...prev.targetAudience,
-                                  age: {
-                                    ...prev.targetAudience.age,
-                                    max: parseInt(e.target.value),
-                                  },
-                                },
-                              }))
-                            }
-                            className="w-20 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Gender
-                        </label>
-                        <select
-                          value={campaignData.targetAudience.gender}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Age Range
+                      </label>
+                      <div className="flex items-center space-x-4">
+                        <input
+                          type="number"
+                          value={campaignData.targetAudience.age.min}
                           onChange={(e) =>
                             setCampaignData((prev) => ({
                               ...prev,
                               targetAudience: {
                                 ...prev.targetAudience,
-                                gender: e.target.value,
+                                age: {
+                                  ...prev.targetAudience.age,
+                                  min: parseInt(e.target.value),
+                                },
                               },
                             }))
                           }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="all">All Genders</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                        </select>
+                          className="w-20 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <span className="text-white/70">to</span>
+                        <input
+                          type="number"
+                          value={campaignData.targetAudience.age.max}
+                          onChange={(e) =>
+                            setCampaignData((prev) => ({
+                              ...prev,
+                              targetAudience: {
+                                ...prev.targetAudience,
+                                age: {
+                                  ...prev.targetAudience.age,
+                                  max: parseInt(e.target.value),
+                                },
+                              },
+                            }))
+                          }
+                          className="w-20 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <h4 className="text-white font-semibold mb-4">Interests</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {interests.map((interest) => (
-                        <button
-                          key={interest}
-                          onClick={() => handleInterestToggle(interest)}
-                          className={`px-3 py-2 rounded-full text-sm transition-all duration-300 ${
-                            campaignData.targetAudience.interests.includes(
-                              interest
-                            )
-                              ? "bg-blue-500 text-white"
-                              : "bg-white/10 text-white/70 hover:bg-white/20"
-                          }`}
-                        >
-                          {interest}
-                        </button>
-                      ))}
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Gender
+                      </label>
+                      <select
+                        value={campaignData.targetAudience.gender}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            targetAudience: {
+                              ...prev.targetAudience,
+                              gender: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="all">All Genders</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
                     </div>
                   </div>
                 </div>
 
-                {/* Locations & Languages */}
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-white font-semibold mb-4">Locations</h4>
-                    <div className="space-y-2 max-h-40 overflow-y-auto">
-                      {locations.map((location) => (
-                        <label
-                          key={location}
-                          className="flex items-center space-x-3 cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={campaignData.targetAudience.locations.includes(
-                              location
-                            )}
-                            onChange={() => handleLocationToggle(location)}
-                            className="w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
-                          />
-                          <span className="text-white/70 text-sm">
-                            {location}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="text-white font-semibold mb-4">Languages</h4>
-                    <select
-                      multiple
-                      value={campaignData.targetAudience.languages}
-                      onChange={(e) =>
-                        setCampaignData((prev) => ({
-                          ...prev,
-                          targetAudience: {
-                            ...prev.targetAudience,
-                            languages: Array.from(
-                              e.target.selectedOptions,
-                              (option) => option.value
-                            ),
-                          },
-                        }))
-                      }
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      {languages.map((language) => (
-                        <option
-                          key={language}
-                          value={language}
-                          className="bg-gray-800"
-                        >
-                          {language}
-                        </option>
-                      ))}
-                    </select>
+                <div>
+                  <h4 className="text-white font-semibold mb-4">Interests</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {interests.map((interest) => (
+                      <button
+                        key={interest}
+                        onClick={() => handleInterestToggle(interest)}
+                        className={`px-3 py-2 rounded-full text-sm transition-all duration-300 ${
+                          campaignData.targetAudience.interests.includes(
+                            interest
+                          )
+                            ? "bg-blue-500 text-white"
+                            : "bg-white/10 text-white/70 hover:bg-white/20"
+                        }`}
+                      >
+                        {interest}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
-            </motion.div>
-          )}
 
-          {/* Step 5: Creative Analysis */}
-          {currentStep === 5 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl font-bold text-white">
-                    Creative Analysis
-                  </h3>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={generateAIContent}
-                      disabled={isGeneratingAI}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isGeneratingAI ? (
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <Brain className="w-4 h-4" />
-                      )}
-                      <span>AI Generate</span>
-                    </button>
-                    <button
-                      onClick={generateGlobalTargeting}
-                      disabled={isGeneratingAI}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <Globe className="w-4 h-4" />
-                      <span>Global Strategy</span>
-                    </button>
-                    <button
-                      onClick={generatePerformancePrediction}
-                      disabled={isGeneratingAI}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <TrendingUp className="w-4 h-4" />
-                      <span>Predict Performance</span>
-                    </button>
-                    <button
-                      onClick={() => setShowAdOptimization(true)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
-                    >
-                      <Zap className="w-4 h-4" />
-                      <span>Optimize Existing Ads</span>
-                    </button>
-                  </div>
-                </div>
-                <p className="text-white/70">
-                  Upload your ad creative materials or use AI to generate
-                  optimized content
-                </p>
-              </div>
-
-              {/* AI Suggestions Display */}
-              {aiSuggestions && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl p-6 mb-6"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2">
-                      <Sparkles className="w-5 h-5 text-purple-400" />
-                      <h4 className="text-lg font-semibold text-white">
-                        AI Suggestions
-                      </h4>
-                    </div>
-                    <div className="flex items-center space-x-2 text-xs text-purple-300">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                      <span>AI Powered</span>
-                    </div>
-                  </div>
-
-                  {(aiSuggestions as any).headline && (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-purple-300 text-sm font-medium">
-                          Generated Headline:
-                        </label>
-                        <p className="text-white text-lg font-semibold">
-                          {(aiSuggestions as any).headline}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-purple-300 text-sm font-medium">
-                          Generated Description:
-                        </label>
-                        <p className="text-white">
-                          {(aiSuggestions as any).primaryText}
-                        </p>
-                      </div>
-                      <div>
-                        <label className="text-purple-300 text-sm font-medium">
-                          Call to Action:
-                        </label>
-                        <p className="text-white font-medium">
-                          {(aiSuggestions as any).callToAction}
-                        </p>
-                      </div>
-
-                      {(aiSuggestions as any).keywords &&
-                        (aiSuggestions as any).keywords.length > 0 && (
-                          <div>
-                            <label className="text-purple-300 text-sm font-medium">
-                              Keywords:
-                            </label>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {(aiSuggestions as any).keywords.map(
-                                (keyword: string, index: number) => (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 bg-purple-500/30 text-purple-200 rounded-full text-sm"
-                                  >
-                                    {keyword}
-                                  </span>
-                                )
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                      {(aiSuggestions as any).performanceScore && (
-                        <div className="flex items-center space-x-4">
-                          <div>
-                            <label className="text-purple-300 text-sm font-medium">
-                              Performance Score:
-                            </label>
-                            <p className="text-white font-bold text-xl">
-                              {(aiSuggestions as any).performanceScore}/100
-                            </p>
-                          </div>
-                          {(aiSuggestions as any).estimatedCTR && (
-                            <div>
-                              <label className="text-purple-300 text-sm font-medium">
-                                Estimated CTR:
-                              </label>
-                              <p className="text-white font-bold">
-                                {(aiSuggestions as any).estimatedCTR}%
-                              </p>
-                            </div>
+              {/* Locations & Languages */}
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-white font-semibold mb-4">Locations</h4>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {locations.map((location) => (
+                      <label
+                        key={location}
+                        className="flex items-center space-x-3 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={campaignData.targetAudience.locations.includes(
+                            location
                           )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {(aiSuggestions as any).globalTargeting && (
-                    <div className="mt-4 p-4 bg-blue-500/20 rounded-lg">
-                      <h5 className="text-blue-300 font-medium mb-2">
-                        Global Targeting Strategy
-                      </h5>
-                      <p className="text-white text-sm">
-                        {(
-                          aiSuggestions as any
-                        ).globalTargeting.globalStrategy?.primaryMarkets?.join(
-                          ", "
-                        )}{" "}
-                        markets recommended
-                      </p>
-                    </div>
-                  )}
-
-                  {(aiSuggestions as any).performancePrediction && (
-                    <div className="mt-4 p-4 bg-green-500/20 rounded-lg">
-                      <h5 className="text-green-300 font-medium mb-2">
-                        Performance Prediction
-                      </h5>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-green-300">
-                            Estimated Reach:
-                          </span>
-                          <span className="text-white ml-2">
-                            {(
-                              aiSuggestions as any
-                            ).performancePrediction.estimatedReach?.toLocaleString()}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-green-300">Estimated CPC:</span>
-                          <span className="text-white ml-2">
-                            $
-                            {
-                              (aiSuggestions as any).performancePrediction
-                                .estimatedCPC
-                            }
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-white font-medium mb-2">
-                      Headline
-                    </label>
-                    <input
-                      type="text"
-                      value={campaignData.creative.headline}
-                      onChange={(e) =>
-                        setCampaignData((prev) => ({
-                          ...prev,
-                          creative: {
-                            ...prev.creative,
-                            headline: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="Enter your ad headline..."
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white font-medium mb-2">
-                      Description
-                    </label>
-                    <textarea
-                      value={campaignData.creative.description}
-                      onChange={(e) =>
-                        setCampaignData((prev) => ({
-                          ...prev,
-                          creative: {
-                            ...prev.creative,
-                            description: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="Enter your ad description..."
-                      rows={4}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white font-medium mb-2">
-                      Call to Action
-                    </label>
-                    <select
-                      value={campaignData.creative.callToAction}
-                      onChange={(e) =>
-                        setCampaignData((prev) => ({
-                          ...prev,
-                          creative: {
-                            ...prev.creative,
-                            callToAction: e.target.value,
-                          },
-                        }))
-                      }
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Select CTA</option>
-                      <option value="Learn More">Learn More</option>
-                      <option value="Get Started">Get Started</option>
-                      <option value="Sign Up">Sign Up</option>
-                      <option value="Try Free">Try Free</option>
-                      <option value="Shop Now">Shop Now</option>
-                      <option value="Download">Download</option>
-                      <option value="Contact Us">Contact Us</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-white font-medium mb-2">
-                      Website URL
-                    </label>
-                    <input
-                      type="url"
-                      value={campaignData.websiteUrl}
-                      onChange={(e) =>
-                        setCampaignData((prev) => ({
-                          ...prev,
-                          websiteUrl: e.target.value,
-                        }))
-                      }
-                      placeholder="https://yourwebsite.com"
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                          onChange={() => handleLocationToggle(location)}
+                          className="w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-white/70 text-sm">
+                          {location}
+                        </span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
-                <div className="space-y-6">
-                  {/* Images section removed - focus on analysis only */}
-
-                  {/* Videos section removed - focus on analysis only */}
+                <div>
+                  <h4 className="text-white font-semibold mb-4">Languages</h4>
+                  <select
+                    multiple
+                    value={campaignData.targetAudience.languages}
+                    onChange={(e) =>
+                      setCampaignData((prev) => ({
+                        ...prev,
+                        targetAudience: {
+                          ...prev.targetAudience,
+                          languages: Array.from(
+                            e.target.selectedOptions,
+                            (option) => option.value
+                          ),
+                        },
+                      }))
+                    }
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    {languages.map((language) => (
+                      <option
+                        key={language}
+                        value={language}
+                        className="bg-gray-800"
+                      >
+                        {language}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
+        )}
 
-          {/* Step 6: Schedule & Settings */}
-          {currentStep === 6 && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-6"
-            >
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  Schedule & Settings
+        {/* Step 5: Creative Analysis */}
+        {currentStep === 5 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-bold text-white">
+                  Creative Analysis
                 </h3>
-                <p className="text-white/70">
-                  Configure when and how your campaign runs
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-white font-semibold mb-4">Schedule</h4>
-
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Start Date
-                        </label>
-                        <input
-                          type="date"
-                          value={campaignData.schedule.startDate}
-                          onChange={(e) =>
-                            setCampaignData((prev) => ({
-                              ...prev,
-                              schedule: {
-                                ...prev.schedule,
-                                startDate: e.target.value,
-                              },
-                            }))
-                          }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          End Date
-                        </label>
-                        <input
-                          type="date"
-                          value={campaignData.schedule.endDate}
-                          onChange={(e) =>
-                            setCampaignData((prev) => ({
-                              ...prev,
-                              schedule: {
-                                ...prev.schedule,
-                                endDate: e.target.value,
-                              },
-                            }))
-                          }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Timezone
-                        </label>
-                        <select
-                          value={campaignData.schedule.timezone}
-                          onChange={(e) =>
-                            setCampaignData((prev) => ({
-                              ...prev,
-                              schedule: {
-                                ...prev.schedule,
-                                timezone: e.target.value,
-                              },
-                            }))
-                          }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="UTC">UTC</option>
-                          <option value="EST">Eastern Time</option>
-                          <option value="PST">Pacific Time</option>
-                          <option value="GMT">Greenwich Mean Time</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-white font-semibold mb-4">
-                      Bidding & Optimization
-                    </h4>
-
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Bid Strategy
-                        </label>
-                        <select
-                          value={campaignData.settings.bidStrategy}
-                          onChange={(e) =>
-                            setCampaignData((prev) => ({
-                              ...prev,
-                              settings: {
-                                ...prev.settings,
-                                bidStrategy: e.target.value,
-                              },
-                            }))
-                          }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          {bidStrategies.map((strategy) => (
-                            <option key={strategy.id} value={strategy.id}>
-                              {strategy.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Optimization Goal
-                        </label>
-                        <select
-                          value={campaignData.settings.optimization}
-                          onChange={(e) =>
-                            setCampaignData((prev) => ({
-                              ...prev,
-                              settings: {
-                                ...prev.settings,
-                                optimization: e.target.value,
-                              },
-                            }))
-                          }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="conversions">Conversions</option>
-                          <option value="clicks">Clicks</option>
-                          <option value="impressions">Impressions</option>
-                          <option value="reach">Reach</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-white font-medium mb-2">
-                          Delivery
-                        </label>
-                        <select
-                          value={campaignData.settings.delivery}
-                          onChange={(e) =>
-                            setCampaignData((prev) => ({
-                              ...prev,
-                              settings: {
-                                ...prev.settings,
-                                delivery: e.target.value,
-                              },
-                            }))
-                          }
-                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="standard">Standard</option>
-                          <option value="accelerated">Accelerated</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={generateAIContent}
+                    disabled={isGeneratingAI}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isGeneratingAI ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Brain className="w-4 h-4" />
+                    )}
+                    <span>AI Generate</span>
+                  </button>
+                  <button
+                    onClick={generateGlobalTargeting}
+                    disabled={isGeneratingAI}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Globe className="w-4 h-4" />
+                    <span>Global Strategy</span>
+                  </button>
+                  <button
+                    onClick={generatePerformancePrediction}
+                    disabled={isGeneratingAI}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span>Predict Performance</span>
+                  </button>
+                  <button
+                    onClick={() => setShowAdOptimization(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+                  >
+                    <Zap className="w-4 h-4" />
+                    <span>Optimize Existing Ads</span>
+                  </button>
                 </div>
               </div>
-            </motion.div>
-          )}
-
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/20">
-            <button
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              className="flex items-center space-x-2 px-6 py-3 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Previous</span>
-            </button>
-
-            <div className="flex items-center space-x-2">
-              {Array.from({ length: 6 }, (_, i) => (
-                <div
-                  key={i}
-                  className={`w-2 h-2 rounded-full ${
-                    i + 1 <= currentStep ? "bg-blue-500" : "bg-white/20"
-                  }`}
-                />
-              ))}
+              <p className="text-white/70">
+                Upload your ad creative materials or use AI to generate
+                optimized content
+              </p>
             </div>
 
-            {currentStep < 6 ? (
-              <button
-                onClick={handleNext}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+            {/* AI Suggestions Display */}
+            {aiSuggestions && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl p-6 mb-6"
               >
-                <span>Next</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            ) : (
-              <button
-                onClick={handleCreateCampaign}
-                disabled={isCreating}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isCreating ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Creating...</span>
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-4 h-4" />
-                    <span>Analyze Campaign</span>
-                  </>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Sparkles className="w-5 h-5 text-purple-400" />
+                    <h4 className="text-lg font-semibold text-white">
+                      AI Suggestions
+                    </h4>
+                  </div>
+                  <div className="flex items-center space-x-2 text-xs text-purple-300">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    <span>AI Powered</span>
+                  </div>
+                </div>
+
+                {(aiSuggestions as any).headline && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-purple-300 text-sm font-medium">
+                        Generated Headline:
+                      </label>
+                      <p className="text-white text-lg font-semibold">
+                        {(aiSuggestions as any).headline}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-purple-300 text-sm font-medium">
+                        Generated Description:
+                      </label>
+                      <p className="text-white">
+                        {(aiSuggestions as any).primaryText}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-purple-300 text-sm font-medium">
+                        Call to Action:
+                      </label>
+                      <p className="text-white font-medium">
+                        {(aiSuggestions as any).callToAction}
+                      </p>
+                    </div>
+
+                    {(aiSuggestions as any).keywords &&
+                      (aiSuggestions as any).keywords.length > 0 && (
+                        <div>
+                          <label className="text-purple-300 text-sm font-medium">
+                            Keywords:
+                          </label>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {(aiSuggestions as any).keywords.map(
+                              (keyword: string, index: number) => (
+                                <span
+                                  key={index}
+                                  className="px-2 py-1 bg-purple-500/30 text-purple-200 rounded-full text-sm"
+                                >
+                                  {keyword}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                    {(aiSuggestions as any).performanceScore && (
+                      <div className="flex items-center space-x-4">
+                        <div>
+                          <label className="text-purple-300 text-sm font-medium">
+                            Performance Score:
+                          </label>
+                          <p className="text-white font-bold text-xl">
+                            {(aiSuggestions as any).performanceScore}/100
+                          </p>
+                        </div>
+                        {(aiSuggestions as any).estimatedCTR && (
+                          <div>
+                            <label className="text-purple-300 text-sm font-medium">
+                              Estimated CTR:
+                            </label>
+                            <p className="text-white font-bold">
+                              {(aiSuggestions as any).estimatedCTR}%
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
-              </button>
+
+                {(aiSuggestions as any).globalTargeting && (
+                  <div className="mt-4 p-4 bg-blue-500/20 rounded-lg">
+                    <h5 className="text-blue-300 font-medium mb-2">
+                      Global Targeting Strategy
+                    </h5>
+                    <p className="text-white text-sm">
+                      {(
+                        aiSuggestions as any
+                      ).globalTargeting.globalStrategy?.primaryMarkets?.join(
+                        ", "
+                      )}{" "}
+                      markets recommended
+                    </p>
+                  </div>
+                )}
+
+                {(aiSuggestions as any).performancePrediction && (
+                  <div className="mt-4 p-4 bg-green-500/20 rounded-lg">
+                    <h5 className="text-green-300 font-medium mb-2">
+                      Performance Prediction
+                    </h5>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-green-300">Estimated Reach:</span>
+                        <span className="text-white ml-2">
+                          {(
+                            aiSuggestions as any
+                          ).performancePrediction.estimatedReach?.toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-green-300">Estimated CPC:</span>
+                        <span className="text-white ml-2">
+                          $
+                          {
+                            (aiSuggestions as any).performancePrediction
+                              .estimatedCPC
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
             )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Headline
+                  </label>
+                  <input
+                    type="text"
+                    value={campaignData.creative.headline}
+                    onChange={(e) =>
+                      setCampaignData((prev) => ({
+                        ...prev,
+                        creative: {
+                          ...prev.creative,
+                          headline: e.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="Enter your ad headline..."
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    value={campaignData.creative.description}
+                    onChange={(e) =>
+                      setCampaignData((prev) => ({
+                        ...prev,
+                        creative: {
+                          ...prev.creative,
+                          description: e.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="Enter your ad description..."
+                    rows={4}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Call to Action
+                  </label>
+                  <select
+                    value={campaignData.creative.callToAction}
+                    onChange={(e) =>
+                      setCampaignData((prev) => ({
+                        ...prev,
+                        creative: {
+                          ...prev.creative,
+                          callToAction: e.target.value,
+                        },
+                      }))
+                    }
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select CTA</option>
+                    <option value="Learn More">Learn More</option>
+                    <option value="Get Started">Get Started</option>
+                    <option value="Sign Up">Sign Up</option>
+                    <option value="Try Free">Try Free</option>
+                    <option value="Shop Now">Shop Now</option>
+                    <option value="Download">Download</option>
+                    <option value="Contact Us">Contact Us</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Website URL
+                  </label>
+                  <input
+                    type="url"
+                    value={campaignData.websiteUrl}
+                    onChange={(e) =>
+                      setCampaignData((prev) => ({
+                        ...prev,
+                        websiteUrl: e.target.value,
+                      }))
+                    }
+                    placeholder="https://yourwebsite.com"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {/* Images section removed - focus on analysis only */}
+
+                {/* Videos section removed - focus on analysis only */}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 6: Schedule & Settings */}
+        {currentStep === 6 && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Schedule & Settings
+              </h3>
+              <p className="text-white/70">
+                Configure when and how your campaign runs
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-white font-semibold mb-4">Schedule</h4>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={campaignData.schedule.startDate}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            schedule: {
+                              ...prev.schedule,
+                              startDate: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={campaignData.schedule.endDate}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            schedule: {
+                              ...prev.schedule,
+                              endDate: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Timezone
+                      </label>
+                      <select
+                        value={campaignData.schedule.timezone}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            schedule: {
+                              ...prev.schedule,
+                              timezone: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="UTC">UTC</option>
+                        <option value="EST">Eastern Time</option>
+                        <option value="PST">Pacific Time</option>
+                        <option value="GMT">Greenwich Mean Time</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-white font-semibold mb-4">
+                    Bidding & Optimization
+                  </h4>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Bid Strategy
+                      </label>
+                      <select
+                        value={campaignData.settings.bidStrategy}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            settings: {
+                              ...prev.settings,
+                              bidStrategy: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        {bidStrategies.map((strategy) => (
+                          <option key={strategy.id} value={strategy.id}>
+                            {strategy.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Optimization Goal
+                      </label>
+                      <select
+                        value={campaignData.settings.optimization}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            settings: {
+                              ...prev.settings,
+                              optimization: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="conversions">Conversions</option>
+                        <option value="clicks">Clicks</option>
+                        <option value="impressions">Impressions</option>
+                        <option value="reach">Reach</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-white font-medium mb-2">
+                        Delivery
+                      </label>
+                      <select
+                        value={campaignData.settings.delivery}
+                        onChange={(e) =>
+                          setCampaignData((prev) => ({
+                            ...prev,
+                            settings: {
+                              ...prev.settings,
+                              delivery: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="standard">Standard</option>
+                        <option value="accelerated">Accelerated</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Navigation */}
+        <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/20">
+          <button
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+            className="flex items-center space-x-2 px-6 py-3 bg-white/10 border border-white/20 text-white rounded-lg hover:bg-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Previous</span>
+          </button>
+
+          <div className="flex items-center space-x-2">
+            {Array.from({ length: 6 }, (_, i) => (
+              <div
+                key={i}
+                className={`w-2 h-2 rounded-full ${
+                  i + 1 <= currentStep ? "bg-blue-500" : "bg-white/20"
+                }`}
+              />
+            ))}
           </div>
-        </motion.div>
+
+          {currentStep < 6 ? (
+            <button
+              onClick={handleNext}
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+            >
+              <span>Next</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={handleCreateCampaign}
+              disabled={isCreating}
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isCreating ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Creating...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4" />
+                  <span>Analyze Campaign</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </motion.div>
 
       {/* Existing Ads Selector Modal */}
@@ -1615,6 +1607,6 @@ export default function CampaignCreationModal({
           // You can integrate the optimization results into the campaign
         }}
       />
-    </AnimatePresence>
+    </motion.div>
   );
 }

@@ -25,15 +25,24 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}): UseErrorH
   const retryRef = useRef<(() => void) | null>(null);
 
   const handleError = useCallback((error: any): AppError => {
-    const appError = error instanceof AppError 
-      ? error 
-      : createError(
-          getErrorMessage(error),
-          getErrorCode(error),
-          getErrorStatus(error),
-          error,
-          options.context
-        );
+    let appError: AppError;
+    
+    if (error instanceof AppError) {
+      appError = error;
+    } else {
+      // Ensure we have a valid error message
+      const message = getErrorMessage(error) || 'An unexpected error occurred';
+      const code = getErrorCode(error);
+      const status = getErrorStatus(error);
+      
+      appError = createError(
+        message,
+        code,
+        status,
+        error,
+        options.context
+      );
+    }
     
     setError(appError);
     logError(appError, options.context, options.userId);

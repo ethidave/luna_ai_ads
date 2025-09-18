@@ -47,7 +47,16 @@ export const API_CONFIG = {
       UPDATE: (id: string) => `/payments/${id}`,
       DELETE: (id: string) => `/payments/${id}`,
       STRIPE: '/payments/stripe',
-      PAYPAL: '/payments/paypal',
+      PAYPAL: {
+        BASE: '/payments/paypal',
+        CREATE_ORDER: '/payments/paypal/create-order',
+        CAPTURE_ORDER: '/payments/paypal/capture-order',
+        CANCEL_ORDER: '/payments/paypal/cancel-order',
+        ORDER_DETAILS: (orderId: string) => `/payments/paypal/order/${orderId}`,
+        REFUND: '/payments/paypal/refund',
+        METHODS: '/payments/paypal/methods',
+        VERIFY_WEBHOOK: '/payments/paypal/verify-webhook',
+      },
       FLUTTERWAVE: '/payments/flutterwave',
       NOWPAYMENTS: '/payments/nowpayments',
       DEPOSIT: '/payments/deposit',
@@ -128,6 +137,13 @@ export class ApiClient {
     this.token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
   }
 
+  // Update token from localStorage when making requests
+  private updateToken() {
+    if (typeof window !== 'undefined') {
+      this.token = localStorage.getItem('auth_token');
+    }
+  }
+
   setToken(token: string) {
     this.token = token;
     if (typeof window !== 'undefined') {
@@ -161,6 +177,9 @@ export class ApiClient {
     options: RequestInit = {}
   ): Promise<{ success: boolean; data?: T; error?: string; message?: string; user?: any; token?: string }> {
     try {
+      // Update token before making request
+      this.updateToken();
+      
       const url = `${this.baseURL}${endpoint}`;
       
       console.log('Making API request to:', url);
@@ -201,6 +220,8 @@ export class ApiClient {
           errorMessage = 'Database not configured. Please check the Laravel backend setup.';
         } else if (errorMessage.includes('Base table or view not found')) {
           errorMessage = 'Database tables missing. Please run Laravel migrations.';
+        } else if (response.status === 0 || response.status === 500) {
+          errorMessage = 'Cannot connect to server. Please ensure the Laravel backend is running.';
         }
         
         return {
@@ -219,9 +240,19 @@ export class ApiClient {
       };
     } catch (error) {
       console.error('API request error:', error);
+      let errorMessage = 'Network error';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('ECONNREFUSED') || error.message.includes('fetch')) {
+          errorMessage = 'Cannot connect to server. Please ensure the Laravel backend is running.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Network error',
+        error: errorMessage,
       };
     }
   }

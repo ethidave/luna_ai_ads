@@ -6,7 +6,7 @@ Disallow: /auth/
 Disallow: /api/
 
 # Host
-Host: https://lunaluna-ai.com
+Host: https://lunaais.com
 
 # Sitemaps
-Sitemap: https://lunaluna-ai.com/sitemap.xml
+Sitemap: https://lunaais.com/sitemap.xml
