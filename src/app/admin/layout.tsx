@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Menu,
   X,
@@ -106,11 +106,17 @@ const navigationItems = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const {
+    user,
+    loading: authLoading,
+    isAuthenticated,
+    isAdmin,
+    logout,
+  } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   // Determine active item based on current pathname
@@ -174,13 +180,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Handle logout
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/admin/login" });
+    await logout();
+    router.push("/auth/admin/login");
   };
 
   // Handle refresh
   const handleRefresh = () => {
     window.location.reload();
   };
+
+  // Authentication check
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated || !isAdmin) {
+        console.log(
+          "User not authenticated or not admin, redirecting to login"
+        );
+        router.push("/auth/admin/login");
+      }
+    }
+  }, [isAuthenticated, isAdmin, authLoading, router]);
 
   // Close search results when clicking outside
   useEffect(() => {
@@ -196,6 +215,41 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied if not authenticated or not admin
+  if (!isAuthenticated || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-red-400" />
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">Access Denied</h1>
+          <p className="text-white/70 mb-4">
+            You need admin privileges to access this page.
+          </p>
+          <button
+            onClick={() => router.push("/auth/admin/login")}
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -348,10 +402,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </div>
                 <div className="flex-1">
                   <p className="text-white font-medium text-sm">
-                    {session?.user?.name || "Admin User"}
+                    {user?.name || "Admin User"}
                   </p>
                   <p className="text-white/70 text-xs">
-                    {session?.user?.role || "Super Administrator"}
+                    {user?.is_admin ? "Super Administrator" : "Administrator"}
                   </p>
                 </div>
               </div>

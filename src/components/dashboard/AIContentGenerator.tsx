@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 
 interface AIContentGeneratorProps {
-  onContentGenerated?: (content: any) => void;
+  onContentGenerated?: (content: Record<string, unknown>) => void;
   initialData?: {
     productName?: string;
     platform?: string;
@@ -40,7 +40,10 @@ export default function AIContentGenerator({
   initialData,
 }: AIContentGeneratorProps) {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [generatedContent, setGeneratedContent] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [formData, setFormData] = useState({
     productName: initialData?.productName || "",
     platform: initialData?.platform || "google",
@@ -110,10 +113,23 @@ export default function AIContentGenerator({
       });
 
       if (response.ok) {
-        const result = await response.json();
-        setGeneratedContent(result.data);
-        if (onContentGenerated) {
-          onContentGenerated(result.data);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const result = await response.json();
+            setGeneratedContent(result.data);
+            if (onContentGenerated) {
+              onContentGenerated(result.data);
+            }
+          } catch (jsonError) {
+            console.error("Failed to parse JSON response:", jsonError);
+            const text = await response.text();
+            console.error("Raw response:", text);
+          }
+        } else {
+          console.error("Response is not JSON, content-type:", contentType);
+          const text = await response.text();
+          console.error("Raw response:", text);
         }
       } else {
         console.error("Failed to generate content");
@@ -144,17 +160,39 @@ VALUE PROPOSITION: ${generatedContent.valueProposition}
 URGENCY: ${generatedContent.urgency}
 SOCIAL PROOF: ${generatedContent.socialProof}
 
-KEYWORDS: ${generatedContent.keywords.join(", ")}
-HASHTAGS: ${generatedContent.hashtags.join(" ")}
-EMOJIS: ${generatedContent.emojis.join(" ")}
+KEYWORDS: ${
+      Array.isArray(generatedContent.keywords)
+        ? generatedContent.keywords.join(", ")
+        : String(generatedContent.keywords || "")
+    }
+HASHTAGS: ${
+      Array.isArray(generatedContent.hashtags)
+        ? generatedContent.hashtags.join(" ")
+        : String(generatedContent.hashtags || "")
+    }
+EMOJIS: ${
+      Array.isArray(generatedContent.emojis)
+        ? generatedContent.emojis.join(" ")
+        : String(generatedContent.emojis || "")
+    }
 
 BENEFITS:
-${generatedContent.benefits.map((benefit: string) => `• ${benefit}`).join("\n")}
+${
+  Array.isArray(generatedContent.benefits)
+    ? generatedContent.benefits
+        .map((benefit: string) => `• ${benefit}`)
+        .join("\n")
+    : String(generatedContent.benefits || "")
+}
 
 SUGGESTIONS:
-${generatedContent.suggestions
-  .map((suggestion: string) => `• ${suggestion}`)
-  .join("\n")}
+${
+  Array.isArray(generatedContent.suggestions)
+    ? generatedContent.suggestions
+        .map((suggestion: string) => `• ${suggestion}`)
+        .join("\n")
+    : String(generatedContent.suggestions || "")
+}
 
 PERFORMANCE METRICS:
 • Performance Score: ${generatedContent.performanceScore}/100
@@ -390,11 +428,11 @@ Generated on: ${new Date().toLocaleString()}
                     </label>
                     <div className="p-4 bg-white/10 rounded-xl">
                       <p className="text-white text-lg font-semibold">
-                        {generatedContent.headline}
+                        {generatedContent.headline as string}
                       </p>
                       <button
                         onClick={() =>
-                          copyToClipboard(generatedContent.headline)
+                          copyToClipboard(generatedContent.headline as string)
                         }
                         className="mt-2 text-purple-300 hover:text-purple-200 text-sm flex items-center space-x-1"
                       >
@@ -412,11 +450,13 @@ Generated on: ${new Date().toLocaleString()}
                     </label>
                     <div className="p-4 bg-white/10 rounded-xl">
                       <p className="text-white">
-                        {generatedContent.description}
+                        {generatedContent.description as string}
                       </p>
                       <button
                         onClick={() =>
-                          copyToClipboard(generatedContent.description)
+                          copyToClipboard(
+                            generatedContent.description as string
+                          )
                         }
                         className="mt-2 text-purple-300 hover:text-purple-200 text-sm flex items-center space-x-1"
                       >
@@ -434,11 +474,13 @@ Generated on: ${new Date().toLocaleString()}
                     </label>
                     <div className="p-4 bg-white/10 rounded-xl">
                       <p className="text-white font-medium">
-                        {generatedContent.callToAction}
+                        {generatedContent.callToAction as string}
                       </p>
                       <button
                         onClick={() =>
-                          copyToClipboard(generatedContent.callToAction)
+                          copyToClipboard(
+                            generatedContent.callToAction as string
+                          )
                         }
                         className="mt-2 text-purple-300 hover:text-purple-200 text-sm flex items-center space-x-1"
                       >
@@ -459,7 +501,7 @@ Generated on: ${new Date().toLocaleString()}
                     </label>
                     <div className="p-4 bg-white/10 rounded-xl">
                       <div className="flex flex-wrap gap-2">
-                        {generatedContent.keywords
+                        {(generatedContent.keywords as string[])
                           ?.slice(0, 10)
                           .map((keyword: string, index: number) => (
                             <span
@@ -472,7 +514,11 @@ Generated on: ${new Date().toLocaleString()}
                       </div>
                       <button
                         onClick={() =>
-                          copyToClipboard(generatedContent.keywords.join(", "))
+                          copyToClipboard(
+                            Array.isArray(generatedContent.keywords)
+                              ? generatedContent.keywords.join(", ")
+                              : String(generatedContent.keywords || "")
+                          )
                         }
                         className="mt-2 text-purple-300 hover:text-purple-200 text-sm flex items-center space-x-1"
                       >
@@ -490,7 +536,7 @@ Generated on: ${new Date().toLocaleString()}
                     </label>
                     <div className="p-4 bg-white/10 rounded-xl">
                       <div className="flex flex-wrap gap-2">
-                        {generatedContent.hashtags
+                        {(generatedContent.hashtags as string[])
                           ?.slice(0, 8)
                           .map((hashtag: string, index: number) => (
                             <span
@@ -503,7 +549,11 @@ Generated on: ${new Date().toLocaleString()}
                       </div>
                       <button
                         onClick={() =>
-                          copyToClipboard(generatedContent.hashtags.join(" "))
+                          copyToClipboard(
+                            Array.isArray(generatedContent.hashtags)
+                              ? generatedContent.hashtags.join(" ")
+                              : String(generatedContent.hashtags || "")
+                          )
                         }
                         className="mt-2 text-purple-300 hover:text-purple-200 text-sm flex items-center space-x-1"
                       >
@@ -521,7 +571,7 @@ Generated on: ${new Date().toLocaleString()}
                     </label>
                     <div className="p-4 bg-white/10 rounded-xl">
                       <div className="flex flex-wrap gap-2">
-                        {generatedContent.emojis?.map(
+                        {(generatedContent.emojis as string[])?.map(
                           (emoji: string, index: number) => (
                             <span
                               key={index}
@@ -535,7 +585,11 @@ Generated on: ${new Date().toLocaleString()}
                       </div>
                       <button
                         onClick={() =>
-                          copyToClipboard(generatedContent.emojis.join(" "))
+                          copyToClipboard(
+                            Array.isArray(generatedContent.emojis)
+                              ? generatedContent.emojis.join(" ")
+                              : String(generatedContent.emojis || "")
+                          )
                         }
                         className="mt-2 text-purple-300 hover:text-purple-200 text-sm flex items-center space-x-1"
                       >
@@ -557,14 +611,16 @@ Generated on: ${new Date().toLocaleString()}
                           Overall Score
                         </span>
                         <span className="text-green-400 font-bold text-xl">
-                          {generatedContent.performanceScore}/100
+                          {generatedContent.performanceScore as number}/100
                         </span>
                       </div>
                       <div className="w-full bg-gray-700 rounded-full h-2">
                         <div
                           className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full"
                           style={{
-                            width: `${generatedContent.performanceScore}%`,
+                            width: `${
+                              generatedContent.performanceScore as number
+                            }%`,
                           }}
                         ></div>
                       </div>
@@ -572,13 +628,13 @@ Generated on: ${new Date().toLocaleString()}
                         <div>
                           <span className="text-gray-400">CTR:</span>
                           <span className="text-white ml-2">
-                            {generatedContent.estimatedCTR}%
+                            {generatedContent.estimatedCTR as number}%
                           </span>
                         </div>
                         <div>
                           <span className="text-gray-400">CPC:</span>
                           <span className="text-white ml-2">
-                            ${generatedContent.estimatedCPC}
+                            ${generatedContent.estimatedCPC as number}
                           </span>
                         </div>
                       </div>
@@ -596,7 +652,7 @@ Generated on: ${new Date().toLocaleString()}
                   </label>
                   <div className="p-4 bg-white/10 rounded-xl">
                     <p className="text-white italic">
-                      "{generatedContent.tagline}"
+                      &quot;{generatedContent.tagline as string}&quot;
                     </p>
                   </div>
                 </div>
@@ -607,7 +663,7 @@ Generated on: ${new Date().toLocaleString()}
                   </label>
                   <div className="p-4 bg-white/10 rounded-xl">
                     <p className="text-white">
-                      {generatedContent.valueProposition}
+                      {generatedContent.valueProposition as string}
                     </p>
                   </div>
                 </div>
@@ -620,7 +676,7 @@ Generated on: ${new Date().toLocaleString()}
                 </label>
                 <div className="p-4 bg-white/10 rounded-xl">
                   <ul className="space-y-2">
-                    {generatedContent.benefits?.map(
+                    {(generatedContent.benefits as string[])?.map(
                       (benefit: string, index: number) => (
                         <li
                           key={index}

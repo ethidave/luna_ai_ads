@@ -24,7 +24,7 @@ import {
 interface AdAnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
-  ad: any;
+  ad: Record<string, unknown>;
   onAnalyze?: (adId: string) => void;
   onGenerateTags?: (adId: string) => void;
   onOptimize?: (adId: string) => void;
@@ -48,7 +48,7 @@ export default function AdAnalysisModal({
     if (!onAnalyze) return;
     setIsAnalyzing(true);
     try {
-      await onAnalyze(ad.id || ad.platformAdId);
+      await onAnalyze((ad.id || ad.platformAdId) as string);
     } finally {
       setIsAnalyzing(false);
     }
@@ -58,7 +58,7 @@ export default function AdAnalysisModal({
     if (!onGenerateTags) return;
     setIsGeneratingTags(true);
     try {
-      await onGenerateTags(ad.id || ad.platformAdId);
+      await onGenerateTags((ad.id || ad.platformAdId) as string);
     } finally {
       setIsGeneratingTags(false);
     }
@@ -68,7 +68,7 @@ export default function AdAnalysisModal({
     if (!onOptimize) return;
     setIsOptimizing(true);
     try {
-      await onOptimize(ad.id || ad.platformAdId);
+      await onOptimize((ad.id || ad.platformAdId) as string);
     } finally {
       setIsOptimizing(false);
     }
@@ -102,9 +102,12 @@ export default function AdAnalysisModal({
                   )}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">{ad.name}</h2>
+                  <h2 className="text-2xl font-bold text-white">
+                    {ad.name as string}
+                  </h2>
                   <p className="text-white/70 capitalize">
-                    {ad.platform} • {ad.status} • {ad.objective}
+                    {ad.platform as string} • {ad.status as string} •{" "}
+                    {ad.objective as string}
                   </p>
                 </div>
               </div>
@@ -130,7 +133,7 @@ export default function AdAnalysisModal({
                     <span className="text-white/70 text-sm">Impressions</span>
                   </div>
                   <div className="text-2xl font-bold text-white">
-                    {ad.impressions?.toLocaleString() || "0"}
+                    {(ad.impressions as number)?.toLocaleString() || "0"}
                   </div>
                 </div>
                 <div className="bg-white/5 rounded-lg p-4">
@@ -139,7 +142,7 @@ export default function AdAnalysisModal({
                     <span className="text-white/70 text-sm">Clicks</span>
                   </div>
                   <div className="text-2xl font-bold text-white">
-                    {ad.clicks?.toLocaleString() || "0"}
+                    {(ad.clicks as number)?.toLocaleString() || "0"}
                   </div>
                 </div>
                 <div className="bg-white/5 rounded-lg p-4">
@@ -148,7 +151,9 @@ export default function AdAnalysisModal({
                     <span className="text-white/70 text-sm">CTR</span>
                   </div>
                   <div className="text-2xl font-bold text-white">
-                    {ad.ctr ? `${ad.ctr.toFixed(2)}%` : "0%"}
+                    {(ad.ctr as number)
+                      ? `${(ad.ctr as number).toFixed(2)}%`
+                      : "0%"}
                   </div>
                 </div>
                 <div className="bg-white/5 rounded-lg p-4">
@@ -157,14 +162,14 @@ export default function AdAnalysisModal({
                     <span className="text-white/70 text-sm">Spend</span>
                   </div>
                   <div className="text-2xl font-bold text-white">
-                    ${ad.spent?.toFixed(2) || "0"}
+                    ${(ad.spent as number)?.toFixed(2) || "0"}
                   </div>
                 </div>
               </div>
             </div>
 
             {/* AI Analysis */}
-            {ad.performanceScore && (
+            {(ad.performanceScore as number) && (
               <div>
                 <h3 className="text-xl font-semibold text-white mb-4">
                   AI Analysis
@@ -178,25 +183,25 @@ export default function AdAnalysisModal({
                       </span>
                     </div>
                     <span className="text-2xl font-bold text-white">
-                      {ad.performanceScore}/100
+                      {ad.performanceScore as number}/100
                     </span>
                   </div>
                   <div className="w-full bg-white/10 rounded-full h-3 mb-4">
                     <div
                       className={`h-3 rounded-full transition-all duration-300 ${
-                        ad.performanceScore >= 80
+                        (ad.performanceScore as number) >= 80
                           ? "bg-green-500"
-                          : ad.performanceScore >= 60
+                          : (ad.performanceScore as number) >= 60
                           ? "bg-yellow-500"
                           : "bg-red-500"
                       }`}
-                      style={{ width: `${ad.performanceScore}%` }}
+                      style={{ width: `${ad.performanceScore as number}%` }}
                     />
                   </div>
                   <div className="text-white/70 text-sm">
-                    {ad.performanceScore >= 80
+                    {(ad.performanceScore as number) >= 80
                       ? "Excellent performance! Your ad is performing very well."
-                      : ad.performanceScore >= 60
+                      : (ad.performanceScore as number) >= 60
                       ? "Good performance with room for improvement."
                       : "Performance needs improvement. Consider optimization."}
                   </div>
@@ -205,33 +210,35 @@ export default function AdAnalysisModal({
             )}
 
             {/* Generated Tags */}
-            {ad.generatedTags && (
+            {(ad.generatedTags as string[]) && (
               <div>
                 <h3 className="text-xl font-semibold text-white mb-4">
                   Generated Tags
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {ad.generatedTags.map((tag: string, index: number) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  {(ad.generatedTags as string[]).map(
+                    (tag: string, index: number) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30"
+                      >
+                        {tag}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
             )}
 
             {/* Optimization Suggestions */}
-            {ad.optimizationSuggestions &&
-              ad.optimizationSuggestions.length > 0 && (
+            {(ad.optimizationSuggestions as string[]) &&
+              (ad.optimizationSuggestions as string[]).length > 0 && (
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-4">
                     Optimization Suggestions
                   </h3>
                   <div className="space-y-3">
-                    {ad.optimizationSuggestions.map(
+                    {(ad.optimizationSuggestions as string[]).map(
                       (suggestion: string, index: number) => (
                         <div
                           key={index}

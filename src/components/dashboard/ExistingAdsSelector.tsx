@@ -82,6 +82,7 @@ export default function ExistingAdsSelector({
   const [ads, setAds] = useState<ExistingAd[]>([]);
   const [filteredAds, setFilteredAds] = useState<ExistingAd[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState<
     "facebook" | "google" | "all"
@@ -95,7 +96,68 @@ export default function ExistingAdsSelector({
   const [selectedAd, setSelectedAd] = useState<ExistingAd | null>(null);
   const [showAnalysis, setShowAnalysis] = useState(false);
 
-  // Mock data for demonstration
+  // Fetch real ads data
+  const fetchAds = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/api/ads/real-data", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data.success) {
+            setAds(data.data || []);
+          } else {
+            throw new Error(data.message || "Failed to fetch ads data");
+          }
+        } else {
+          throw new Error("Server returned non-JSON response");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Package access required.");
+      } else {
+        throw new Error(`Failed to fetch ads data: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error fetching ads data:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch ads data";
+      setError(errorMessage);
+      setAds([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load ads when component mounts
+  useEffect(() => {
+    if (isOpen) {
+      fetchAds();
+    }
+  }, [isOpen]);
+
+  // Filter ads when data or filters change
+  useEffect(() => {
+    filterAds();
+  }, [ads, searchTerm, selectedPlatform, selectedStatus, sortBy]);
+
+  // Mock data for demonstration (fallback)
   const mockAds: ExistingAd[] = [
     {
       id: "ad_001",
@@ -255,7 +317,9 @@ export default function ExistingAdsSelector({
   };
 
   const filterAds = () => {
-    let filtered = [...ads];
+    // Use real ads data if available, otherwise fallback to mock data
+    const adsToUse = ads.length > 0 ? ads : mockAds;
+    let filtered = [...adsToUse];
 
     // Filter by search term
     if (searchTerm) {
@@ -444,6 +508,24 @@ export default function ExistingAdsSelector({
               <div className="flex items-center justify-center py-12">
                 <RefreshCw className="w-8 h-8 text-white/50 animate-spin" />
                 <span className="ml-3 text-white/70">Loading ads...</span>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <div className="text-red-400 mb-4">
+                    <AlertCircle className="w-12 h-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    Error Loading Ads
+                  </h3>
+                  <p className="text-gray-400 mb-4">{error}</p>
+                  <button
+                    onClick={fetchAds}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Try Again
+                  </button>
+                </div>
               </div>
             ) : connectedAccounts.length === 0 ? (
               <div className="text-center py-12">

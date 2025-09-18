@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
@@ -20,7 +20,7 @@ import {
 import LunaLogo from "./LunaLogo";
 
 export default function DashboardHeader() {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -41,11 +41,11 @@ export default function DashboardHeader() {
     { name: "AI Tools", href: "/dashboard#ai-tools", icon: Sparkles },
   ];
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
+  const handleSignOut = async () => {
+    await logout();
   };
 
-  if (status === "loading") {
+  if (authLoading) {
     return (
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,17 +140,15 @@ export default function DashboardHeader() {
                   className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300"
                 >
                   <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                    {session?.user?.name?.charAt(0)?.toUpperCase() ||
-                      session?.user?.email?.charAt(0)?.toUpperCase() ||
+                    {user?.name?.charAt(0)?.toUpperCase() ||
+                      user?.email?.charAt(0)?.toUpperCase() ||
                       "U"}
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-medium text-gray-900">
-                      {session?.user?.name || "User"}
+                      {user?.name || "User"}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {session?.user?.email}
-                    </p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-gray-500" />
                 </button>
@@ -167,11 +165,9 @@ export default function DashboardHeader() {
                     >
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900">
-                          {session?.user?.name || "User"}
+                          {user?.name || "User"}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          {session?.user?.email}
-                        </p>
+                        <p className="text-xs text-gray-500">{user?.email}</p>
                       </div>
 
                       <div className="py-2">
@@ -252,17 +248,15 @@ export default function DashboardHeader() {
                     {/* User Info */}
                     <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                       <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
-                        {session?.user?.name?.charAt(0)?.toUpperCase() ||
-                          session?.user?.email?.charAt(0)?.toUpperCase() ||
+                        {user?.name?.charAt(0)?.toUpperCase() ||
+                          user?.email?.charAt(0)?.toUpperCase() ||
                           "U"}
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">
-                          {session?.user?.name || "User"}
+                          {user?.name || "User"}
                         </p>
-                        <p className="text-sm text-gray-500">
-                          {session?.user?.email}
-                        </p>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
                       </div>
                     </div>
 

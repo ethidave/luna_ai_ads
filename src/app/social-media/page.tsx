@@ -45,7 +45,6 @@ import {
   X,
   Save,
   Send,
-  Schedule,
   Play,
   Pause,
   Square,
@@ -79,7 +78,6 @@ import {
   AtSign,
   MapPin,
   Timer,
-  Stopwatch,
   Volume2,
   Mic,
   Camera,
@@ -100,7 +98,7 @@ import {
   MapPin as MapPinIcon,
   Clock3,
   Timer as TimerIcon,
-  Stopwatch as StopwatchIcon,
+  Clock as StopwatchIcon,
 } from "lucide-react";
 
 interface SocialAccount {
@@ -136,7 +134,7 @@ interface SocialPost {
   scheduledAt?: string;
   publishedAt?: string;
   isAd: boolean;
-  aiOptimization?: any;
+  aiOptimization?: Record<string, unknown>;
   socialMediaAccount: {
     id: string;
     username: string;
@@ -164,10 +162,15 @@ export default function SocialMediaPage() {
 
   const fetchAccounts = async () => {
     try {
-      const response = await fetch("/api/social-media/accounts");
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/social-media/accounts"
+      );
       if (response.ok) {
-        const data = await response.json();
-        setAccounts(data.accounts || {});
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          setAccounts(data.accounts || {});
+        }
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
@@ -176,10 +179,15 @@ export default function SocialMediaPage() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/social-media/posts");
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/social-media/posts"
+      );
       if (response.ok) {
-        const data = await response.json();
-        setPosts(data.posts || []);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          setPosts(data.posts || []);
+        }
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -190,10 +198,15 @@ export default function SocialMediaPage() {
 
   const connectAccount = async (platform: string) => {
     try {
-      const response = await fetch(`/api/auth/social/${platform}`);
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/auth/social/${platform}`
+      );
       if (response.ok) {
-        const data = await response.json();
-        window.open(data.authUrl, "_blank");
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          window.open(data.authUrl, "_blank");
+        }
       }
     } catch (error) {
       console.error("Error connecting account:", error);

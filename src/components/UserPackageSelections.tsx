@@ -208,8 +208,8 @@ export default function UserPackageSelections({
               No Package Selections
             </h3>
             <p>
-              You haven't selected any packages yet. Browse our packages to get
-              started!
+              You haven&apos;t selected any packages yet. Browse our packages to
+              get started!
             </p>
           </div>
         </div>
@@ -310,7 +310,10 @@ export default function UserPackageSelections({
               <div className="flex items-center space-x-2 text-white/70 text-sm">
                 <Globe className="w-4 h-4" />
                 <span>
-                  Platforms: {selection.package?.platforms?.join(", ") || "N/A"}
+                  Platforms:{" "}
+                  {Array.isArray(selection.package?.platforms)
+                    ? selection.package.platforms.join(", ")
+                    : selection.package?.platforms || "N/A"}
                 </span>
               </div>
             </div>

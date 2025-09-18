@@ -53,10 +53,10 @@ import {
 } from "recharts";
 
 interface AudienceSectionProps {
-  audienceData: any;
-  demographics: any[];
-  behaviorData: any[];
-  locationData: any[];
+  audienceData: Record<string, unknown>;
+  demographics: Record<string, unknown>[];
+  behaviorData: Record<string, unknown>[];
+  locationData: Record<string, unknown>[];
   isLoading: boolean;
 }
 
@@ -628,4 +628,3 @@ export default function AudienceSection({
     </div>
   );
 }
-

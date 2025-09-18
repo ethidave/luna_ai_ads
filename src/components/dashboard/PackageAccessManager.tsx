@@ -30,6 +30,17 @@ interface Package {
   duration: number;
   popular?: boolean;
   current?: boolean;
+  // Additional properties for package management
+  userStatus?: "active" | "expired" | "inactive";
+  isPopular?: boolean;
+  description?: string;
+  billingCycle?: string;
+  originalPrice?: number;
+  discountPercentage?: number;
+  dailyBudgetCap?: number;
+  daysRemaining?: number;
+  maxFacebookAccounts?: number;
+  hasTeamCollaboration?: boolean;
 }
 
 interface PackageAccessManagerProps {
@@ -127,7 +138,7 @@ export default function PackageAccessManager({
                 Current Package
               </h3>
               <p className="text-white/70">
-                You're currently using {currentPackage.name}
+                You&apos;re currently using {currentPackage.name}
               </p>
             </div>
           </div>

@@ -196,7 +196,7 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
             animate={{ opacity: 1, y: 0 }}
             className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mb-4"
           >
-            <div className="text-sm text-gray-600 mb-1">You'll pay</div>
+            <div className="text-sm text-gray-600 mb-1">You&apos;ll pay</div>
             <div className="text-xl font-bold text-gray-900">
               {amount.toLocaleString()} {currency}
             </div>
@@ -380,5 +380,3 @@ export const paymentMethods: PaymentMethod[] = [
     supportedCurrencies: ["USD", "NGN", "GHS", "KES", "ZAR", "EGP"],
   },
 ];
-
-

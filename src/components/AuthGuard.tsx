@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -10,16 +10,16 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children, fallback }: AuthGuardProps) {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!authLoading && !isAuthenticated) {
       router.push("/auth/login");
     }
-  }, [status, router]);
+  }, [isAuthenticated, authLoading, router]);
 
-  if (status === "loading") {
+  if (authLoading) {
     return (
       fallback || (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950 flex items-center justify-center">
@@ -32,7 +32,7 @@ export function AuthGuard({ children, fallback }: AuthGuardProps) {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (!isAuthenticated) {
     return null;
   }
 

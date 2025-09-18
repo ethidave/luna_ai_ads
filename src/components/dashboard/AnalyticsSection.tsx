@@ -61,9 +61,9 @@ import {
 } from "recharts";
 
 interface AnalyticsSectionProps {
-  analyticsData: any;
-  performanceMetrics: any;
-  trendData: any[];
+  analyticsData: Record<string, unknown>;
+  performanceMetrics: Record<string, unknown>;
+  trendData: Record<string, unknown>[];
   isLoading: boolean;
 }
 

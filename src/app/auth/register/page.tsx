@@ -14,8 +14,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const { register, loading: authLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,49 +51,21 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+      const result = await register(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.confirmPassword
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (result.success) {
         setSuccess(true);
         // Auto login after successful registration
-        setTimeout(async () => {
-          const result = await signIn("credentials", {
-            email: formData.email,
-            password: formData.password,
-            redirect: false,
-          });
-          if (result?.ok) {
-            setTimeout(async () => {
-              const session = await getSession();
-              if (session?.user?.isAdmin) {
-                router.push("/admin");
-              } else {
-                router.push("/dashboard");
-              }
-            }, 1000);
-          } else {
-            setError("Registration successful! Please login manually.");
-          }
+        setTimeout(() => {
+          router.push("/dashboard");
         }, 2000);
       } else {
-        // Handle fallback scenario
-        if (data.fallback) {
-          setError(`${data.error}: ${data.message}`);
-        } else {
-          setError(data.error || "Registration failed");
-        }
+        setError(result.error || "Registration failed");
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
@@ -105,7 +78,11 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
     try {
-      await signIn(provider, { callbackUrl: "/dashboard" });
+      // Social login will be implemented later
+      setError(
+        `${provider} registration is not available yet. Please use email registration.`
+      );
+      setIsLoading(false);
     } catch (error) {
       setError(`${provider} registration failed. Please try again.`);
       setIsLoading(false);

@@ -355,7 +355,7 @@ export default function PackagePricingDisplay({
                       <div className="space-y-6 mb-10">
                         <h4 className="font-bold text-white text-xl mb-6 flex items-center justify-center">
                           <Sparkles className="w-6 h-6 mr-3 text-blue-400" />
-                          What's Included
+                          What&apos;s Included
                         </h4>
                         <div className="space-y-4">
                           {pkg.features

@@ -49,7 +49,7 @@ import AdOptimizationModal from "./AdOptimizationModal";
 interface CampaignCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCampaignCreated?: (campaign: any) => void;
+  onCampaignCreated?: (campaign: Record<string, unknown>) => void;
 }
 
 export default function CampaignCreationModal({
@@ -61,11 +61,17 @@ export default function CampaignCreationModal({
   const [isCreating, setIsCreating] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
-  const [aiSuggestions, setAiSuggestions] = useState<any>(null);
+  const [aiSuggestions, setAiSuggestions] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [showAIFeatures, setShowAIFeatures] = useState(false);
   const [showExistingAdsSelector, setShowExistingAdsSelector] = useState(false);
   const [showAdOptimization, setShowAdOptimization] = useState(false);
-  const [websiteAnalysis, setWebsiteAnalysis] = useState<any>(null);
+  const [websiteAnalysis, setWebsiteAnalysis] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [isAnalyzingWebsite, setIsAnalyzingWebsite] = useState(false);
   const [campaignData, setCampaignData] = useState({
     name: "",
@@ -302,12 +308,38 @@ export default function CampaignCreationModal({
     }
   };
 
-  const handleExistingAdSelected = (ad: any) => {
+  const handleExistingAdSelected = (ad: {
+    id: string;
+    name: string;
+    platform: "facebook" | "google";
+    status: "active" | "paused" | "completed";
+    objective: string;
+    budget: number;
+    spent: number;
+    impressions: number;
+    clicks: number;
+    conversions: number;
+    ctr: number;
+    cpc: number;
+    roas: number;
+    reach: number;
+    frequency: number;
+    engagement: number;
+    headline: string;
+    description: string;
+    callToAction: string;
+    imageUrl?: string;
+    videoUrl?: string;
+    targetAudience: string[];
+    keywords: string[];
+    createdAt: string;
+    updatedAt: string;
+  }) => {
     // Populate form with existing ad data
     setCampaignData((prev) => ({
       ...prev,
       name: `Improved ${ad.name}`,
-      description: ad.description,
+      description: ad.description || "",
       platforms: [ad.platform],
       objective: ad.objective,
       targetAudience: {
@@ -358,9 +390,11 @@ export default function CampaignCreationModal({
           productName: campaignData.name,
           targetAudience: `${campaignData.targetAudience.age.min}-${
             campaignData.targetAudience.age.max
-          } years, ${
-            campaignData.targetAudience.gender
-          }, interested in ${campaignData.targetAudience.interests.join(", ")}`,
+          } years, ${campaignData.targetAudience.gender}, interested in ${
+            Array.isArray(campaignData.targetAudience.interests)
+              ? campaignData.targetAudience.interests.join(", ")
+              : String(campaignData.targetAudience.interests || "")
+          }`,
           platform: campaignData.platforms[0],
           objective: campaignData.objective,
           tone: "professional",
@@ -480,6 +514,7 @@ export default function CampaignCreationModal({
         creative: campaignData.creative,
         schedule: campaignData.schedule,
         settings: campaignData.settings,
+        websiteUrl: campaignData.websiteUrl,
       };
 
       // Call the API to create campaign
@@ -1116,14 +1151,14 @@ export default function CampaignCreationModal({
                     </div>
                   </div>
 
-                  {aiSuggestions.headline && (
+                  {(aiSuggestions as any).headline && (
                     <div className="space-y-4">
                       <div>
                         <label className="text-purple-300 text-sm font-medium">
                           Generated Headline:
                         </label>
                         <p className="text-white text-lg font-semibold">
-                          {aiSuggestions.headline}
+                          {(aiSuggestions as any).headline}
                         </p>
                       </div>
                       <div>
@@ -1131,7 +1166,7 @@ export default function CampaignCreationModal({
                           Generated Description:
                         </label>
                         <p className="text-white">
-                          {aiSuggestions.primaryText}
+                          {(aiSuggestions as any).primaryText}
                         </p>
                       </div>
                       <div>
@@ -1139,18 +1174,18 @@ export default function CampaignCreationModal({
                           Call to Action:
                         </label>
                         <p className="text-white font-medium">
-                          {aiSuggestions.callToAction}
+                          {(aiSuggestions as any).callToAction}
                         </p>
                       </div>
 
-                      {aiSuggestions.keywords &&
-                        aiSuggestions.keywords.length > 0 && (
+                      {(aiSuggestions as any).keywords &&
+                        (aiSuggestions as any).keywords.length > 0 && (
                           <div>
                             <label className="text-purple-300 text-sm font-medium">
                               Keywords:
                             </label>
                             <div className="flex flex-wrap gap-2 mt-2">
-                              {aiSuggestions.keywords.map(
+                              {(aiSuggestions as any).keywords.map(
                                 (keyword: string, index: number) => (
                                   <span
                                     key={index}
@@ -1164,23 +1199,23 @@ export default function CampaignCreationModal({
                           </div>
                         )}
 
-                      {aiSuggestions.performanceScore && (
+                      {(aiSuggestions as any).performanceScore && (
                         <div className="flex items-center space-x-4">
                           <div>
                             <label className="text-purple-300 text-sm font-medium">
                               Performance Score:
                             </label>
                             <p className="text-white font-bold text-xl">
-                              {aiSuggestions.performanceScore}/100
+                              {(aiSuggestions as any).performanceScore}/100
                             </p>
                           </div>
-                          {aiSuggestions.estimatedCTR && (
+                          {(aiSuggestions as any).estimatedCTR && (
                             <div>
                               <label className="text-purple-300 text-sm font-medium">
                                 Estimated CTR:
                               </label>
                               <p className="text-white font-bold">
-                                {aiSuggestions.estimatedCTR}%
+                                {(aiSuggestions as any).estimatedCTR}%
                               </p>
                             </div>
                           )}
@@ -1189,13 +1224,15 @@ export default function CampaignCreationModal({
                     </div>
                   )}
 
-                  {aiSuggestions.globalTargeting && (
+                  {(aiSuggestions as any).globalTargeting && (
                     <div className="mt-4 p-4 bg-blue-500/20 rounded-lg">
                       <h5 className="text-blue-300 font-medium mb-2">
                         Global Targeting Strategy
                       </h5>
                       <p className="text-white text-sm">
-                        {aiSuggestions.globalTargeting.globalStrategy?.primaryMarkets?.join(
+                        {(
+                          aiSuggestions as any
+                        ).globalTargeting.globalStrategy?.primaryMarkets?.join(
                           ", "
                         )}{" "}
                         markets recommended
@@ -1203,7 +1240,7 @@ export default function CampaignCreationModal({
                     </div>
                   )}
 
-                  {aiSuggestions.performancePrediction && (
+                  {(aiSuggestions as any).performancePrediction && (
                     <div className="mt-4 p-4 bg-green-500/20 rounded-lg">
                       <h5 className="text-green-300 font-medium mb-2">
                         Performance Prediction
@@ -1214,13 +1251,19 @@ export default function CampaignCreationModal({
                             Estimated Reach:
                           </span>
                           <span className="text-white ml-2">
-                            {aiSuggestions.performancePrediction.estimatedReach?.toLocaleString()}
+                            {(
+                              aiSuggestions as any
+                            ).performancePrediction.estimatedReach?.toLocaleString()}
                           </span>
                         </div>
                         <div>
                           <span className="text-green-300">Estimated CPC:</span>
                           <span className="text-white ml-2">
-                            ${aiSuggestions.performancePrediction.estimatedCPC}
+                            $
+                            {
+                              (aiSuggestions as any).performancePrediction
+                                .estimatedCPC
+                            }
                           </span>
                         </div>
                       </div>
@@ -1307,14 +1350,11 @@ export default function CampaignCreationModal({
                     </label>
                     <input
                       type="url"
-                      value={campaignData.creative.websiteUrl}
+                      value={campaignData.websiteUrl}
                       onChange={(e) =>
                         setCampaignData((prev) => ({
                           ...prev,
-                          creative: {
-                            ...prev.creative,
-                            websiteUrl: e.target.value,
-                          },
+                          websiteUrl: e.target.value,
                         }))
                       }
                       placeholder="https://yourwebsite.com"

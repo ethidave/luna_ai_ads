@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import {
   X,
@@ -44,7 +44,7 @@ export default function PaymentModal({
   package: selectedPackage,
   onSuccess,
 }: PaymentModalProps) {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [selectedMethod, setSelectedMethod] = useState<string>("");
   const [paymentData, setPaymentData] = useState<any>({});
@@ -56,13 +56,13 @@ export default function PaymentModal({
   useEffect(() => {
     if (isOpen) {
       // Check if user is authenticated
-      if (status === "unauthenticated") {
+      if (!user) {
         setError("Please login to continue with payment");
         return;
       }
       fetchAvailableMethods();
     }
-  }, [isOpen, status]);
+  }, [isOpen, user]);
 
   const fetchAvailableMethods = async () => {
     setLoadingMethods(true);
@@ -119,7 +119,7 @@ export default function PaymentModal({
     }
 
     // Check if user is authenticated
-    if (!session?.user?.id) {
+    if (!user?.id) {
       setError("Please login to continue with payment");
       return;
     }
@@ -137,7 +137,7 @@ export default function PaymentModal({
         body: JSON.stringify({
           amount: selectedPackage.price,
           currency: "USD",
-          userId: session.user.id,
+          userId: user?.id,
           packageId: selectedPackage.id,
           description: `Purchase ${selectedPackage.name} package`,
           ...paymentData,
@@ -183,7 +183,7 @@ export default function PaymentModal({
   if (!isOpen) return null;
 
   // Show loading state while checking authentication
-  if (status === "loading") {
+  if (authLoading) {
     return (
       <AnimatePresence>
         <motion.div
@@ -216,7 +216,7 @@ export default function PaymentModal({
   }
 
   // Show login prompt if user is not authenticated
-  if (status === "unauthenticated") {
+  if (!user) {
     return (
       <AnimatePresence>
         <motion.div

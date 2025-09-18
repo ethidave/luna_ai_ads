@@ -30,7 +30,7 @@ interface PackageData {
   budget: number;
   maxCampaigns: number;
   maxUsers: number;
-  limitations: Record<string, any>;
+  limitations: Record<string, unknown>;
   customizations: string[];
   isPopular: boolean;
   isCustom: boolean;
@@ -208,7 +208,7 @@ export default function PackageModal({
     }
   };
 
-  const handleInputChange = (field: keyof PackageData, value: any) => {
+  const handleInputChange = (field: keyof PackageData, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));

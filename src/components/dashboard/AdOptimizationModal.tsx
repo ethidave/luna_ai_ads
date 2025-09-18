@@ -15,7 +15,7 @@ import {
 interface AdOptimizationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onOptimizationComplete?: (results: any) => void;
+  onOptimizationComplete?: (results: Record<string, unknown>) => void;
 }
 
 interface Ad {
@@ -35,7 +35,7 @@ interface Ad {
   roas: number;
   performanceScore: number;
   generatedTags?: string[];
-  aiAnalysis?: any;
+  aiAnalysis?: Record<string, unknown>;
 }
 
 interface OptimizationResult {
@@ -43,12 +43,12 @@ interface OptimizationResult {
   platform: string;
   name: string;
   optimization: {
-    originalAd: any;
-    optimizedContent: any;
-    targeting: any;
-    performance: any;
+    originalAd: Record<string, unknown>;
+    optimizedContent: Record<string, unknown>;
+    targeting: Record<string, unknown>;
+    performance: Record<string, unknown>;
     suggestions: string[];
-    realTimeOptimization: any;
+    realTimeOptimization: Record<string, unknown>;
   };
   status: string;
 }
@@ -151,7 +151,10 @@ export default function AdOptimizationModal({
     }
   };
 
-  const handlePublishAd = async (adId: string, optimizedContent: any) => {
+  const handlePublishAd = async (
+    adId: string,
+    optimizedContent: Record<string, unknown>
+  ) => {
     setPublishingAds((prev) => [...prev, adId]);
 
     try {
@@ -413,27 +416,34 @@ export default function AdOptimizationModal({
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h4 className="font-medium text-gray-900">
-                          {result.name}
+                          {result.name as string}
                         </h4>
                         <span
                           className={`px-2 py-1 text-xs rounded-full ${
-                            result.platform === "facebook"
+                            (result.platform as string) === "facebook"
                               ? "bg-blue-100 text-blue-800"
                               : "bg-green-100 text-green-800"
                           }`}
                         >
-                          {result.platform.toUpperCase()}
+                          {(result.platform as string).toUpperCase()}
                         </span>
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-medium text-gray-900">
                           Improvement: +
-                          {result.optimization.performance.improvementPotential}
+                          {
+                            (result.optimization as any).performance
+                              .improvementPotential as number
+                          }
                           %
                         </div>
                         <div className="text-xs text-gray-500">
                           Score:{" "}
-                          {result.optimization.performance.performanceScore}/100
+                          {
+                            (result.optimization as any).performance
+                              .performanceScore
+                          }
+                          /100
                         </div>
                       </div>
                     </div>
@@ -448,19 +458,25 @@ export default function AdOptimizationModal({
                           <div>
                             <span className="font-medium">Headline:</span>
                             <p className="text-gray-600">
-                              {result.optimization.originalAd.headline}
+                              {(result.optimization as any).originalAd.headline}
                             </p>
                           </div>
                           <div>
                             <span className="font-medium">Description:</span>
                             <p className="text-gray-600">
-                              {result.optimization.originalAd.description}
+                              {
+                                (result.optimization as any).originalAd
+                                  .description
+                              }
                             </p>
                           </div>
                           <div>
                             <span className="font-medium">CTA:</span>
                             <p className="text-gray-600">
-                              {result.optimization.originalAd.callToAction}
+                              {
+                                (result.optimization as any).originalAd
+                                  .callToAction
+                              }
                             </p>
                           </div>
                         </div>
@@ -474,20 +490,26 @@ export default function AdOptimizationModal({
                           <div>
                             <span className="font-medium">Headline:</span>
                             <p className="text-blue-600 font-medium">
-                              {result.optimization.optimizedContent.headline}
+                              {
+                                (result.optimization as any).optimizedContent
+                                  .headline
+                              }
                             </p>
                           </div>
                           <div>
                             <span className="font-medium">Description:</span>
                             <p className="text-blue-600 font-medium">
-                              {result.optimization.optimizedContent.description}
+                              {
+                                (result.optimization as any).optimizedContent
+                                  .description
+                              }
                             </p>
                           </div>
                           <div>
                             <span className="font-medium">CTA:</span>
                             <p className="text-blue-600 font-medium">
                               {
-                                result.optimization.optimizedContent
+                                (result.optimization as any).optimizedContent
                                   .callToAction
                               }
                             </p>
@@ -502,7 +524,7 @@ export default function AdOptimizationModal({
                         Generated Keywords & Tags
                       </h5>
                       <div className="flex flex-wrap gap-2">
-                        {result.optimization.targeting.keywords
+                        {(result.optimization as any).targeting.keywords
                           ?.slice(0, 10)
                           .map((keyword: string, index: number) => (
                             <span
@@ -521,7 +543,7 @@ export default function AdOptimizationModal({
                         AI Suggestions
                       </h5>
                       <ul className="space-y-1 text-sm text-gray-600">
-                        {result.optimization.suggestions
+                        {(result.optimization as any).suggestions
                           ?.slice(0, 3)
                           .map((suggestion: string, index: number) => (
                             <li
@@ -571,23 +593,23 @@ export default function AdOptimizationModal({
                         }`}
                       />
                       <div>
-                        <h4 className="font-medium">{result.name}</h4>
+                        <h4 className="font-medium">{result.name as string}</h4>
                         <p className="text-sm text-gray-500">
-                          {result.platform.toUpperCase()}
+                          {(result.platform as string).toUpperCase()}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {result.status === "published" ? (
+                      {(result.status as string) === "published" ? (
                         <CheckCircle className="h-5 w-5 text-green-500" />
-                      ) : publishingAds.includes(result.adId) ? (
+                      ) : publishingAds.includes(result.adId as string) ? (
                         <RefreshCw className="h-4 w-4 animate-spin text-yellow-500" />
                       ) : (
                         <button
                           onClick={() =>
                             handlePublishAd(
-                              result.adId,
-                              result.optimization.optimizedContent
+                              result.adId as string,
+                              (result.optimization as any).optimizedContent
                             )
                           }
                           className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"

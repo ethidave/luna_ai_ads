@@ -42,7 +42,8 @@ import {
   AlertCircle,
   CheckCircle,
   Target as TargetIcon,
-  BarChart,
+} from "lucide-react";
+import {
   Line,
   Area,
   Pie,
@@ -56,13 +57,13 @@ import {
   RadialBarChart,
   RadialBar,
   ComposedChart,
-} from "lucide-react";
+} from "recharts";
 
 interface EnhancedAnalyticsSectionProps {
-  analyticsData?: any[];
-  performanceMetrics?: any;
-  trendData?: any[];
-  campaigns?: any[];
+  analyticsData?: Record<string, unknown>[];
+  performanceMetrics?: Record<string, unknown>;
+  trendData?: Record<string, unknown>[];
+  campaigns?: Record<string, unknown>[];
   onAnalyzeCampaign?: (campaignId: string) => void;
   onGenerateTags?: (campaignId: string) => void;
   onOptimizeCampaign?: (campaignId: string) => void;
@@ -77,9 +78,18 @@ export default function EnhancedAnalyticsSection({
   onGenerateTags,
   onOptimizeCampaign,
 }: EnhancedAnalyticsSectionProps) {
-  const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
-  const [tagSuggestions, setTagSuggestions] = useState<any>(null);
+  const [selectedCampaign, setSelectedCampaign] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
+  const [analysisResults, setAnalysisResults] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
+  const [tagSuggestions, setTagSuggestions] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingTags, setIsGeneratingTags] = useState(false);
 
@@ -133,7 +143,7 @@ export default function EnhancedAnalyticsSection({
     conversionRate: 6.4,
   };
 
-  const handleAnalyzeCampaign = async (campaign: any) => {
+  const handleAnalyzeCampaign = async (campaign: Record<string, unknown>) => {
     if (!onAnalyzeCampaign) return;
 
     setIsAnalyzing(true);
@@ -154,7 +164,7 @@ export default function EnhancedAnalyticsSection({
     }
   };
 
-  const handleGenerateTags = async (campaign: any) => {
+  const handleGenerateTags = async (campaign: Record<string, unknown>) => {
     if (!onGenerateTags) return;
 
     setIsGeneratingTags(true);
@@ -301,7 +311,7 @@ export default function EnhancedAnalyticsSection({
           <div className="space-y-4">
             {campaigns.slice(0, 3).map((campaign, index) => (
               <motion.div
-                key={campaign.id || `campaign-${index}`}
+                key={String(campaign.id) || `campaign-${index}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -312,9 +322,11 @@ export default function EnhancedAnalyticsSection({
                     <TargetIcon className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-white">{campaign.name}</h4>
+                    <h4 className="font-medium text-white">
+                      {String(campaign.name)}
+                    </h4>
                     <p className="text-sm text-white/70">
-                      {campaign.platforms || "Facebook, Google"}
+                      {String(campaign.platforms) || "Facebook, Google"}
                     </p>
                   </div>
                 </div>
@@ -418,7 +430,7 @@ export default function EnhancedAnalyticsSection({
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-white">
-                Analysis Results: {selectedCampaign.name}
+                Analysis Results: {String(selectedCampaign.name)}
               </h3>
               <button
                 onClick={() => setAnalysisResults(null)}
@@ -434,17 +446,18 @@ export default function EnhancedAnalyticsSection({
                   Strengths
                 </h4>
                 <div className="space-y-2">
-                  {analysisResults.strengths?.map(
-                    (strength: string, index: number) => (
-                      <div
-                        key={index}
-                        className="flex items-center space-x-2 text-green-400"
-                      >
-                        <CheckCircle className="w-4 h-4" />
-                        <span>{strength}</span>
-                      </div>
-                    )
-                  )}
+                  {Array.isArray(analysisResults.strengths) &&
+                    analysisResults.strengths.map(
+                      (strength: string, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-center space-x-2 text-green-400"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          <span>{strength}</span>
+                        </div>
+                      )
+                    )}
                 </div>
               </div>
 
@@ -453,19 +466,22 @@ export default function EnhancedAnalyticsSection({
                   Recommendations
                 </h4>
                 <div className="space-y-2">
-                  {analysisResults.recommendations
-                    ?.slice(0, 3)
-                    .map((rec: any, index: number) => (
-                      <div
-                        key={index}
-                        className="p-3 bg-blue-600/20 rounded-lg border border-blue-600/30"
-                      >
-                        <h5 className="font-medium text-white">{rec.title}</h5>
-                        <p className="text-sm text-white/70">
-                          {rec.description}
-                        </p>
-                      </div>
-                    ))}
+                  {Array.isArray(analysisResults.recommendations) &&
+                    analysisResults.recommendations
+                      .slice(0, 3)
+                      .map((rec: any, index: number) => (
+                        <div
+                          key={index}
+                          className="p-3 bg-blue-600/20 rounded-lg border border-blue-600/30"
+                        >
+                          <h5 className="font-medium text-white">
+                            {rec.title}
+                          </h5>
+                          <p className="text-sm text-white/70">
+                            {rec.description}
+                          </p>
+                        </div>
+                      ))}
                 </div>
               </div>
             </div>
@@ -487,7 +503,7 @@ export default function EnhancedAnalyticsSection({
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-white">
-                Tag Suggestions: {selectedCampaign.name}
+                Tag Suggestions: {String(selectedCampaign.name)}
               </h3>
               <button
                 onClick={() => setTagSuggestions(null)}
@@ -503,16 +519,17 @@ export default function EnhancedAnalyticsSection({
                   Facebook Tags
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {tagSuggestions.facebookTags?.map(
-                    (tag: string, index: number) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full text-sm"
-                      >
-                        {tag}
-                      </span>
-                    )
-                  )}
+                  {Array.isArray(tagSuggestions.facebookTags) &&
+                    tagSuggestions.facebookTags.map(
+                      (tag: string, index: number) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-blue-600/20 text-blue-400 rounded-full text-sm"
+                        >
+                          {tag}
+                        </span>
+                      )
+                    )}
                 </div>
               </div>
 
@@ -521,16 +538,17 @@ export default function EnhancedAnalyticsSection({
                   Google Ads Tags
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {tagSuggestions.googleTags?.map(
-                    (tag: string, index: number) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-sm"
-                      >
-                        {tag}
-                      </span>
-                    )
-                  )}
+                  {Array.isArray(tagSuggestions.googleTags) &&
+                    tagSuggestions.googleTags.map(
+                      (tag: string, index: number) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-green-600/20 text-green-400 rounded-full text-sm"
+                        >
+                          {tag}
+                        </span>
+                      )
+                    )}
                 </div>
               </div>
             </div>

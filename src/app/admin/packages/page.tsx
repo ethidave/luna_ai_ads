@@ -86,7 +86,6 @@ import {
   Phone,
   MapPin,
   Timer,
-  Stopwatch,
   VolumeX,
   MicOff,
   CameraOff,
@@ -97,14 +96,13 @@ import {
   BookmarkX,
   Clock3,
   Timer as TimerIcon,
-  Stopwatch as StopwatchIcon,
   Loader2,
   AlertCircle,
 } from "lucide-react";
 import PackageModal from "@/components/admin/PackageModal";
 
 interface PackageData {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   price: number;
@@ -121,8 +119,8 @@ interface PackageData {
   isPopular: boolean;
   isCustom: boolean;
   sortOrder: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   // Legacy fields for compatibility
   billingCycle?: "monthly" | "yearly";
   isActive?: boolean;
@@ -147,34 +145,90 @@ export default function PackagesPage() {
     PackageData | undefined
   >();
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
-  const [priceHistory, setPriceHistory] = useState<Record<number, any[]>>({});
+  const [priceHistory, setPriceHistory] = useState<Record<string, any[]>>({});
   const [showPriceHistory, setShowPriceHistory] = useState<
-    Record<number, boolean>
+    Record<string, boolean>
   >({});
 
   useEffect(() => {
     fetchPackages();
   }, []);
 
-  const fetchPriceHistory = async (packageId: number) => {
+  const fetchPriceHistory = async (packageId: string) => {
     try {
-      const response = await fetch(
-        `/api/price-history?packageId=${packageId}&limit=10`
-      );
-      const data = await response.json();
+      console.log(`Fetching price history for package ${packageId}...`);
 
-      if (data.success) {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/admin/packages/${packageId}/price-history`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(`Price history response status: ${response.status}`);
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Server returned non-JSON response");
+        }
+
+        const data = await response.json();
+        console.log("Price history data received:", data);
+
+        if (data.success) {
+          setPriceHistory((prev) => ({
+            ...prev,
+            [packageId]: data.priceHistory || [],
+          }));
+        } else {
+          throw new Error(data.message || "Failed to fetch price history");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 404) {
+        console.warn(`Price history not found for package ${packageId}`);
         setPriceHistory((prev) => ({
           ...prev,
-          [packageId]: data.priceHistory,
+          [packageId]: [],
         }));
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
       }
     } catch (error) {
       console.error("Error fetching price history:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch price history";
+      console.warn(
+        `Price history error for package ${packageId}:`,
+        errorMessage
+      );
+      // Set empty array for this package to prevent repeated requests
+      setPriceHistory((prev) => ({
+        ...prev,
+        [packageId]: [],
+      }));
     }
   };
 
-  const togglePriceHistory = (packageId: number) => {
+  const togglePriceHistory = (packageId: string) => {
     setShowPriceHistory((prev) => ({
       ...prev,
       [packageId]: !prev[packageId],
@@ -190,20 +244,60 @@ export default function PackagesPage() {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch("/api/admin/packages");
-      const data = await response.json();
+      setSuccess("");
 
-      if (data.success) {
-        setPackages(data.packages || []);
-        setSuccess(`Loaded ${data.packages?.length || 0} packages`);
-        setTimeout(() => setSuccess(""), 3000);
+      console.log("Fetching packages from real API...");
+
+      // Get auth token
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/api/admin/packages", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Packages response status:", response.status);
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Server returned non-JSON response");
+        }
+
+        const data = await response.json();
+        console.log("Packages data received:", data);
+
+        if (data.success) {
+          setPackages(data.packages || []);
+          setSuccess(
+            `Successfully loaded ${data.packages?.length || 0} packages`
+          );
+          setTimeout(() => setSuccess(""), 3000);
+        } else {
+          throw new Error(data.message || "Failed to fetch packages");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
       } else {
-        setError(data.message || "Failed to fetch packages");
-        setPackages([]);
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
       }
     } catch (error) {
       console.error("Error fetching packages:", error);
-      setError("Failed to fetch packages");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch packages";
+      setError(errorMessage);
       setPackages([]);
     } finally {
       setLoading(false);
@@ -228,48 +322,75 @@ export default function PackagesPage() {
       setError("");
       setSuccess("");
 
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
       const isEdit = modalMode === "edit";
-      const url = "/api/admin/packages";
+      const url = isEdit
+        ? `http://127.0.0.1:8000/api/admin/packages/${packageData.id}`
+        : "http://127.0.0.1:8000/api/admin/packages";
       const method = isEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
         headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(packageData),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        if (isEdit) {
-          setPackages(
-            packages.map((pkg) =>
-              pkg.id === packageData.id
-                ? { ...packageData, ...data.package }
-                : pkg
-            )
-          );
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data.success) {
+            if (isEdit) {
+              setPackages(
+                packages.map((pkg) =>
+                  pkg.id === packageData.id
+                    ? { ...packageData, ...data.package }
+                    : pkg
+                )
+              );
+            } else {
+              setPackages([...packages, { ...packageData, ...data.package }]);
+            }
+            setSuccess(
+              data.message ||
+                `Package ${isEdit ? "updated" : "created"} successfully!`
+            );
+            setTimeout(() => setSuccess(""), 3000);
+            setShowModal(false);
+          } else {
+            throw new Error(
+              data.message ||
+                `Failed to ${isEdit ? "update" : "create"} package`
+            );
+          }
         } else {
-          setPackages([...packages, { ...packageData, ...data.package }]);
+          throw new Error("Server returned non-JSON response");
         }
-        setSuccess(
-          data.message ||
-            `Package ${isEdit ? "updated" : "created"} successfully!`
-        );
-        setTimeout(() => setSuccess(""), 3000);
-        setShowModal(false);
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
       } else {
-        setError(
-          data.message || `Failed to ${isEdit ? "update" : "create"} package`
-        );
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
       }
     } catch (error) {
       console.error("Error saving package:", error);
-      setError(
-        `Failed to ${modalMode === "edit" ? "update" : "create"} package`
-      );
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : `Failed to ${modalMode === "edit" ? "update" : "create"} package`;
+      setError(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -289,22 +410,52 @@ export default function PackagesPage() {
       setError("");
       setSuccess("");
 
-      const response = await fetch(`/api/admin/packages?id=${packageId}`, {
-        method: "DELETE",
-      });
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
 
-      const data = await response.json();
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/admin/packages/${packageId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (data.success) {
-        setPackages(packages.filter((pkg) => pkg.id !== packageId));
-        setSuccess("Package deleted successfully!");
-        setTimeout(() => setSuccess(""), 3000);
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data.success) {
+            setPackages(packages.filter((pkg) => pkg.id !== packageId));
+            setSuccess("Package deleted successfully!");
+            setTimeout(() => setSuccess(""), 3000);
+          } else {
+            throw new Error(data.message || "Failed to delete package");
+          }
+        } else {
+          throw new Error("Server returned non-JSON response");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
       } else {
-        setError(data.message || "Failed to delete package");
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
       }
     } catch (error) {
       console.error("Error deleting package:", error);
-      setError("Failed to delete package");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete package";
+      setError(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -512,10 +663,14 @@ export default function PackagesPage() {
                 <Clock className="w-4 h-4" />
                 <span>Duration: {pkg.duration} days</span>
               </div>
-              {pkg.platforms && pkg.platforms.length > 0 && (
+              {pkg.platforms && (
                 <div className="flex items-center space-x-2 text-white/70 text-sm">
                   <Globe className="w-4 h-4" />
-                  <span>{pkg.platforms.join(", ")}</span>
+                  <span>
+                    {Array.isArray(pkg.platforms)
+                      ? pkg.platforms.join(", ")
+                      : String(pkg.platforms)}
+                  </span>
                 </div>
               )}
             </div>
@@ -523,19 +678,19 @@ export default function PackagesPage() {
             {/* Price History */}
             <div className="mb-6">
               <button
-                onClick={() => togglePriceHistory(pkg.id)}
+                onClick={() => pkg.id && togglePriceHistory(pkg.id)}
                 className="flex items-center space-x-2 text-white/70 hover:text-white transition-colors text-sm mb-3"
               >
                 <History className="w-4 h-4" />
                 <span>Price History</span>
-                {showPriceHistory[pkg.id] ? (
+                {pkg.id && showPriceHistory[pkg.id] ? (
                   <Minus className="w-4 h-4" />
                 ) : (
                   <TrendingUp className="w-4 h-4" />
                 )}
               </button>
 
-              {showPriceHistory[pkg.id] && (
+              {pkg.id && showPriceHistory[pkg.id] && (
                 <div className="bg-white/5 rounded-lg p-4 space-y-3">
                   {priceHistory[pkg.id]?.length > 0 ? (
                     priceHistory[pkg.id].map((record, index) => (
@@ -596,7 +751,7 @@ export default function PackagesPage() {
                   <Edit className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleDeletePackage(pkg.id)}
+                  onClick={() => pkg.id && handleDeletePackage(pkg.id)}
                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300"
                 >
                   <Trash2 className="w-4 h-4" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -54,15 +54,39 @@ export default function ResetPasswordPage() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token, password }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token, password }),
+        }
+      );
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          console.error("Failed to parse JSON response:", jsonError);
+          const text = await response.text();
+          console.error("Raw response:", text);
+          setStatus("error");
+          setMessage("Invalid response from server");
+          return;
+        }
+      } else {
+        console.error("Response is not JSON, content-type:", contentType);
+        const text = await response.text();
+        console.error("Raw response:", text);
+        setStatus("error");
+        setMessage("Invalid response format from server");
+        return;
+      }
 
       if (data.success) {
         setStatus("success");
@@ -254,19 +278,21 @@ export default function ResetPasswordPage() {
             {message && (
               <div
                 className={`flex items-center p-4 rounded-lg ${
-                  status === "success"
+                  (status as string) === "success"
                     ? "bg-green-50 border border-green-200"
                     : "bg-red-50 border border-red-200"
                 }`}
               >
-                {status === "success" ? (
+                {(status as string) === "success" ? (
                   <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
                 ) : (
                   <XCircle className="w-5 h-5 text-red-600 mr-2" />
                 )}
                 <span
                   className={`text-sm ${
-                    status === "success" ? "text-green-700" : "text-red-700"
+                    (status as string) === "success"
+                      ? "text-green-700"
+                      : "text-red-700"
                   }`}
                 >
                   {message}
@@ -305,3 +331,34 @@ export default function ResetPasswordPage() {
   );
 }
 
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black opacity-20"></div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative z-10 max-w-md w-full"
+          >
+            <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                Loading...
+              </h1>
+              <p className="text-gray-600">
+                Please wait while we load the reset password page...
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      }
+    >
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}

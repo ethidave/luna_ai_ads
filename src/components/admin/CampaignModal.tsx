@@ -17,13 +17,23 @@ import {
 interface CampaignData {
   id: string;
   name: string;
-  platform: "facebook" | "google" | "instagram";
+  platform:
+    | "facebook"
+    | "google"
+    | "instagram"
+    | "twitter"
+    | "youtube"
+    | "linkedin"
+    | "tiktok"
+    | "snapchat"
+    | "pinterest";
   status: "active" | "paused" | "completed" | "draft";
   objective: string;
   budget: number;
   spent: number;
   impressions: number;
   clicks: number;
+  conversions: number;
   ctr: number;
   cpc: number;
   roas: number;
@@ -158,7 +168,7 @@ export default function CampaignModal({
     }
   };
 
-  const handleInputChange = (field: keyof CampaignData, value: any) => {
+  const handleInputChange = (field: keyof CampaignData, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));

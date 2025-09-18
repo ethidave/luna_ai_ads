@@ -29,7 +29,9 @@ export default function AccountConnectionModal({
   onAccountConnected,
 }: AccountConnectionModalProps) {
   const [connecting, setConnecting] = useState<string | null>(null);
-  const [connectedAccounts, setConnectedAccounts] = useState<any[]>([]);
+  const [connectedAccounts, setConnectedAccounts] = useState<
+    Record<string, unknown>[]
+  >([]);
   const [error, setError] = useState<string | null>(null);
 
   const handleConnectAccount = async (platform: "facebook" | "google") => {
@@ -262,10 +264,10 @@ export default function AccountConnectionModal({
                         </div>
                         <div>
                           <div className="text-white font-medium">
-                            {account.name}
+                            {account.name as string}
                           </div>
                           <div className="text-white/70 text-sm capitalize">
-                            {account.platform} Ads
+                            {account.platform as string} Ads
                           </div>
                         </div>
                       </div>
@@ -273,7 +275,7 @@ export default function AccountConnectionModal({
                         <CheckCircle className="w-5 h-5 text-green-400" />
                         <button
                           onClick={() =>
-                            handleDisconnectAccount(account.platform)
+                            handleDisconnectAccount(account.platform as string)
                           }
                           className="px-3 py-1 text-red-400 hover:text-red-300 text-sm"
                         >
@@ -393,7 +395,7 @@ export default function AccountConnectionModal({
             <div className="mt-8 p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
                 <Zap className="w-5 h-5 text-purple-400" />
-                <span>What You'll Get</span>
+                <span>What You&apos;ll Get</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-start space-x-3">

@@ -103,17 +103,136 @@ export default function PaymentSettingsModal({
 
   const fetchSettings = async () => {
     setLoading(true);
-    try {
-      const response = await fetch("/api/admin/payment-settings");
-      const data = await response.json();
+    setError("");
+    setSuccess("");
 
-      if (data.success) {
-        setSettings(data.settings);
+    try {
+      console.log("Fetching payment settings from real API...");
+
+      // Get auth token
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/admin/payment-settings",
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Payment settings response status:", response.status);
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Server returned non-JSON response");
+        }
+
+        const data = await response.json();
+        console.log("Payment settings data received:", data);
+
+        if (data.success) {
+          setSettings(
+            data.settings || {
+              stripe: {
+                enabled: false,
+                publicKey: "",
+                secretKey: "",
+                webhookSecret: "",
+                testMode: true,
+              },
+              paypal: {
+                enabled: false,
+                clientId: "",
+                clientSecret: "",
+                sandbox: true,
+              },
+              flutterwave: {
+                enabled: false,
+                publicKey: "",
+                secretKey: "",
+                encryptionKey: "",
+                testMode: true,
+              },
+              nowpayments: {
+                enabled: false,
+                apiKey: "",
+                sandbox: true,
+              },
+              crypto: {
+                usdtContract: "",
+                tronNetwork: "",
+                bscNetwork: "",
+                ethNetwork: "",
+                platformWallet: "",
+              },
+            }
+          );
+          setSuccess("Payment settings loaded successfully");
+          setTimeout(() => setSuccess(""), 3000);
+        } else {
+          throw new Error(data.message || "Failed to fetch payment settings");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
       } else {
-        setError("Failed to fetch payment settings");
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
       }
     } catch (error) {
-      setError("Failed to fetch payment settings");
+      console.error("Error fetching payment settings:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch payment settings";
+      setError(errorMessage);
+
+      // Set default settings on error
+      setSettings({
+        stripe: {
+          enabled: false,
+          publicKey: "",
+          secretKey: "",
+          webhookSecret: "",
+          testMode: true,
+        },
+        paypal: {
+          enabled: false,
+          clientId: "",
+          clientSecret: "",
+          sandbox: true,
+        },
+        flutterwave: {
+          enabled: false,
+          publicKey: "",
+          secretKey: "",
+          encryptionKey: "",
+          testMode: true,
+        },
+        nowpayments: {
+          enabled: false,
+          apiKey: "",
+          sandbox: true,
+        },
+        crypto: {
+          usdtContract: "",
+          tronNetwork: "",
+          bscNetwork: "",
+          ethNetwork: "",
+          platformWallet: "",
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -194,24 +313,85 @@ export default function PaymentSettingsModal({
     }
 
     try {
-      const response = await fetch("/api/admin/payment-settings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ settings }),
-      });
+      console.log("Saving payment settings to real API...");
 
-      const data = await response.json();
+      // Get auth token
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
 
-      if (data.success) {
-        setSuccess(`Updated ${data.updates.length} payment settings`);
-        setTimeout(() => setSuccess(""), 3000);
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/admin/payment-settings",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ settings }),
+        }
+      );
+
+      // Check if response is ok
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        let data;
+
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            data = await response.json();
+          } catch (jsonError) {
+            console.error("Failed to parse JSON response:", jsonError);
+            const text = await response.text();
+            console.error("Raw response:", text);
+            setError("Invalid response from server");
+            return;
+          }
+        } else {
+          console.error("Response is not JSON, content-type:", contentType);
+          const text = await response.text();
+          console.error("Raw response:", text);
+          setError("Invalid response format from server");
+          return;
+        }
+
+        if (data.success) {
+          setSuccess(`Updated ${data.updates?.length || 0} payment settings`);
+          setTimeout(() => setSuccess(""), 3000);
+        } else {
+          setError(data.error || "Failed to save settings");
+        }
       } else {
-        setError(data.error || "Failed to save settings");
+        // Handle non-200 responses
+        const contentType = response.headers.get("content-type");
+        let errorData;
+
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            errorData = await response.json();
+          } catch (jsonError) {
+            console.error("Failed to parse error JSON:", jsonError);
+            const text = await response.text();
+            console.error("Raw error response:", text);
+            errorData = { error: `Server error ${response.status}: ${text}` };
+          }
+        } else {
+          const text = await response.text();
+          errorData = { error: `Server error ${response.status}: ${text}` };
+        }
+
+        console.error("Failed to save payment settings:", errorData);
+        setError(errorData.error || "Failed to save settings");
       }
     } catch (error) {
-      setError("Failed to save settings");
+      console.error("Error saving payment settings:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to save payment settings";
+      setError(errorMessage);
     } finally {
       setSaving(false);
     }
@@ -220,7 +400,7 @@ export default function PaymentSettingsModal({
   const updateSetting = (
     section: keyof PaymentSettings,
     field: string,
-    value: any
+    value: unknown
   ) => {
     setSettings((prev) => ({
       ...prev,
@@ -244,37 +424,99 @@ export default function PaymentSettingsModal({
     setSuccess("");
 
     try {
-      const response = await fetch("/api/admin/payment-settings", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          provider: method,
-          testMode:
-            method === "stripe"
-              ? settings.stripe.testMode
-              : method === "paypal"
-              ? settings.paypal.sandbox
-              : method === "flutterwave"
-              ? settings.flutterwave.testMode
-              : method === "nowpayments"
-              ? settings.nowpayments.sandbox
-              : false,
-        }),
-      });
+      console.log(`Testing ${method} payment method...`);
 
-      const data = await response.json();
+      // Get auth token
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
 
-      if (data.success) {
-        setSuccess(`${method} test successful: ${data.message}`);
-        setTimeout(() => setSuccess(""), 5000);
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/admin/payment-settings/test",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            provider: method,
+            testMode:
+              method === "stripe"
+                ? settings.stripe.testMode
+                : method === "paypal"
+                ? settings.paypal.sandbox
+                : method === "flutterwave"
+                ? settings.flutterwave.testMode
+                : method === "nowpayments"
+                ? settings.nowpayments.sandbox
+                : false,
+          }),
+        }
+      );
+
+      // Check if response is ok
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        let data;
+
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            data = await response.json();
+          } catch (jsonError) {
+            console.error("Failed to parse JSON response:", jsonError);
+            const text = await response.text();
+            console.error("Raw response:", text);
+            setError("Invalid response from server");
+            return;
+          }
+        } else {
+          console.error("Response is not JSON, content-type:", contentType);
+          const text = await response.text();
+          console.error("Raw response:", text);
+          setError("Invalid response format from server");
+          return;
+        }
+
+        if (data.success) {
+          setSuccess(`${method} test successful: ${data.message}`);
+          setTimeout(() => setSuccess(""), 5000);
+        } else {
+          setError(`${method} test failed: ${data.message}`);
+          setTimeout(() => setError(""), 5000);
+        }
       } else {
-        setError(`${method} test failed: ${data.message}`);
+        // Handle non-200 responses
+        const contentType = response.headers.get("content-type");
+        let errorData;
+
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            errorData = await response.json();
+          } catch (jsonError) {
+            console.error("Failed to parse error JSON:", jsonError);
+            const text = await response.text();
+            console.error("Raw error response:", text);
+            errorData = { error: `Server error ${response.status}: ${text}` };
+          }
+        } else {
+          const text = await response.text();
+          errorData = { error: `Server error ${response.status}: ${text}` };
+        }
+
+        console.error(`Failed to test ${method}:`, errorData);
+        setError(
+          `${method} test failed: ${errorData.error || "Unknown error"}`
+        );
         setTimeout(() => setError(""), 5000);
       }
     } catch (error) {
-      setError(`Failed to test ${method} configuration`);
+      console.error(`Network error testing ${method}:`, error);
+      setError(
+        `Network error testing ${method}. Please check if the backend is running on http://127.0.0.1:8000`
+      );
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);

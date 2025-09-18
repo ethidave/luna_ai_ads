@@ -38,6 +38,7 @@ import {
   Image as Pinterest,
   CheckCircle,
   AlertTriangle,
+  AlertCircle,
   X,
   Save,
   Settings,
@@ -89,7 +90,6 @@ import {
   Phone,
   MapPin,
   Timer,
-  Stopwatch,
   VolumeX,
   MicOff,
   CameraOff,
@@ -108,7 +108,6 @@ import {
   MapPin as MapPinIcon,
   Clock3,
   Timer as TimerIcon,
-  Stopwatch as StopwatchIcon,
 } from "lucide-react";
 import CampaignModal from "@/components/admin/CampaignModal";
 
@@ -147,24 +146,63 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/admin/campaigns");
+        setError("");
+        setSuccess("");
+
+        const token = localStorage.getItem("auth_token");
+        if (!token) {
+          throw new Error("No authentication token found. Please login again.");
+        }
+
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/admin/campaigns",
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         if (response.ok) {
-          const data = await response.json();
-          setCampaigns(data.campaigns || []);
-          console.log(
-            `Successfully loaded ${data.campaigns?.length || 0} campaigns`
-          );
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            if (data.success) {
+              setCampaigns(data.campaigns || []);
+              setSuccess(
+                `Successfully loaded ${data.campaigns?.length || 0} campaigns`
+              );
+              setTimeout(() => setSuccess(""), 3000);
+            } else {
+              throw new Error(data.message || "Failed to fetch campaigns");
+            }
+          } else {
+            throw new Error("Server returned non-JSON response");
+          }
+        } else if (response.status === 401) {
+          throw new Error("Authentication failed. Please login again.");
+        } else if (response.status === 403) {
+          throw new Error("Access denied. Admin privileges required.");
+        } else if (response.status === 500) {
+          throw new Error("Server error. Please try again later.");
         } else {
-          const errorData = await response.json();
-          console.error("Failed to fetch campaigns:", errorData);
-          setCampaigns([]);
+          const errorText = await response.text();
+          throw new Error(`Request failed: ${response.status} - ${errorText}`);
         }
       } catch (error) {
         console.error("Error fetching campaigns:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch campaigns";
+        setError(errorMessage);
         setCampaigns([]);
       } finally {
         setLoading(false);
@@ -204,24 +242,143 @@ export default function CampaignsPage() {
     setShowModal(true);
   };
 
-  const handleSaveCampaign = (campaignData: Campaign) => {
-    if (selectedCampaign) {
-      setCampaigns(
-        campaigns.map((campaign) =>
-          campaign.id === selectedCampaign.id ? campaignData : campaign
-        )
-      );
-    } else {
-      setCampaigns([
-        ...campaigns,
-        { ...campaignData, id: Date.now().toString() },
-      ]);
+  const handleSaveCampaign = async (campaignData: Partial<Campaign>) => {
+    try {
+      setError("");
+      setSuccess("");
+
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const isEdit = !!selectedCampaign;
+      const url = isEdit
+        ? `http://127.0.0.1:8000/api/admin/campaigns/${selectedCampaign.id}`
+        : "http://127.0.0.1:8000/api/admin/campaigns";
+      const method = isEdit ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(campaignData),
+      });
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data.success) {
+            if (isEdit) {
+              setCampaigns(
+                campaigns.map((campaign) =>
+                  campaign.id === selectedCampaign.id
+                    ? { ...campaign, ...data.campaign }
+                    : campaign
+                )
+              );
+            } else {
+              setCampaigns([data.campaign, ...campaigns]);
+            }
+            setSuccess(
+              `Campaign ${isEdit ? "updated" : "created"} successfully!`
+            );
+            setTimeout(() => setSuccess(""), 3000);
+            setShowModal(false);
+          } else {
+            throw new Error(
+              data.message ||
+                `Failed to ${isEdit ? "update" : "create"} campaign`
+            );
+          }
+        } else {
+          throw new Error("Server returned non-JSON response");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error saving campaign:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : `Failed to ${selectedCampaign ? "update" : "create"} campaign`;
+      setError(errorMessage);
     }
   };
 
-  const handleDeleteCampaign = (campaignId: string) => {
-    if (confirm("Are you sure you want to delete this campaign?")) {
-      setCampaigns(campaigns.filter((campaign) => campaign.id !== campaignId));
+  const handleDeleteCampaign = async (campaignId: string) => {
+    if (
+      !confirm(
+        "Are you sure you want to delete this campaign? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setError("");
+      setSuccess("");
+
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/admin/campaigns/${campaignId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data.success) {
+            setCampaigns(
+              campaigns.filter((campaign) => campaign.id !== campaignId)
+            );
+            setSuccess("Campaign deleted successfully!");
+            setTimeout(() => setSuccess(""), 3000);
+          } else {
+            throw new Error(data.message || "Failed to delete campaign");
+          }
+        } else {
+          throw new Error("Server returned non-JSON response");
+        }
+      } else if (response.status === 401) {
+        throw new Error("Authentication failed. Please login again.");
+      } else if (response.status === 403) {
+        throw new Error("Access denied. Admin privileges required.");
+      } else if (response.status === 500) {
+        throw new Error("Server error. Please try again later.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Request failed: ${response.status} - ${errorText}`);
+      }
+    } catch (error) {
+      console.error("Error deleting campaign:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete campaign";
+      setError(errorMessage);
     }
   };
 
@@ -304,6 +461,21 @@ export default function CampaignsPage() {
           </button>
         </div>
       </div>
+
+      {/* Success/Error Messages */}
+      {success && (
+        <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg flex items-center space-x-2">
+          <CheckCircle className="w-5 h-5 text-green-400" />
+          <span className="text-green-400">{success}</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center space-x-2">
+          <AlertCircle className="w-5 h-5 text-red-400" />
+          <span className="text-red-400">{error}</span>
+        </div>
+      )}
 
       {/* Filters and Search */}
       <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
@@ -392,33 +564,35 @@ export default function CampaignsPage() {
                   {campaign.objective}
                 </p>
                 <div className="flex items-center space-x-4 text-sm text-white/70">
-                  <span>Budget: ${campaign.budget.toLocaleString()}</span>
-                  <span>Spent: ${campaign.spent.toLocaleString()}</span>
+                  <span>
+                    Budget: ${(campaign.budget || 0).toLocaleString()}
+                  </span>
+                  <span>Spent: ${(campaign.spent || 0).toLocaleString()}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">
-                    {campaign.impressions.toLocaleString()}
+                    {(campaign.impressions || 0).toLocaleString()}
                   </div>
                   <div className="text-white/70 text-sm">Impressions</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">
-                    {campaign.clicks.toLocaleString()}
+                    {(campaign.clicks || 0).toLocaleString()}
                   </div>
                   <div className="text-white/70 text-sm">Clicks</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">
-                    {campaign.ctr.toFixed(2)}%
+                    {(campaign.ctr || 0).toFixed(2)}%
                   </div>
                   <div className="text-white/70 text-sm">CTR</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">
-                    ${campaign.cpc.toFixed(2)}
+                    ${(campaign.cpc || 0).toFixed(2)}
                   </div>
                   <div className="text-white/70 text-sm">CPC</div>
                 </div>
@@ -455,7 +629,8 @@ export default function CampaignsPage() {
       <CampaignModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        campaign={selectedCampaign}
+        campaignData={selectedCampaign}
+        mode={selectedCampaign ? "edit" : "create"}
         onSave={handleSaveCampaign}
       />
     </div>

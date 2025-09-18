@@ -167,7 +167,7 @@ export default function PaymentModal({
     }
   };
 
-  const handleInputChange = (field: keyof PaymentData, value: any) => {
+  const handleInputChange = (field: keyof PaymentData, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));

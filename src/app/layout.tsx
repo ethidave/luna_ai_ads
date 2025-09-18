@@ -1,9 +1,8 @@
-import "reflect-metadata";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./styles.css";
 import { Providers } from "@/components/providers";
-import SessionProvider from "@/components/SessionProvider";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -71,7 +70,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <SessionProvider>
+        <AuthProvider>
           <Providers>
             {children}
             <Toaster
@@ -99,7 +98,7 @@ export default function RootLayout({
               }}
             />
           </Providers>
-        </SessionProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -29,8 +29,9 @@ import {
   Zap,
 } from "lucide-react";
 import { AuthGuard } from "@/components/AuthGuard";
-import { PaymentSelector, PaymentMethod } from "@/components/PaymentSelector";
-import { useAuth } from "@/hooks/useAuth";
+import { PaymentSelector } from "@/components/PaymentSelector";
+import { PaymentMethod } from "@/components/PaymentMethodCard";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface WalletBalance {
   usdt: number;

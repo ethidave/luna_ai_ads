@@ -108,14 +108,14 @@ export interface PackageRecommendationResponse {
 
 export class GeminiAIService {
   private genAI: GoogleGenerativeAI;
-  private model: any;
+  private model: unknown;
 
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
     // Always use fallback - disable API calls completely
     console.log('AI features will use fallback responses (no API key configured)');
-    this.genAI = null as any;
-    this.model = null as any;
+    this.genAI = null as unknown as GoogleGenerativeAI;
+    this.model = null;
   }
 
   /**
@@ -216,7 +216,7 @@ export class GeminiAIService {
   /**
    * Analyze ad performance and suggest improvements
    */
-  async analyzeAdPerformance(metrics: any): Promise<string> {
+  async analyzeAdPerformance(metrics: Record<string, unknown>): Promise<string> {
     try {
       const prompt = `
         Analyze these ad performance metrics and provide improvement suggestions:
@@ -429,7 +429,7 @@ export class GeminiAIService {
   /**
    * Generate performance predictions
    */
-  async generatePerformancePredictions(campaignData: any): Promise<any> {
+  async generatePerformancePredictions(campaignData: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Always use fallback - no API calls
     console.log('Using fallback performance predictions');
     return this.getFallbackPerformancePredictions(campaignData);
@@ -437,7 +437,7 @@ export class GeminiAIService {
 
   // Commented out API call code to prevent any API attempts
   /*
-  async generatePerformancePredictionsOld(campaignData: any): Promise<any> {
+  async generatePerformancePredictionsOld(campaignData: Record<string, unknown>): Promise<Record<string, unknown>> {
     try {
 
       const prompt = `
@@ -612,7 +612,7 @@ export class GeminiAIService {
   /**
    * Parse performance predictions response
    */
-  private parsePerformancePredictions(text: string): any {
+  private parsePerformancePredictions(text: string): Record<string, unknown> {
     // Fallback parsing for performance predictions
     return {
       estimatedCTR: 2.5,
@@ -630,8 +630,8 @@ export class GeminiAIService {
    * Comprehensive ad optimization with real-time data analysis
    */
   async optimizeAdWithRealData(
-    originalAd: any,
-    performanceData: any,
+    originalAd: Record<string, unknown>,
+    performanceData: Record<string, unknown>,
     platform: string
   ): Promise<AdCopyResponse> {
     try {
@@ -752,9 +752,9 @@ export class GeminiAIService {
       return this.getFallbackAdCopy({
         productName: originalAd.headline || 'Product',
         targetAudience: originalAd.targetAudience || 'General audience',
-        platform: platform as any,
-        objective: 'conversions' as any,
-        tone: 'professional' as any,
+        platform: platform as string,
+        objective: 'conversions',
+        tone: 'professional',
         industry: 'general',
         budget: 1000
       });
@@ -764,9 +764,9 @@ export class GeminiAIService {
       return this.getFallbackAdCopy({
         productName: originalAd.headline || 'Product',
         targetAudience: originalAd.targetAudience || 'General audience',
-        platform: platform as any,
-        objective: 'conversions' as any,
-        tone: 'professional' as any,
+        platform: platform as string,
+        objective: 'conversions',
+        tone: 'professional',
         industry: 'general',
         budget: 1000
       });
@@ -1249,7 +1249,7 @@ export class GeminiAIService {
   /**
    * Fallback performance predictions when API is unavailable
    */
-  private getFallbackPerformancePredictions(campaignData: any): any {
+  private getFallbackPerformancePredictions(campaignData: Record<string, unknown>): Record<string, unknown> {
     const budget = parseFloat(campaignData.budget) || 1000;
     const platformCount = campaignData.platforms?.length || 1;
     

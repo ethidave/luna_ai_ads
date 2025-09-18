@@ -87,10 +87,10 @@ interface CampaignsSectionProps {
   campaigns: Campaign[];
   selectedCampaign: Campaign | null;
   setSelectedCampaign: (campaign: Campaign | null) => void;
-  campaignAnalytics: any[];
+  campaignAnalytics: Record<string, unknown>[];
   isLoading: boolean;
   onCreateCampaign?: () => void;
-  connectedAccounts?: any[];
+  connectedAccounts?: Record<string, unknown>[];
   onAnalyzeAd?: (adId: string) => void;
   onGenerateTags?: (adId: string) => void;
   onOptimizeAd?: (adId: string) => void;
@@ -113,7 +113,9 @@ export default function CampaignsSection({
   const [sortBy, setSortBy] = useState("name");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedAd, setSelectedAd] = useState<any>(null);
+  const [selectedAd, setSelectedAd] = useState<Record<string, unknown> | null>(
+    null
+  );
 
   // Helper functions to parse campaign data
   const getCampaignPlatforms = (campaign: Campaign) => {
@@ -363,7 +365,7 @@ export default function CampaignsSection({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {campaignAnalytics.map((ad, index) => (
               <motion.div
-                key={ad.id || ad.platformAdId}
+                key={String(ad.id || ad.platformAdId || index)}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -381,10 +383,10 @@ export default function CampaignsSection({
                     </div>
                     <div>
                       <h4 className="text-lg font-semibold text-white truncate">
-                        {ad.name}
+                        {ad.name as string}
                       </h4>
                       <p className="text-white/70 text-sm capitalize">
-                        {ad.platform} • {ad.status}
+                        {ad.platform as string} • {ad.status as string}
                       </p>
                     </div>
                   </div>
@@ -399,41 +401,47 @@ export default function CampaignsSection({
                       }`}
                     />
                     <span className="text-white/70 text-sm capitalize">
-                      {ad.status}
+                      {String(ad.status)}
                     </span>
                   </div>
                 </div>
 
-                {/* Performance Metrics */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="bg-white/5 rounded-lg p-3">
                     <div className="text-white/70 text-sm">Impressions</div>
                     <div className="text-white font-semibold text-lg">
-                      {ad.impressions?.toLocaleString() || "0"}
+                      {typeof ad.impressions === "number"
+                        ? ad.impressions.toLocaleString()
+                        : "0"}
                     </div>
                   </div>
                   <div className="bg-white/5 rounded-lg p-3">
                     <div className="text-white/70 text-sm">Clicks</div>
                     <div className="text-white font-semibold text-lg">
-                      {ad.clicks?.toLocaleString() || "0"}
+                      {typeof ad.clicks === "number"
+                        ? ad.clicks.toLocaleString()
+                        : "0"}
                     </div>
                   </div>
                   <div className="bg-white/5 rounded-lg p-3">
                     <div className="text-white/70 text-sm">CTR</div>
                     <div className="text-white font-semibold text-lg">
-                      {ad.ctr ? `${ad.ctr.toFixed(2)}%` : "0%"}
+                      {typeof ad.ctr === "number"
+                        ? `${ad.ctr.toFixed(2)}%`
+                        : "0%"}
                     </div>
                   </div>
                   <div className="bg-white/5 rounded-lg p-3">
                     <div className="text-white/70 text-sm">Spend</div>
                     <div className="text-white font-semibold text-lg">
-                      ${ad.spent?.toFixed(2) || "0"}
+                      $
+                      {typeof ad.spent === "number" ? ad.spent.toFixed(2) : "0"}
                     </div>
                   </div>
                 </div>
 
                 {/* AI Analysis */}
-                {ad.performanceScore && (
+                {typeof ad.performanceScore === "number" && (
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-white/70 text-sm">
@@ -469,7 +477,9 @@ export default function CampaignsSection({
                   </button>
                   {onAnalyzeAd && (
                     <button
-                      onClick={() => onAnalyzeAd(ad.id || ad.platformAdId)}
+                      onClick={() =>
+                        onAnalyzeAd(String(ad.id || ad.platformAdId || ""))
+                      }
                       className="flex-1 px-3 py-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-all duration-300 text-sm font-medium"
                     >
                       <BarChart3 className="w-4 h-4 inline mr-2" />
@@ -478,7 +488,9 @@ export default function CampaignsSection({
                   )}
                   {onGenerateTags && (
                     <button
-                      onClick={() => onGenerateTags(ad.id || ad.platformAdId)}
+                      onClick={() =>
+                        onGenerateTags(String(ad.id || ad.platformAdId || ""))
+                      }
                       className="flex-1 px-3 py-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-all duration-300 text-sm font-medium"
                     >
                       <Target className="w-4 h-4 inline mr-2" />
@@ -487,7 +499,9 @@ export default function CampaignsSection({
                   )}
                   {onOptimizeAd && (
                     <button
-                      onClick={() => onOptimizeAd(ad.id || ad.platformAdId)}
+                      onClick={() =>
+                        onOptimizeAd(String(ad.id || ad.platformAdId || ""))
+                      }
                       className="flex-1 px-3 py-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30 transition-all duration-300 text-sm font-medium"
                     >
                       <TrendingUp className="w-4 h-4 inline mr-2" />
@@ -497,14 +511,14 @@ export default function CampaignsSection({
                 </div>
 
                 {/* Optimization Suggestions */}
-                {ad.optimizationSuggestions &&
+                {Array.isArray(ad.optimizationSuggestions) &&
                   ad.optimizationSuggestions.length > 0 && (
                     <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                       <div className="text-yellow-400 text-sm font-medium mb-1">
                         AI Suggestions:
                       </div>
                       <div className="text-white/70 text-sm">
-                        {ad.optimizationSuggestions[0]}
+                        {String(ad.optimizationSuggestions[0])}
                       </div>
                     </div>
                   )}
@@ -907,13 +921,13 @@ export default function CampaignsSection({
                       <div className="flex justify-between">
                         <span className="text-white/70">Platform:</span>
                         <span className="text-white">
-                          {selectedCampaign.platform}
+                          {getCampaignPlatform(selectedCampaign)}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-white/70">Type:</span>
                         <span className="text-white">
-                          {selectedCampaign.type}
+                          {getCampaignType(selectedCampaign)}
                         </span>
                       </div>
                     </div>
@@ -924,35 +938,49 @@ export default function CampaignsSection({
                       Performance Metrics
                     </h4>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-white">
-                          {selectedCampaign.impressions.toLocaleString()}
-                        </div>
-                        <div className="text-white/70 text-sm">Impressions</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-white">
-                          {selectedCampaign.clicks.toLocaleString()}
-                        </div>
-                        <div className="text-white/70 text-sm">Clicks</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-white">
-                          {selectedCampaign.conversions}
-                        </div>
-                        <div className="text-white/70 text-sm">Conversions</div>
-                      </div>
-                      <div className="text-center">
-                        <div
-                          className={`text-2xl font-bold ${getPerformanceColor(
-                            selectedCampaign.ctr,
-                            "ctr"
-                          )}`}
-                        >
-                          {selectedCampaign.ctr}%
-                        </div>
-                        <div className="text-white/70 text-sm">CTR</div>
-                      </div>
+                      {(() => {
+                        const performance =
+                          getCampaignPerformance(selectedCampaign);
+                        return (
+                          <>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-white">
+                                {performance.impressions.toLocaleString()}
+                              </div>
+                              <div className="text-white/70 text-sm">
+                                Impressions
+                              </div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-white">
+                                {performance.clicks.toLocaleString()}
+                              </div>
+                              <div className="text-white/70 text-sm">
+                                Clicks
+                              </div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-white">
+                                {performance.conversions}
+                              </div>
+                              <div className="text-white/70 text-sm">
+                                Conversions
+                              </div>
+                            </div>
+                            <div className="text-center">
+                              <div
+                                className={`text-2xl font-bold ${getPerformanceColor(
+                                  performance.ctr,
+                                  "ctr"
+                                )}`}
+                              >
+                                {performance.ctr.toFixed(2)}%
+                              </div>
+                              <div className="text-white/70 text-sm">CTR</div>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -966,7 +994,7 @@ export default function CampaignsSection({
       <AdAnalysisModal
         isOpen={!!selectedAd}
         onClose={() => setSelectedAd(null)}
-        ad={selectedAd}
+        ad={selectedAd || {}}
         onAnalyze={onAnalyzeAd}
         onGenerateTags={onGenerateTags}
         onOptimize={onOptimizeAd}

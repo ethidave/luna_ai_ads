@@ -10,6 +10,7 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,15 +18,37 @@ export default function ForgotPasswordPage() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/auth/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          console.error("Failed to parse JSON response:", jsonError);
+          const text = await response.text();
+          console.error("Raw response:", text);
+          setError("Invalid response from server");
+          return;
+        }
+      } else {
+        console.error("Response is not JSON, content-type:", contentType);
+        const text = await response.text();
+        console.error("Raw response:", text);
+        setError("Invalid response format from server");
+        return;
+      }
 
       if (data.success) {
         setIsSuccess(true);
@@ -104,8 +127,8 @@ export default function ForgotPasswordPage() {
               Forgot Password?
             </h1>
             <p className="text-gray-600">
-              Enter your email address and we'll send you a link to reset your
-              password.
+              Enter your email address and we&apos;ll send you a link to reset
+              your password.
             </p>
           </div>
 

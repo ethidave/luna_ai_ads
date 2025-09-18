@@ -49,7 +49,7 @@ export default function AdCreationWizard({
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
-  const [selectedPlatforms, setSelectedPlatforms] = useState([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [adObjective, setAdObjective] = useState("");
   const [targetAudience, setTargetAudience] = useState("");
   const [budget, setBudget] = useState("");
@@ -204,12 +204,12 @@ export default function AdCreationWizard({
         estimatedReach: "50,000-100,000 people",
         predictedCTR: "3.5-5.2%",
         predictedCPC: "$0.80-1.50",
-      });
+      } as any);
       setIsAnalyzing(false);
     }, 3000);
   };
 
-  const handlePlatformToggle = (platformId) => {
+  const handlePlatformToggle = (platformId: string) => {
     setSelectedPlatforms((prev) =>
       prev.includes(platformId)
         ? prev.filter((id) => id !== platformId)
@@ -365,21 +365,23 @@ export default function AdCreationWizard({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <h5 className="text-white font-medium mb-2">
-                          Industry: {analysisResult.industry}
+                          Industry: {(analysisResult as any).industry}
                         </h5>
                         <h5 className="text-white font-medium mb-2">
                           Key Features:
                         </h5>
                         <ul className="text-white/70 text-sm space-y-1">
-                          {analysisResult.keyFeatures.map((feature, index) => (
-                            <li
-                              key={index}
-                              className="flex items-center space-x-2"
-                            >
-                              <div className="w-1 h-1 bg-white/70 rounded-full" />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
+                          {(analysisResult as any).keyFeatures.map(
+                            (feature: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-center space-x-2"
+                              >
+                                <div className="w-1 h-1 bg-white/70 rounded-full" />
+                                <span>{feature}</span>
+                              </li>
+                            )
+                          )}
                         </ul>
                       </div>
                       <div>
@@ -387,8 +389,8 @@ export default function AdCreationWizard({
                           Suggested Keywords:
                         </h5>
                         <div className="flex flex-wrap gap-2">
-                          {analysisResult.suggestedKeywords.map(
-                            (keyword, index) => (
+                          {(analysisResult as any).suggestedKeywords.map(
+                            (keyword: string, index: number) => (
                               <span
                                 key={index}
                                 className="px-2 py-1 bg-white/10 rounded-full text-white text-sm"
@@ -702,4 +704,3 @@ export default function AdCreationWizard({
     </AnimatePresence>
   );
 }
-
