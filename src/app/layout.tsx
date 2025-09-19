@@ -39,10 +39,10 @@ export const metadata: Metadata = {
     siteName: "Luna AI",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Luna AI",
+        alt: "Luna AI - AI-Powered Ad Management",
       },
     ],
     locale: "en_US",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     title: "Luna AI - AI-Powered Ad Management",
     description:
       "Revolutionary ad management platform powered by AI",
-    images: ["/og-image.png"],
+    images: ["/og-image.svg"],
   },
   robots: {
     index: true,
@@ -75,6 +75,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
+      </head>
       <body className={inter.className}>
         <AuthProvider>
           <Providers>

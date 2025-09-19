@@ -54,7 +54,7 @@ export default function LunaLogo({
             className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-2xl blur-sm"
           />
 
-          {/* Brain Icon */}
+          {/* AI Symbol - Custom Design */}
           <motion.div
             animate={{
               y: [0, -2, 0],
@@ -66,7 +66,19 @@ export default function LunaLogo({
             }}
             className="relative z-10"
           >
-            <Brain className="w-6 h-6 text-white drop-shadow-lg" />
+            <div className="w-6 h-6 text-white drop-shadow-lg flex items-center justify-center">
+              <div className="relative">
+                {/* AI Symbol - Stylized "AI" */}
+                <div className="text-xs font-bold leading-none">
+                  <div className="flex items-center justify-center">
+                    <span className="text-white">AI</span>
+                  </div>
+                </div>
+                {/* Decorative elements */}
+                <div className="absolute -top-1 -right-1 w-1 h-1 bg-yellow-300 rounded-full"></div>
+                <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-blue-300 rounded-full"></div>
+              </div>
+            </div>
           </motion.div>
 
           {/* Floating Sparkles */}
