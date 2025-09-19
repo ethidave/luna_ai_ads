@@ -4,21 +4,19 @@ import { safeJsonParse } from './json-parser';
 const getApiBaseUrl = () => {
   // Check if we're in the browser
   if (typeof window !== 'undefined') {
-    // For mobile devices, try to detect the server IP
     const hostname = window.location.hostname;
-    const port = window.location.port;
     
-    // If running on localhost or 127.0.0.1, use the same hostname but port 8000
+    // If running on localhost or 127.0.0.1, use local development API
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return `http://${hostname}:8000/api`;
     }
     
-    // For other domains, use the same domain but port 8000
-    return `http://${hostname}:8000/api`;
+    // For production domains, use the production API URL
+    return 'https://api.lunaais.com/api';
   }
   
-  // Server-side fallback
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+  // Server-side fallback - use production API URL
+  return process.env.NEXT_PUBLIC_API_URL || 'https://api.lunaais.com/api';
 };
 
 export const API_CONFIG = {

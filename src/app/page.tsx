@@ -184,7 +184,7 @@ export default function Home() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-        const response = await apiRequest('/packages', {
+        const response = await apiRequest("/packages", {
           method: "GET",
           headers: {
             Accept: "application/json",

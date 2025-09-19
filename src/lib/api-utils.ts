@@ -3,19 +3,18 @@ export const getApiUrl = (endpoint: string = '') => {
   // Check if we're in the browser
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    const protocol = window.location.protocol;
     
-    // For mobile devices, use the same hostname but port 8000
+    // For local development (localhost)
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return `${protocol}//${hostname}:8000/api${endpoint}`;
+      return `http://${hostname}:8000/api${endpoint}`;
     }
     
-    // For other domains, use the same domain but port 8000
-    return `${protocol}//${hostname}:8000/api${endpoint}`;
+    // For production, use the production API URL
+    return `https://api.lunaais.com/api${endpoint}`;
   }
   
-  // Server-side fallback
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+  // Server-side fallback - use production API URL
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.lunaais.com/api';
   return `${baseUrl}${endpoint}`;
 };
 
