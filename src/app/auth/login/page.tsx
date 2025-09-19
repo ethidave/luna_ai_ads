@@ -140,12 +140,12 @@ export default function LoginPage() {
           ))}
         </div>
 
-        <div className="relative z-10 flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 flex items-center justify-center min-h-screen py-4 px-4 sm:py-12 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-md w-full space-y-8"
+            className="max-w-md w-full space-y-6 sm:space-y-8"
           >
             {/* Header */}
             <div className="text-center">
@@ -174,7 +174,7 @@ export default function LoginPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-5xl font-black mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                className="text-3xl sm:text-4xl lg:text-5xl font-black mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
               >
                 Welcome Back
               </motion.h1>
@@ -183,7 +183,7 @@ export default function LoginPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-blue-100 text-lg"
+                className="text-blue-100 text-base sm:text-lg px-4"
               >
                 Sign in to your{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-bold">
@@ -201,7 +201,7 @@ export default function LoginPage() {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-xl"></div>
-              <div className="relative bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+              <div className="relative bg-white/10 backdrop-blur-2xl rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 shadow-2xl">
                 <ErrorDisplay
                   error={error}
                   onDismiss={clearError}
@@ -227,67 +227,74 @@ export default function LoginPage() {
                     </div>
                   )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 sm:space-y-6"
+                >
                   <div>
-                    <label className="block text-sm font-semibold text-white/90 mb-3">
+                    <label className="block text-sm font-semibold text-white/90 mb-2 sm:mb-3">
                       Email Address
                     </label>
                     <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400 group-focus-within:text-purple-400 transition-colors" />
+                      <Mail className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-blue-400 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-lg backdrop-blur-sm"
+                        className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-base sm:text-lg backdrop-blur-sm"
                         placeholder="Enter your email"
                         required
+                        autoComplete="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-white/90 mb-3">
+                    <label className="block text-sm font-semibold text-white/90 mb-2 sm:mb-3">
                       Password
                     </label>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-400 group-focus-within:text-purple-400 transition-colors" />
+                      <Lock className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-blue-400 group-focus-within:text-purple-400 transition-colors" />
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full pl-12 pr-14 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-lg backdrop-blur-sm"
+                        className="w-full pl-10 sm:pl-12 pr-12 sm:pr-14 py-3 sm:py-4 bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-base sm:text-lg backdrop-blur-sm"
                         placeholder="Enter your password"
                         required
+                        autoComplete="current-password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-purple-400 transition-colors duration-300"
+                        className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-blue-400 hover:text-purple-400 transition-colors duration-300 p-1 touch-manipulation"
                       >
                         {showPassword ? (
-                          <EyeOff className="w-5 h-5" />
+                          <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                         ) : (
-                          <Eye className="w-5 h-5" />
+                          <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                         )}
                       </button>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
                     <label className="flex items-center group cursor-pointer">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 text-purple-600 bg-white/10 border-white/20 rounded focus:ring-purple-500 focus:ring-2 transition-all"
+                        className="w-4 h-4 text-purple-600 bg-white/10 border-white/20 rounded focus:ring-purple-500 focus:ring-2 transition-all touch-manipulation"
                       />
                       <span className="ml-2 text-sm text-white/80 group-hover:text-white transition-colors">
                         Remember me
                       </span>
                     </label>
                     <Link
-                      href="/forgot-password"
-                      className="text-sm text-blue-400 hover:text-purple-400 transition-colors duration-300"
+                      href="/auth/forgot-password"
+                      className="text-sm text-blue-400 hover:text-purple-400 transition-colors duration-300 touch-manipulation"
                     >
                       Forgot password?
                     </Link>
@@ -298,7 +305,7 @@ export default function LoginPage() {
                     whileTap={{ scale: 0.98 }}
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-4 px-6 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-500 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group relative"
+                    className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-3 sm:py-4 px-6 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all duration-500 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group relative touch-manipulation min-h-[48px]"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     {isLoading ? (
@@ -325,14 +332,14 @@ export default function LoginPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 gap-4">
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <motion.button
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       type="button"
                       onClick={() => handleSocialLogin("google")}
                       disabled={isLoading}
-                      className="w-full inline-flex justify-center items-center py-3 px-4 border border-white/20 rounded-2xl bg-white/10 text-sm font-semibold text-white hover:bg-white/20 transition-all duration-300 disabled:opacity-50 backdrop-blur-sm group"
+                      className="w-full inline-flex justify-center items-center py-3 px-4 border border-white/20 rounded-xl sm:rounded-2xl bg-white/10 text-sm font-semibold text-white hover:bg-white/20 transition-all duration-300 disabled:opacity-50 backdrop-blur-sm group touch-manipulation min-h-[48px]"
                     >
                       <svg
                         className="w-5 h-5 group-hover:scale-110 transition-transform"
@@ -364,7 +371,7 @@ export default function LoginPage() {
                       type="button"
                       onClick={() => handleSocialLogin("facebook")}
                       disabled={isLoading}
-                      className="w-full inline-flex justify-center items-center py-3 px-4 border border-white/20 rounded-2xl bg-white/10 text-sm font-semibold text-white hover:bg-white/20 transition-all duration-300 disabled:opacity-50 backdrop-blur-sm group"
+                      className="w-full inline-flex justify-center items-center py-3 px-4 border border-white/20 rounded-xl sm:rounded-2xl bg-white/10 text-sm font-semibold text-white hover:bg-white/20 transition-all duration-300 disabled:opacity-50 backdrop-blur-sm group touch-manipulation min-h-[48px]"
                     >
                       <svg
                         className="w-5 h-5 group-hover:scale-110 transition-transform"

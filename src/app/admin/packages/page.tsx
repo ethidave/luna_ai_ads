@@ -725,7 +725,7 @@ export default function PackagesPage() {
             <select
               value={`${sortBy}-${sortOrder}`}
               onChange={(e) => {
-                const [field, order] = e.target.value.split('-');
+                const [field, order] = e.target.value.split("-");
                 setSortBy(field);
                 setSortOrder(order as "asc" | "desc");
               }}
@@ -748,13 +748,16 @@ export default function PackagesPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-3">
               <span className="text-blue-400 font-medium">
-                {selectedPackages.length} package{selectedPackages.length > 1 ? 's' : ''} selected
+                {selectedPackages.length} package
+                {selectedPackages.length > 1 ? "s" : ""} selected
               </span>
               <button
                 onClick={handleSelectAll}
                 className="text-blue-300 hover:text-blue-200 text-sm underline"
               >
-                {selectedPackages.length === filteredPackages.length ? 'Deselect All' : 'Select All'}
+                {selectedPackages.length === filteredPackages.length
+                  ? "Deselect All"
+                  : "Select All"}
               </button>
             </div>
             <div className="flex items-center space-x-3">
@@ -788,7 +791,13 @@ export default function PackagesPage() {
       )}
 
       {/* Packages Grid */}
-      <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6' : 'space-y-4'}`}>
+      <div
+        className={`${
+          viewMode === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+            : "space-y-4"
+        }`}
+      >
         {filteredPackages.map((pkg) => (
           <motion.div
             key={pkg.id}
