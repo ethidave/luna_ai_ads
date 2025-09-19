@@ -39,6 +39,15 @@ const navigationItems = [
     borderColor: "border-green-500/20",
   },
   {
+    id: "packages",
+    name: "Packages",
+    icon: Package,
+    href: "/admin/packages",
+    color: "text-purple-400",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
+  },
+  {
     id: "campaigns",
     name: "Campaigns",
     icon: Target,
@@ -285,7 +294,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     <h1 className="text-lg sm:text-xl font-bold text-white">
                       Admin Panel
                     </h1>
-                    <p className="text-white/70 text-xs sm:text-sm">Control Center</p>
+                    <p className="text-white/70 text-xs sm:text-sm">
+                      Control Center
+                    </p>
                   </div>
                 </div>
                 <button
@@ -363,7 +374,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           : "text-white/70 group-hover:text-white"
                       }`}
                     />
-                    <span className="font-medium text-sm sm:text-base">{item.name}</span>
+                    <span className="font-medium text-sm sm:text-base">
+                      {item.name}
+                    </span>
                     {isActive && (
                       <motion.div
                         layoutId="activeIndicator"
