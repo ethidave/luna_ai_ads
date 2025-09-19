@@ -140,6 +140,9 @@ export default function PackagesPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [showModal, setShowModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<
     PackageData | undefined
@@ -149,6 +152,9 @@ export default function PackagesPage() {
   const [showPriceHistory, setShowPriceHistory] = useState<
     Record<string, boolean>
   >({});
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+  const [bulkAction, setBulkAction] = useState("");
 
   useEffect(() => {
     fetchPackages();
@@ -461,17 +467,113 @@ export default function PackagesPage() {
     }
   };
 
-  const filteredPackages = packages.filter((pkg) => {
-    const matchesSearch =
-      pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pkg.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "active" && pkg.status === "active") ||
-      (statusFilter === "inactive" && pkg.status === "inactive") ||
-      (statusFilter === "draft" && pkg.status === "draft");
-    return matchesSearch && matchesStatus;
-  });
+  // Bulk actions
+  const handleBulkAction = async () => {
+    if (selectedPackages.length === 0) {
+      setError("Please select packages to perform bulk action");
+      return;
+    }
+
+    if (!bulkAction) {
+      setError("Please select a bulk action");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setError("");
+      setSuccess("");
+
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("No authentication token found. Please login again.");
+      }
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/admin/packages/bulk-action`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            packageIds: selectedPackages,
+            action: bulkAction,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setSuccess(`Bulk action completed successfully!`);
+          setTimeout(() => setSuccess(""), 3000);
+          setSelectedPackages([]);
+          setBulkAction("");
+          fetchPackages(); // Refresh the list
+        } else {
+          throw new Error(data.message || "Bulk action failed");
+        }
+      } else {
+        throw new Error(`Bulk action failed: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error performing bulk action:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Bulk action failed";
+      setError(errorMessage);
+      setTimeout(() => setError(""), 5000);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSelectPackage = (packageId: string) => {
+    setSelectedPackages((prev) =>
+      prev.includes(packageId)
+        ? prev.filter((id) => id !== packageId)
+        : [...prev, packageId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedPackages.length === filteredPackages.length) {
+      setSelectedPackages([]);
+    } else {
+      setSelectedPackages(filteredPackages.map((pkg) => pkg.id!));
+    }
+  };
+
+  const filteredPackages = packages
+    .filter((pkg) => {
+      const matchesSearch =
+        pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        pkg.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && pkg.status === "active") ||
+        (statusFilter === "inactive" && pkg.status === "inactive") ||
+        (statusFilter === "draft" && pkg.status === "draft");
+      const matchesType = typeFilter === "all" || pkg.type === typeFilter;
+      return matchesSearch && matchesStatus && matchesType;
+    })
+    .sort((a, b) => {
+      let aValue: any = a[sortBy as keyof PackageData];
+      let bValue: any = b[sortBy as keyof PackageData];
+
+      if (typeof aValue === "string") {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+
+      if (sortOrder === "asc") {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -527,6 +629,28 @@ export default function PackagesPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-2 rounded-lg transition-all duration-300 ${
+                viewMode === "grid"
+                  ? "bg-blue-500/20 text-blue-400"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode("table")}
+              className={`p-2 rounded-lg transition-all duration-300 ${
+                viewMode === "table"
+                  ? "bg-blue-500/20 text-blue-400"
+                  : "bg-white/10 text-white/70 hover:bg-white/20"
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+            </button>
+          </div>
           <button
             onClick={fetchPackages}
             className="px-3 sm:px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center space-x-2 text-sm sm:text-base touch-manipulation"
@@ -565,7 +689,7 @@ export default function PackagesPage() {
 
       {/* Filters and Search */}
       <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="relative">
             <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4 sm:w-5 sm:h-5" />
             <input
@@ -586,16 +710,85 @@ export default function PackagesPage() {
             <option value="inactive">Inactive</option>
             <option value="draft">Draft</option>
           </select>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+          >
+            <option value="all">All Types</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="weekly">Weekly</option>
+            <option value="daily">Daily</option>
+          </select>
           <div className="flex items-center space-x-2">
-            <button className="p-2.5 sm:p-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 touch-manipulation">
-              <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
+            <select
+              value={`${sortBy}-${sortOrder}`}
+              onChange={(e) => {
+                const [field, order] = e.target.value.split('-');
+                setSortBy(field);
+                setSortOrder(order as "asc" | "desc");
+              }}
+              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+            >
+              <option value="name-asc">Name A-Z</option>
+              <option value="name-desc">Name Z-A</option>
+              <option value="price-asc">Price Low-High</option>
+              <option value="price-desc">Price High-Low</option>
+              <option value="createdAt-desc">Newest First</option>
+              <option value="createdAt-asc">Oldest First</option>
+            </select>
           </div>
         </div>
       </div>
 
+      {/* Bulk Actions */}
+      {selectedPackages.length > 0 && (
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+            <div className="flex items-center space-x-3">
+              <span className="text-blue-400 font-medium">
+                {selectedPackages.length} package{selectedPackages.length > 1 ? 's' : ''} selected
+              </span>
+              <button
+                onClick={handleSelectAll}
+                className="text-blue-300 hover:text-blue-200 text-sm underline"
+              >
+                {selectedPackages.length === filteredPackages.length ? 'Deselect All' : 'Select All'}
+              </button>
+            </div>
+            <div className="flex items-center space-x-3">
+              <select
+                value={bulkAction}
+                onChange={(e) => setBulkAction(e.target.value)}
+                className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              >
+                <option value="">Select Action</option>
+                <option value="activate">Activate</option>
+                <option value="deactivate">Deactivate</option>
+                <option value="delete">Delete</option>
+                <option value="duplicate">Duplicate</option>
+              </select>
+              <button
+                onClick={handleBulkAction}
+                disabled={!bulkAction}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm"
+              >
+                Apply Action
+              </button>
+              <button
+                onClick={() => setSelectedPackages([])}
+                className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 text-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Packages Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className={`${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6' : 'space-y-4'}`}>
         {filteredPackages.map((pkg) => (
           <motion.div
             key={pkg.id}
@@ -605,6 +798,12 @@ export default function PackagesPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={selectedPackages.includes(pkg.id!)}
+                  onChange={() => handleSelectPackage(pkg.id!)}
+                  className="w-4 h-4 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
+                />
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                   <Package className="w-6 h-6 text-white" />
                 </div>
