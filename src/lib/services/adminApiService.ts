@@ -1,5 +1,4 @@
-import { apiClient } from '../api-config';
-import { API_CONFIG } from '../api-config';
+import { apiRequest, getApiUrl } from '../api-utils';
 
 // Types for Admin API responses
 export interface AdminUser {
@@ -194,8 +193,6 @@ interface ApiResponse<T> {
 
 // Admin API Service Class
 export class AdminApiService {
-  private baseUrl = `${API_CONFIG.BASE_URL}/admin`;
-
   private async makeRequest<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -203,12 +200,12 @@ export class AdminApiService {
     try {
       const token = localStorage.getItem('auth_token');
       
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      // Add admin prefix to endpoint
+      const adminEndpoint = `/admin${endpoint}`;
+      
+      const response = await apiRequest(adminEndpoint, {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
           ...(token && { Authorization: `Bearer ${token}` }),
           ...options.headers,
         },

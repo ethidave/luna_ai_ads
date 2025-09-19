@@ -8,7 +8,7 @@ import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorDisplay, LoadingWithError } from "@/components/ErrorDisplay";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { logger } from "@/lib/console-utils";
-import { apiUrl } from "@/lib/api-utils";
+import { apiUrl, apiRequest } from "@/lib/api-utils";
 import BackendConnectionError from "@/components/BackendConnectionError";
 import {
   ArrowRight,
@@ -184,7 +184,7 @@ export default function Home() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-        const response = await fetch(`${apiBaseUrl}/packages`, {
+        const response = await apiRequest('/packages', {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -391,7 +391,7 @@ export default function Home() {
     setIsSubmittingContact(true);
 
     try {
-      const response = await fetch(apiUrl("/contact"), {
+      const response = await apiRequest("/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -667,7 +667,7 @@ export default function Home() {
               {/* Backend connection error */}
               {usingFallbackPackages && (
                 <div className="mt-6">
-                  <BackendConnectionError 
+                  <BackendConnectionError
                     onRetry={() => {
                       setUsingFallbackPackages(false);
                       setPackagesLoading(true);

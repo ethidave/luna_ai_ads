@@ -1,4 +1,4 @@
-import { API_CONFIG } from '../api-config';
+import { apiRequest, getApiUrl } from '../api-utils';
 
 export interface User {
   id: number;
@@ -59,30 +59,14 @@ export interface DeleteAccountData {
 }
 
 class AuthService {
-  private baseURL: string;
-
-  constructor() {
-    this.baseURL = API_CONFIG.BASE_URL;
-  }
-
   private async makeRequest<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<{ success: boolean; data?: T; error?: string; message?: string; user?: User; token?: string }> {
     try {
-      const url = `${this.baseURL}${endpoint}`;
+      console.log('Making auth request to:', getApiUrl(endpoint));
       
-      console.log('Making auth request to:', url);
-      
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          ...options.headers,
-        },
-      });
+      const response = await apiRequest(endpoint, options);
 
       console.log('Auth response status:', response.status);
 
@@ -146,7 +130,7 @@ class AuthService {
   // User Authentication
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     const response = await this.makeRequest<{ user: User; token: string }>(
-      API_CONFIG.ENDPOINTS.AUTH.LOGIN,
+      '/auth/login',
       {
         method: 'POST',
         body: JSON.stringify(credentials),
@@ -164,7 +148,7 @@ class AuthService {
 
   async register(data: RegisterData): Promise<AuthResponse> {
     const response = await this.makeRequest<{ user: User }>(
-      API_CONFIG.ENDPOINTS.AUTH.REGISTER,
+      '/auth/register',
       {
         method: 'POST',
         body: JSON.stringify(data),
@@ -181,7 +165,7 @@ class AuthService {
 
   async logout(): Promise<AuthResponse> {
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
+      '/auth/logout',
       {
         method: 'POST',
       }
@@ -198,7 +182,7 @@ class AuthService {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     
     const response = await this.makeRequest<{ user: User }>(
-      API_CONFIG.ENDPOINTS.AUTH.USER,
+      '/auth/user',
       {
         method: 'GET',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
@@ -215,7 +199,7 @@ class AuthService {
   // Admin Authentication
   async adminLogin(credentials: LoginCredentials): Promise<AuthResponse> {
     const response = await this.makeRequest<{ user: User; token: string }>(
-      API_CONFIG.ENDPOINTS.ADMIN.AUTH.SIGNIN,
+      '/admin/auth/login',
       {
         method: 'POST',
         body: JSON.stringify(credentials),
@@ -234,7 +218,7 @@ class AuthService {
   // Password Reset
   async forgotPassword(email: string): Promise<AuthResponse> {
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.FORGOT_PASSWORD,
+      '/auth/forgot-password',
       {
         method: 'POST',
         body: JSON.stringify({ email }),
@@ -250,7 +234,7 @@ class AuthService {
 
   async resetPassword(data: ResetPasswordData): Promise<AuthResponse> {
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.RESET_PASSWORD,
+      '/auth/reset-password',
       {
         method: 'POST',
         body: JSON.stringify(data),
@@ -267,7 +251,7 @@ class AuthService {
   // Email Verification
   async verifyEmail(token: string): Promise<AuthResponse> {
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.VERIFY_EMAIL,
+      '/auth/verify-email',
       {
         method: 'POST',
         body: JSON.stringify({ token }),
@@ -285,7 +269,7 @@ class AuthService {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.SEND_VERIFICATION,
+      '/auth/send-verification',
       {
         method: 'POST',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
@@ -304,7 +288,7 @@ class AuthService {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     
     const response = await this.makeRequest<{ user: User }>(
-      API_CONFIG.ENDPOINTS.AUTH.PROFILE,
+      '/auth/profile',
       {
         method: 'PUT',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
@@ -329,7 +313,7 @@ class AuthService {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.CHANGE_PASSWORD,
+      '/auth/change-password',
       {
         method: 'POST',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
@@ -349,7 +333,7 @@ class AuthService {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     
     const response = await this.makeRequest(
-      API_CONFIG.ENDPOINTS.AUTH.ACCOUNT,
+      '/auth/account',
       {
         method: 'DELETE',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
@@ -373,7 +357,7 @@ class AuthService {
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     
     const response = await this.makeRequest<{ token: string }>(
-      API_CONFIG.ENDPOINTS.AUTH.REFRESH,
+      '/auth/refresh',
       {
         method: 'POST',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
