@@ -160,11 +160,12 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`lg:hidden p-2 rounded-lg transition-colors duration-300 ${
+              className={`lg:hidden p-2 rounded-lg transition-colors duration-300 touch-manipulation ${
                 isScrolled
                   ? "text-gray-700 hover:bg-gray-100"
                   : "text-white hover:bg-white/10"
               }`}
+              aria-label="Toggle mobile menu"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -218,7 +219,7 @@ export default function Header() {
                       >
                         <button
                           onClick={(e) => handleNavClick(e, item)}
-                          className="block text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300 w-full text-left"
+                          className="block text-gray-700 hover:text-blue-600 font-medium py-3 px-2 transition-colors duration-300 w-full text-left touch-manipulation"
                         >
                           {item.name}
                         </button>
@@ -228,7 +229,7 @@ export default function Header() {
                       <Link
                         href="/auth/login"
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300"
+                        className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium py-3 px-2 transition-colors duration-300 touch-manipulation"
                       >
                         <LogIn className="w-4 h-4" />
                         <span>Login</span>
@@ -236,7 +237,7 @@ export default function Header() {
                       <Link
                         href="/auth/register"
                         onClick={() => setIsMenuOpen(false)}
-                        className="group relative flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium hover:shadow-2xl transition-all duration-500 overflow-hidden"
+                        className="group relative flex items-center space-x-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium hover:shadow-2xl transition-all duration-500 overflow-hidden touch-manipulation"
                       >
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"

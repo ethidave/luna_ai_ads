@@ -291,10 +291,10 @@ export default function ComprehensiveAdminSettings() {
   };
 
   const renderGeneralSettings = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white mb-6">General Settings</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">General Settings</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className="block text-sm font-medium text-white/90 mb-2">
             Site Name
@@ -305,7 +305,7 @@ export default function ComprehensiveAdminSettings() {
             onChange={(e) =>
               setSettings({ ...settings, siteName: e.target.value })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
         </div>
 
@@ -319,7 +319,7 @@ export default function ComprehensiveAdminSettings() {
             onChange={(e) =>
               setSettings({ ...settings, adminEmail: e.target.value })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
         </div>
 
@@ -333,7 +333,7 @@ export default function ComprehensiveAdminSettings() {
             onChange={(e) =>
               setSettings({ ...settings, siteUrl: e.target.value })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
         </div>
 
@@ -347,7 +347,7 @@ export default function ComprehensiveAdminSettings() {
             onChange={(e) =>
               setSettings({ ...settings, supportEmail: e.target.value })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
         </div>
 
@@ -360,7 +360,7 @@ export default function ComprehensiveAdminSettings() {
             onChange={(e) =>
               setSettings({ ...settings, timezone: e.target.value })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           >
             <option value="UTC">UTC</option>
             <option value="America/New_York">Eastern Time</option>
@@ -382,7 +382,7 @@ export default function ComprehensiveAdminSettings() {
             onChange={(e) =>
               setSettings({ ...settings, language: e.target.value })
             }
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           >
             <option value="en">English</option>
             <option value="es">Spanish</option>
@@ -408,7 +408,7 @@ export default function ComprehensiveAdminSettings() {
             setSettings({ ...settings, siteDescription: e.target.value })
           }
           rows={3}
-          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm sm:text-base"
         />
       </div>
 
@@ -501,7 +501,7 @@ export default function ComprehensiveAdminSettings() {
                       },
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
 
@@ -521,7 +521,7 @@ export default function ComprehensiveAdminSettings() {
                       },
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -550,7 +550,7 @@ export default function ComprehensiveAdminSettings() {
                     },
                   })
                 }
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
               />
             </div>
 
@@ -570,7 +570,7 @@ export default function ComprehensiveAdminSettings() {
                     },
                   })
                 }
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
               />
             </div>
           </div>
@@ -701,7 +701,7 @@ export default function ComprehensiveAdminSettings() {
                       },
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
 
@@ -724,7 +724,7 @@ export default function ComprehensiveAdminSettings() {
                       },
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
 
@@ -747,7 +747,7 @@ export default function ComprehensiveAdminSettings() {
                       },
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
 
@@ -770,7 +770,7 @@ export default function ComprehensiveAdminSettings() {
                       },
                     })
                   }
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -1062,7 +1062,7 @@ export default function ComprehensiveAdminSettings() {
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={() => setShowPaymentSettings(true)}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 text-sm sm:text-base touch-manipulation"
                 >
                   Basic Settings
                 </button>
@@ -1089,39 +1089,39 @@ export default function ComprehensiveAdminSettings() {
               Backup & Restore
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Create Backup */}
-              <div className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-200">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="p-2 bg-blue-500/20 rounded-lg">
-                    <Archive className="w-6 h-6 text-blue-400" />
+              <div className="p-4 sm:p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-200">
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-blue-500/20 rounded-lg">
+                    <Archive className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-base sm:text-lg font-semibold text-white">
                     Create Backup
                   </h3>
                 </div>
-                <p className="text-white/70 text-sm mb-4">
+                <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4">
                   Create a manual backup of your current settings configuration
                 </p>
                 <button
                   onClick={() => setShowBackupModal(true)}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200"
+                  className="w-full px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm sm:text-base touch-manipulation"
                 >
                   Open Backup Manager
                 </button>
               </div>
 
               {/* Quick Backup */}
-              <div className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-200">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="p-2 bg-green-500/20 rounded-lg">
-                    <Save className="w-6 h-6 text-green-400" />
+              <div className="p-4 sm:p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-200">
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-green-500/20 rounded-lg">
+                    <Save className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-base sm:text-lg font-semibold text-white">
                     Quick Backup
                   </h3>
                 </div>
-                <p className="text-white/70 text-sm mb-4">
+                <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4">
                   Create a quick backup with default settings
                 </p>
                 <button
@@ -1143,28 +1143,28 @@ export default function ComprehensiveAdminSettings() {
                       setTimeout(() => setSaveStatus("idle"), 3000);
                     }
                   }}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200"
+                  className="w-full px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 text-sm sm:text-base touch-manipulation"
                 >
                   Create Quick Backup
                 </button>
               </div>
 
               {/* Restore Settings */}
-              <div className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-200">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="p-2 bg-purple-500/20 rounded-lg">
-                    <History className="w-6 h-6 text-purple-400" />
+              <div className="p-4 sm:p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-200">
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-purple-500/20 rounded-lg">
+                    <History className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
                   </div>
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-base sm:text-lg font-semibold text-white">
                     Restore Settings
                   </h3>
                 </div>
-                <p className="text-white/70 text-sm mb-4">
+                <p className="text-white/70 text-xs sm:text-sm mb-3 sm:mb-4">
                   Restore settings from a previous backup
                 </p>
                 <button
                   onClick={() => setShowBackupModal(true)}
-                  className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200"
+                  className="w-full px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-sm sm:text-base touch-manipulation"
                 >
                   View Backups
                 </button>
@@ -1257,12 +1257,12 @@ export default function ComprehensiveAdminSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Admin Settings</h1>
-          <p className="text-white/70 mt-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Admin Settings</h1>
+          <p className="text-white/70 mt-2 text-sm sm:text-base">
             Manage your application settings and configurations
           </p>
         </div>
@@ -1294,25 +1294,25 @@ export default function ComprehensiveAdminSettings() {
           </motion.div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
-              <nav className="space-y-2">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6">
+              <nav className="space-y-1 sm:space-y-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      className={`w-full flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition-all duration-200 touch-manipulation ${
                         activeTab === tab.id
                           ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                           : "text-white/70 hover:text-white hover:bg-white/10"
                       }`}
                     >
-                      <Icon className="w-5 h-5" />
-                      <span className="font-medium">{tab.name}</span>
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                      <span className="font-medium text-sm sm:text-base">{tab.name}</span>
                     </button>
                   );
                 })}
@@ -1322,25 +1322,25 @@ export default function ComprehensiveAdminSettings() {
 
           {/* Content */}
           <div className="lg:col-span-3">
-            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 sm:p-6">
               {renderContent()}
             </div>
           </div>
         </div>
 
         {/* Save Button */}
-        <div className="mt-8 flex justify-end">
+        <div className="mt-6 sm:mt-8 flex justify-end">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
           >
             {isSaving ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
-              <Save className="w-5 h-5" />
+              <Save className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
-            <span>{isSaving ? "Saving..." : "Save Settings"}</span>
+            <span className="text-sm sm:text-base">{isSaving ? "Saving..." : "Save Settings"}</span>
           </button>
         </div>
       </div>

@@ -482,20 +482,20 @@ export default function Home() {
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-white to-transparent opacity-5 animate-pulse"></div>
           </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-20 lg:py-24">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-8 sm:py-16 lg:py-24">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="space-y-8"
+              className="space-y-6 sm:space-y-8"
             >
               {/* Main Heading */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
+              <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
                 Transform Your
-                <span className="block bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mt-4 mb-2">
+                <span className="block bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mt-2 sm:mt-4 mb-2">
                   Advertising
                 </span>
-                <span className="block text-4xl md:text-5xl lg:text-6xl mt-6">
+                <span className="block text-2xl sm:text-4xl md:text-5xl lg:text-6xl mt-4 sm:mt-6">
                   with AI
                 </span>
               </h1>
@@ -521,7 +521,7 @@ export default function Home() {
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-white text-purple-600 px-16 py-6 rounded-2xl font-bold text-2xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-4 shadow-xl"
+                  className="bg-white text-purple-600 px-6 sm:px-12 lg:px-16 py-4 sm:py-6 rounded-2xl font-bold text-lg sm:text-xl lg:text-2xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-2 sm:space-x-4 shadow-xl w-full sm:w-auto max-w-sm sm:max-w-none"
                   onClick={() =>
                     document
                       .getElementById("packages")
@@ -529,7 +529,7 @@ export default function Home() {
                   }
                 >
                   <span>Get Started Today</span>
-                  <ArrowRight className="w-7 h-7" />
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" />
                 </motion.button>
               </motion.div>
 
@@ -538,27 +538,27 @@ export default function Home() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto"
               >
                 <div className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
                     300%
                   </div>
-                  <div className="text-gray-300 text-lg">
+                  <div className="text-gray-300 text-base sm:text-lg">
                     Average ROI Increase
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
                     50%
                   </div>
-                  <div className="text-gray-300 text-lg">Time Saved</div>
+                  <div className="text-gray-300 text-base sm:text-lg">Time Saved</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
                     10K+
                   </div>
-                  <div className="text-gray-300 text-lg">Happy Customers</div>
+                  <div className="text-gray-300 text-base sm:text-lg">Happy Customers</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -650,11 +650,11 @@ export default function Home() {
         {/* Packages Section */}
         <section id="packages" className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Choose Your Package
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
                 Select the perfect plan for your business needs. All packages
                 include our core AI features.
               </p>
@@ -687,7 +687,7 @@ export default function Home() {
               loadingMessage="Loading packages..."
               errorTitle="Failed to load packages"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {packages &&
                   packages.map((pkg, index) => (
                     <motion.div
@@ -695,8 +695,8 @@ export default function Home() {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className={`relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 ${
-                        pkg.isPopular ? "ring-2 ring-purple-500 scale-105" : ""
+                      className={`relative bg-white rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 ${
+                        pkg.isPopular ? "ring-2 ring-purple-500 sm:scale-105" : ""
                       }`}
                     >
                       {pkg.isPopular && (
@@ -707,30 +707,30 @@ export default function Home() {
                         </div>
                       )}
 
-                      <div className="text-center mb-8">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      <div className="text-center mb-6 sm:mb-8">
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                           {pkg.name}
                         </h3>
-                        <p className="text-gray-600 mb-4">{pkg.description}</p>
-                        <div className="mb-6">
-                          <span className="text-5xl font-bold text-gray-900">
+                        <p className="text-gray-600 mb-4 text-sm sm:text-base">{pkg.description}</p>
+                        <div className="mb-4 sm:mb-6">
+                          <span className="text-4xl sm:text-5xl font-bold text-gray-900">
                             ${pkg.price}
                           </span>
-                          <span className="text-gray-600 ml-2">
+                          <span className="text-gray-600 ml-2 text-sm sm:text-base">
                             /{pkg.type.toLowerCase()}
                           </span>
                         </div>
                       </div>
 
-                      <div className="space-y-4 mb-8">
+                      <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                         {pkg.features.map(
                           (feature: string, featureIndex: number) => (
                             <div
                               key={featureIndex}
                               className="flex items-center"
                             >
-                              <CheckCircle className="w-5 h-5 text-purple-600 mr-3 flex-shrink-0" />
-                              <span className="text-gray-700">{feature}</span>
+                              <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mr-2 sm:mr-3 flex-shrink-0" />
+                              <span className="text-gray-700 text-sm sm:text-base">{feature}</span>
                             </div>
                           )
                         )}
@@ -740,7 +740,7 @@ export default function Home() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handlePackageSelect(pkg)}
-                        className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 ${
+                        className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 ${
                           pkg.isPopular
                             ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg"
                             : "bg-gray-100 text-gray-900 hover:bg-gray-200"
@@ -827,46 +827,46 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-24 bg-white">
+        <section id="contact" className="py-16 sm:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16">
               <div>
-                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Get in Touch
                 </h2>
-                <p className="text-xl text-gray-600 mb-8">
+                <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
                   Ready to transform your advertising? Let&apos;s discuss how
                   Luna AI can help your business grow.
                 </p>
 
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white">
-                      <Mail className="w-6 h-6" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-center space-x-3 sm:space-x-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white flex-shrink-0">
+                      <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Email</div>
-                      <div className="text-gray-600">hello@lunaai.com</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">Email</div>
+                      <div className="text-gray-600 text-sm sm:text-base">hello@lunaai.com</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white">
-                      <Phone className="w-6 h-6" />
+                  <div className="flex items-center space-x-3 sm:space-x-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white flex-shrink-0">
+                      <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Phone</div>
-                      <div className="text-gray-600">+1 (555) 123-4567</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">Phone</div>
+                      <div className="text-gray-600 text-sm sm:text-base">+1 (555) 123-4567</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white">
-                      <MapPin className="w-6 h-6" />
+                  <div className="flex items-center space-x-3 sm:space-x-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-white flex-shrink-0">
+                      <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900">Address</div>
-                      <div className="text-gray-600">
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">Address</div>
+                      <div className="text-gray-600 text-sm sm:text-base">
                         123 AI Street, Tech City, TC 12345
                       </div>
                     </div>
@@ -878,7 +878,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
-                className="bg-gray-50 rounded-3xl p-8"
+                className="bg-gray-50 rounded-3xl p-6 sm:p-8"
               >
                 {contactSubmitted ? (
                   <div className="text-center py-12">
@@ -894,8 +894,8 @@ export default function Home() {
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div>
                         <label
                           htmlFor="name"
@@ -910,7 +910,7 @@ export default function Home() {
                           value={contactForm.name}
                           onChange={handleContactChange}
                           required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          className="w-full px-3 sm:px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                           placeholder="Your name"
                         />
                       </div>
@@ -928,7 +928,7 @@ export default function Home() {
                           value={contactForm.email}
                           onChange={handleContactChange}
                           required
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          className="w-full px-3 sm:px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                           placeholder="your@email.com"
                         />
                       </div>
@@ -947,7 +947,7 @@ export default function Home() {
                         name="company"
                         value={contactForm.company}
                         onChange={handleContactChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        className="w-full px-3 sm:px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                         placeholder="Your company"
                       />
                     </div>
@@ -966,7 +966,7 @@ export default function Home() {
                         onChange={handleContactChange}
                         rows={4}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                        className="w-full px-3 sm:px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-base"
                         placeholder="Tell us about your project..."
                       />
                     </div>
@@ -976,7 +976,7 @@ export default function Home() {
                       disabled={isSubmittingContact}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                     >
                       {isSubmittingContact ? (
                         <>
@@ -998,19 +998,19 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 bg-gradient-to-r from-purple-600 to-pink-600">
+        <section className="py-16 sm:py-24 bg-gradient-to-r from-purple-600 to-pink-600">
           <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6">
               Ready to Transform Your Advertising?
             </h2>
-            <p className="text-xl text-gray-200 mb-8">
+            <p className="text-lg sm:text-xl text-gray-200 mb-6 sm:mb-8">
               Join thousands of businesses already using Luna AI to create
               better campaigns and drive more results.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300"
+              className="bg-white text-purple-600 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg transition-all duration-300 w-full sm:w-auto max-w-sm sm:max-w-none"
               onClick={() => router.push("/auth/register")}
             >
               Start Your Free Trial

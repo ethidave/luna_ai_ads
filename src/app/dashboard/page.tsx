@@ -563,10 +563,10 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6 sm:mb-8"
           >
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-2">
               Welcome back, {user?.name || user?.email}!
             </h1>
-            <p className="text-white/70 text-base sm:text-lg">
+            <p className="text-white/70 text-sm sm:text-base lg:text-lg">
               Manage your advertising campaigns with powerful optimization tools
             </p>
           </motion.div>
@@ -666,15 +666,15 @@ export default function DashboardPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 lg:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base ${
+                className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 lg:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-200 text-xs sm:text-sm lg:text-base touch-manipulation ${
                   activeTab === tab.id
                     ? "bg-white text-purple-600 shadow-lg"
                     : "text-white/70 hover:text-white hover:bg-white/10"
                 }`}
               >
                 <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="hidden xs:inline">{tab.label}</span>
-                <span className="xs:hidden">{tab.label.split(" ")[0]}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.label.split(" ")[0]}</span>
               </button>
             ))}
           </div>
@@ -751,20 +751,20 @@ export default function DashboardPage() {
                   </div>
                 )}
                 {/* Enhanced Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-xl border border-blue-400/30 rounded-2xl p-6 hover:shadow-2xl transition-all duration-300"
+                    className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-xl border border-blue-400/30 rounded-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                         <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl sm:text-3xl font-bold text-white">
+                        <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                           {summaryStats.totalImpressions.toLocaleString()}
                         </span>
                         <div className="flex items-center text-green-400 text-xs sm:text-sm">
@@ -773,7 +773,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                    <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-2">
                       Total Impressions
                     </h3>
                     <p className="text-blue-200 text-xs sm:text-sm">
@@ -786,14 +786,14 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-xl border border-green-400/30 rounded-2xl p-6 hover:shadow-2xl transition-all duration-300"
+                    className="bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-xl border border-green-400/30 rounded-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
                         <MousePointer className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl sm:text-3xl font-bold text-white">
+                        <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                           {summaryStats.totalClicks.toLocaleString()}
                         </span>
                         <div className="flex items-center text-green-400 text-xs sm:text-sm">
@@ -802,7 +802,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                    <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-2">
                       Total Clicks
                     </h3>
                     <p className="text-green-200 text-xs sm:text-sm">
@@ -815,14 +815,14 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-xl border border-purple-400/30 rounded-2xl p-6 hover:shadow-2xl transition-all duration-300"
+                    className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-xl border border-purple-400/30 rounded-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                         <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl sm:text-3xl font-bold text-white">
+                        <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                           ${summaryStats.totalSpend.toLocaleString()}
                         </span>
                         <div className="flex items-center text-red-400 text-xs sm:text-sm">
@@ -831,7 +831,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                    <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-2">
                       Total Spend
                     </h3>
                     <p className="text-purple-200 text-xs sm:text-sm">
@@ -844,14 +844,14 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 backdrop-blur-xl border border-pink-400/30 rounded-2xl p-6 hover:shadow-2xl transition-all duration-300"
+                    className="bg-gradient-to-br from-pink-500/20 to-pink-600/20 backdrop-blur-xl border border-pink-400/30 rounded-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
                         <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl sm:text-3xl font-bold text-white">
+                        <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                           {summaryStats.totalConversions.toLocaleString()}
                         </span>
                         <div className="flex items-center text-green-400 text-xs sm:text-sm">
@@ -860,7 +860,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-2">
+                    <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-2">
                       Conversions
                     </h3>
                     <p className="text-pink-200 text-xs sm:text-sm">

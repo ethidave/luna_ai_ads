@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   viewport: {
     width: "device-width",
     initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
+    maximumScale: 5,
+    userScalable: true,
   },
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   openGraph: {

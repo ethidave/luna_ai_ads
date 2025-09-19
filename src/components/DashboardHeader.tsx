@@ -244,7 +244,8 @@ export default function DashboardHeader() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-300"
+              className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-300 touch-manipulation"
+              aria-label="Toggle mobile menu"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -274,16 +275,16 @@ export default function DashboardHeader() {
                   <div className="px-4 py-6 space-y-4">
                     {/* User Info */}
                     <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-medium flex-shrink-0">
                         {user?.name?.charAt(0)?.toUpperCase() ||
                           user?.email?.charAt(0)?.toUpperCase() ||
                           "U"}
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-gray-900 truncate">
                           {user?.name || "User"}
                         </p>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
+                        <p className="text-sm text-gray-500 truncate">{user?.email}</p>
                       </div>
                     </div>
 
@@ -300,9 +301,9 @@ export default function DashboardHeader() {
                           <Link
                             href={item.href}
                             onClick={() => setIsMenuOpen(false)}
-                            className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 font-medium py-2 transition-colors duration-300"
+                            className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 font-medium py-3 px-2 transition-colors duration-300 touch-manipulation"
                           >
-                            <IconComponent className="w-5 h-5" />
+                            <IconComponent className="w-5 h-5 flex-shrink-0" />
                             <span>{item.name}</span>
                           </Link>
                         </motion.div>
@@ -315,9 +316,9 @@ export default function DashboardHeader() {
                           handleSignOut();
                           setIsMenuOpen(false);
                         }}
-                        className="flex items-center space-x-3 text-red-600 hover:text-red-700 font-medium py-2 transition-colors duration-300 w-full text-left"
+                        className="flex items-center space-x-3 text-red-600 hover:text-red-700 font-medium py-3 px-2 transition-colors duration-300 w-full text-left touch-manipulation"
                       >
-                        <LogOut className="w-5 h-5" />
+                        <LogOut className="w-5 h-5 flex-shrink-0" />
                         <span>Sign Out</span>
                       </button>
                     </div>

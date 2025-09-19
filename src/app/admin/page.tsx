@@ -429,27 +429,27 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             Admin Dashboard
           </h1>
-          <p className="text-white/70">
+          <p className="text-white/70 text-sm sm:text-base">
             Welcome back! Here's what's happening with your platform.
           </p>
         </div>
-        <div className="flex items-center space-x-3">
-          <button className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+          <button className="px-3 sm:px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center justify-center space-x-2 touch-manipulation">
             <Download className="w-4 h-4" />
-            <span>Export Data</span>
+            <span className="text-sm sm:text-base">Export Data</span>
           </button>
           <button
             onClick={refreshDashboard}
             disabled={loading}
-            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-            <span>{loading ? "Refreshing..." : "Refresh"}</span>
+            <span className="text-sm sm:text-base">{loading ? "Refreshing..." : "Refresh"}</span>
           </button>
         </div>
       </div>
@@ -591,7 +591,7 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       {!loading && !error && stats.totalUsers > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <StatCard
             title="Total Users"
             value={stats.totalUsers.toLocaleString()}
@@ -670,33 +670,33 @@ export default function AdminDashboard() {
 
       {/* Charts and Analytics */}
       {!loading && !error && stats.totalUsers > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Revenue Chart */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
+            className="p-4 sm:p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
           >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-white">
                 Revenue Overview
               </h3>
-              <div className="flex items-center space-x-2">
-                <button className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <button className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 touch-manipulation">
                   <BarChart3 className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300">
+                <button className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 touch-manipulation">
                   <PieChart className="w-4 h-4" />
                 </button>
-                <button className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300">
+                <button className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 touch-manipulation">
                   <LineChart className="w-4 h-4" />
                 </button>
               </div>
             </div>
-            <div className="h-64 flex items-center justify-center">
+            <div className="h-48 sm:h-64 flex items-center justify-center">
               <div className="text-center">
-                <BarChart3 className="w-16 h-16 text-white/30 mx-auto mb-4" />
-                <p className="text-white/70">
+                <BarChart3 className="w-12 h-12 sm:w-16 sm:h-16 text-white/30 mx-auto mb-4" />
+                <p className="text-white/70 text-sm sm:text-base">
                   Revenue chart will be displayed here
                 </p>
               </div>
@@ -707,31 +707,31 @@ export default function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
+            className="p-4 sm:p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
           >
-            <h3 className="text-xl font-semibold text-white mb-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">
               Platform Distribution
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {chartData.map((platform, index) => (
                 <div
                   key={platform.name}
                   className="flex items-center justify-between"
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-4 h-4 ${platform.color} rounded-full`} />
-                    <span className="text-white font-medium">
+                  <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                    <div className={`w-3 h-3 sm:w-4 sm:h-4 ${platform.color} rounded-full flex-shrink-0`} />
+                    <span className="text-white font-medium text-sm sm:text-base truncate">
                       {platform.name}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-32 bg-white/10 rounded-full h-2">
+                  <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                    <div className="w-20 sm:w-32 bg-white/10 rounded-full h-2">
                       <div
                         className={`h-2 ${platform.color} rounded-full transition-all duration-500`}
                         style={{ width: `${platform.value}%` }}
                       />
                     </div>
-                    <span className="text-white/70 text-sm w-8 text-right">
+                    <span className="text-white/70 text-xs sm:text-sm w-6 sm:w-8 text-right">
                       {platform.value}%
                     </span>
                   </div>
@@ -741,21 +741,21 @@ export default function AdminDashboard() {
           </motion.div>
 
           {/* System Health and Recent Activity */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* System Health */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
+              className="p-4 sm:p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
             >
-              <h3 className="text-xl font-semibold text-white mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">
                 System Health
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white/70 text-sm">CPU Usage</span>
-                    <span className="text-white font-medium">
+                    <span className="text-white/70 text-xs sm:text-sm">CPU Usage</span>
+                    <span className="text-white font-medium text-sm sm:text-base">
                       {systemHealth.cpu}%
                     </span>
                   </div>
@@ -768,8 +768,8 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white/70 text-sm">Memory Usage</span>
-                    <span className="text-white font-medium">
+                    <span className="text-white/70 text-xs sm:text-sm">Memory Usage</span>
+                    <span className="text-white font-medium text-sm sm:text-base">
                       {systemHealth.memory}%
                     </span>
                   </div>
@@ -782,8 +782,8 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white/70 text-sm">Disk Usage</span>
-                    <span className="text-white font-medium">
+                    <span className="text-white/70 text-xs sm:text-sm">Disk Usage</span>
+                    <span className="text-white font-medium text-sm sm:text-base">
                       {systemHealth.disk}%
                     </span>
                   </div>
@@ -796,8 +796,8 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white/70 text-sm">Network</span>
-                    <span className="text-white font-medium">
+                    <span className="text-white/70 text-xs sm:text-sm">Network</span>
+                    <span className="text-white font-medium text-sm sm:text-base">
                       {systemHealth.network}%
                     </span>
                   </div>
@@ -815,17 +815,17 @@ export default function AdminDashboard() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="lg:col-span-2 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
+              className="lg:col-span-2 p-4 sm:p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-white">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                <h3 className="text-lg sm:text-xl font-semibold text-white">
                   Recent Activity
                 </h3>
-                <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                <button className="text-blue-400 hover:text-blue-300 text-sm font-medium touch-manipulation">
                   View All
                 </button>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {recentActivity.map((activity, index) => {
                   const Icon = getActivityIcon(activity.type);
                   return (
@@ -834,26 +834,26 @@ export default function AdminDashboard() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className={`flex items-center space-x-3 p-3 rounded-lg border ${getStatusColor(
+                      className={`flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg border ${getStatusColor(
                         activity.status
                       )}`}
                     >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm">{activity.message}</p>
+                        <p className="text-white text-xs sm:text-sm">{activity.message}</p>
                         <p className="text-white/50 text-xs">
                           {activity.timestamp}
                         </p>
                       </div>
                       <div className="flex-shrink-0">
                         {activity.status === "success" && (
-                          <CheckCircle className="w-4 h-4 text-green-400" />
+                          <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
                         )}
                         {activity.status === "warning" && (
-                          <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                          <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
                         )}
                         {activity.status === "error" && (
-                          <AlertTriangle className="w-4 h-4 text-red-400" />
+                          <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-red-400" />
                         )}
                       </div>
                     </motion.div>
@@ -867,12 +867,12 @@ export default function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
+            className="p-4 sm:p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl"
           >
-            <h3 className="text-xl font-semibold text-white mb-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-6">
               Quick Actions
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {[
                 {
                   name: "Add User",
@@ -917,10 +917,10 @@ export default function AdminDashboard() {
                     key={action.name}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`p-4 ${action.bgColor} border border-white/10 rounded-lg hover:border-white/20 transition-all duration-300`}
+                    className={`p-3 sm:p-4 ${action.bgColor} border border-white/10 rounded-lg hover:border-white/20 transition-all duration-300 touch-manipulation`}
                   >
-                    <Icon className={`w-6 h-6 ${action.color} mx-auto mb-2`} />
-                    <p className="text-white text-sm font-medium">
+                    <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${action.color} mx-auto mb-1 sm:mb-2`} />
+                    <p className="text-white text-xs sm:text-sm font-medium">
                       {action.name}
                     </p>
                   </motion.button>
