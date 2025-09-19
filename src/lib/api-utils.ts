@@ -39,7 +39,7 @@ export const getCsrfToken = async (): Promise<string | null> => {
       return csrfToken;
     }
   } catch (error) {
-    console.warn('Failed to get CSRF token:', error);
+    // CSRF token fetch failed
   }
   
   return null;

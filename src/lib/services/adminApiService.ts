@@ -217,7 +217,6 @@ export class AdminApiService {
       try {
         data = JSON.parse(responseText);
       } catch (jsonError) {
-        console.error('JSON parse error:', jsonError);
         return {
           success: false,
           error: 'Invalid JSON response from server',
@@ -237,7 +236,6 @@ export class AdminApiService {
         message: data.message,
       };
     } catch (error) {
-      console.error('API request error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Network error occurred',

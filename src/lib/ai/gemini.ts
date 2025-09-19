@@ -113,7 +113,6 @@ export class GeminiAIService {
   constructor() {
     const apiKey = process.env.GEMINI_API_KEY;
     // Always use fallback - disable API calls completely
-    console.log('AI features will use fallback responses (no API key configured)');
     this.genAI = null as unknown as GoogleGenerativeAI;
     this.model = null;
   }
@@ -123,7 +122,6 @@ export class GeminiAIService {
    */
   async generateAdCopy(request: AdCopyRequest): Promise<AdCopyResponse> {
     // Always use fallback - no API calls
-    console.log('Using fallback ad copy generation');
     return this.getFallbackAdCopy(request);
   }
 
@@ -147,7 +145,6 @@ export class GeminiAIService {
         dimensions: request.dimensions
       };
     } catch (error) {
-      console.error('Image generation failed:', error);
       throw new Error('Failed to generate image');
     }
   }
@@ -175,7 +172,6 @@ export class GeminiAIService {
       const response = await result.response;
       return response.text();
     } catch (error) {
-      console.error('Ad copy optimization failed:', error);
       throw new Error('Failed to optimize ad copy');
     }
   }
@@ -208,7 +204,6 @@ export class GeminiAIService {
         return text.split('\n').filter(line => line.trim());
       }
     } catch (error) {
-      console.error('Targeting suggestions failed:', error);
       throw new Error('Failed to generate targeting suggestions');
     }
   }
@@ -236,7 +231,6 @@ export class GeminiAIService {
       const response = await result.response;
       return response.text();
     } catch (error) {
-      console.error('Performance analysis failed:', error);
       throw new Error('Failed to analyze ad performance');
     }
   }
@@ -265,7 +259,6 @@ export class GeminiAIService {
       
       return text.split('\n').filter(line => line.trim());
     } catch (error) {
-      console.error('A/B test generation failed:', error);
       throw new Error('Failed to generate A/B test variations');
     }
   }
@@ -275,7 +268,6 @@ export class GeminiAIService {
    */
   async generateGlobalTargeting(request: GlobalTargetingRequest): Promise<GlobalTargetingResponse> {
     // Always use fallback - no API calls
-    console.log('Using fallback global targeting');
     return this.getFallbackGlobalTargeting(request);
   }
 
@@ -316,10 +308,7 @@ export class GeminiAIService {
         return this.parseGlobalTargetingResponse(text);
       }
     } catch (error) {
-      console.error('Global targeting generation failed:', error);
-      
       // For any error, use fallback
-      console.warn('Using fallback global targeting due to error:', error);
       return this.getFallbackGlobalTargeting(request);
     }
   }
@@ -329,7 +318,6 @@ export class GeminiAIService {
    */
   async generatePackageRecommendation(request: PackageRecommendationRequest): Promise<PackageRecommendationResponse> {
     // Always use fallback - no API calls
-    console.log('Using fallback package recommendation');
     return this.getFallbackPackageRecommendation(request);
   }
 
@@ -372,10 +360,7 @@ export class GeminiAIService {
         return this.parsePackageRecommendationResponse(text);
       }
     } catch (error) {
-      console.error('Package recommendation failed:', error);
-      
       // For any error, use fallback
-      console.warn('Using fallback package recommendation due to error:', error);
       return this.getFallbackPackageRecommendation(request);
     }
   }
@@ -421,7 +406,6 @@ export class GeminiAIService {
       
       return localizations;
     } catch (error) {
-      console.error('Localized ad copy generation failed:', error);
       throw new Error('Failed to generate localized ad copy');
     }
   }
@@ -431,7 +415,6 @@ export class GeminiAIService {
    */
   async generatePerformancePredictions(campaignData: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Always use fallback - no API calls
-    console.log('Using fallback performance predictions');
     return this.getFallbackPerformancePredictions(campaignData);
   }
 
@@ -471,10 +454,7 @@ export class GeminiAIService {
         return this.parsePerformancePredictions(text);
       }
     } catch (error) {
-      console.error('Performance prediction failed:', error);
-      
       // For any error, use fallback
-      console.warn('Using fallback performance predictions due to error:', error);
       return this.getFallbackPerformancePredictions(campaignData);
     }
   }
@@ -745,7 +725,7 @@ export class GeminiAIService {
           };
         }
       } catch (parseError) {
-        console.error('Failed to parse JSON response:', parseError);
+        // JSON parsing failed
       }
 
       // Fallback to basic optimization
@@ -760,7 +740,6 @@ export class GeminiAIService {
       });
 
     } catch (error) {
-      console.error('Error in optimizeAdWithRealData:', error);
       return this.getFallbackAdCopy({
         productName: originalAd.headline || 'Product',
         targetAudience: originalAd.targetAudience || 'General audience',

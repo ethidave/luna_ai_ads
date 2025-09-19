@@ -64,21 +64,14 @@ class AuthService {
     options: RequestInit = {}
   ): Promise<{ success: boolean; data?: T; error?: string; message?: string; user?: User; token?: string }> {
     try {
-      console.log('Making auth request to:', getApiUrl(endpoint));
-      
       const response = await apiRequest(endpoint, options);
 
-      console.log('Auth response status:', response.status);
-
       const responseText = await response.text();
-      console.log('Auth raw response:', responseText);
 
       let data;
       try {
         data = JSON.parse(responseText);
-        console.log('Auth parsed data:', data);
       } catch (jsonError) {
-        console.error('Auth JSON parse error:', jsonError);
         return {
           success: false,
           error: 'Invalid response from server',
@@ -109,7 +102,6 @@ class AuthService {
         token: data.token,
       };
     } catch (error) {
-      console.error('Auth request error:', error);
       let errorMessage = 'Network error';
       
       if (error instanceof Error) {

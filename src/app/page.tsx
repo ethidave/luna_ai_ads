@@ -773,11 +773,9 @@ export default function Home() {
               <UserPackageSelections
                 onEditSelection={(selection) => {
                   // Handle edit selection
-                  console.log("Edit selection:", selection);
                 }}
                 onRemoveSelection={(selectionId) => {
                   // Handle remove selection
-                  console.log("Remove selection:", selectionId);
                 }}
                 showActions={true}
               />
