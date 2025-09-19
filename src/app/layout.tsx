@@ -8,13 +8,13 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: process.env.APP_NAME || "Luna AI - Crypto-Powered Ad Management",
+  title: process.env.APP_NAME || "Luna AI - AI-Powered Ad Management",
   description:
     process.env.APP_DESCRIPTION ||
-    "Revolutionary ad management platform powered by crypto and AI. Create, manage, and optimize your Facebook, Instagram, Google, and Website ads with USDT payments.",
+    "Revolutionary ad management platform powered by AI. Create, manage, and optimize your Facebook, Instagram, Google, and Website ads with intelligent automation.",
   keywords:
     process.env.APP_KEYWORDS ||
-    "ad management, crypto payments, AI advertising, Facebook ads, Google ads, USDT, blockchain",
+    "ad management, AI advertising, Facebook ads, Google ads, Instagram ads, automated marketing, AI optimization",
   authors: [{ name: process.env.APP_AUTHOR || "Luna AI Team" }],
   creator: process.env.APP_CREATOR || "Luna AI",
   publisher: process.env.APP_PUBLISHER || "Luna AI",
@@ -31,10 +31,10 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   openGraph: {
-    title: process.env.APP_NAME || "Luna AI - Crypto-Powered Ad Management",
+    title: process.env.APP_NAME || "Luna AI - AI-Powered Ad Management",
     description:
       process.env.APP_DESCRIPTION ||
-      "Revolutionary ad management platform powered by crypto and AI",
+      "Revolutionary ad management platform powered by AI",
     url: process.env.APP_URL || "http://localhost:3000",
     siteName: "Luna AI",
     images: [
@@ -50,9 +50,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Luna AI - Crypto-Powered Ad Management",
+    title: "Luna AI - AI-Powered Ad Management",
     description:
-      "Revolutionary ad management platform powered by crypto and AI",
+      "Revolutionary ad management platform powered by AI",
     images: ["/og-image.png"],
   },
   robots: {

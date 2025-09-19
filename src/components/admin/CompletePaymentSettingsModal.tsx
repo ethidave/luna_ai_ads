@@ -97,7 +97,18 @@ export default function CompletePaymentSettingsModal({
       ipnSecret: "",
       sandboxMode: true,
       enabled: false,
-      supportedCoins: ["BTC", "ETH", "USDT", "USDC", "LTC", "BCH", "XRP", "ADA", "DOT", "MATIC"],
+      supportedCoins: [
+        "BTC",
+        "ETH",
+        "USDT",
+        "USDC",
+        "LTC",
+        "BCH",
+        "XRP",
+        "ADA",
+        "DOT",
+        "MATIC",
+      ],
     },
     flutterwave: {
       publicKey: "",
@@ -105,7 +116,16 @@ export default function CompletePaymentSettingsModal({
       encryptionKey: "",
       webhookSecret: "",
       enabled: false,
-      supportedCurrencies: ["NGN", "USD", "EUR", "GBP", "KES", "GHS", "ZAR", "EGP"],
+      supportedCurrencies: [
+        "NGN",
+        "USD",
+        "EUR",
+        "GBP",
+        "KES",
+        "GHS",
+        "ZAR",
+        "EGP",
+      ],
     },
     general: {
       defaultCurrency: "USD",
@@ -117,9 +137,13 @@ export default function CompletePaymentSettingsModal({
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
   const [testingMethod, setTestingMethod] = useState<string | null>(null);
-  const [showSecrets, setShowSecrets] = useState<{[key: string]: boolean}>({});
+  const [showSecrets, setShowSecrets] = useState<{ [key: string]: boolean }>(
+    {}
+  );
   const [activeTab, setActiveTab] = useState("stripe");
 
   const paymentTabs = [
@@ -216,8 +240,12 @@ export default function CompletePaymentSettingsModal({
     }
   };
 
-  const handleInputChange = (provider: string, field: string, value: string | boolean) => {
-    setSettings(prev => ({
+  const handleInputChange = (
+    provider: string,
+    field: string,
+    value: string | boolean
+  ) => {
+    setSettings((prev) => ({
       ...prev,
       [provider]: {
         ...prev[provider as keyof PaymentSettings],
@@ -227,9 +255,9 @@ export default function CompletePaymentSettingsModal({
   };
 
   const toggleSecretVisibility = (field: string) => {
-    setShowSecrets(prev => ({
+    setShowSecrets((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
   };
 
@@ -241,9 +269,13 @@ export default function CompletePaymentSettingsModal({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h3 className="text-lg font-semibold text-white">Stripe Configuration</h3>
+          <h3 className="text-lg font-semibold text-white">
+            Stripe Configuration
+          </h3>
           <button
-            onClick={() => handleInputChange("stripe", "enabled", !settings.stripe.enabled)}
+            onClick={() =>
+              handleInputChange("stripe", "enabled", !settings.stripe.enabled)
+            }
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
               settings.stripe.enabled ? "bg-blue-600" : "bg-gray-600"
             }`}
@@ -268,15 +300,19 @@ export default function CompletePaymentSettingsModal({
           <span>Test</span>
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Public Key</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Public Key
+          </label>
           <div className="relative">
             <input
               type="text"
               value={settings.stripe.publicKey}
-              onChange={(e) => handleInputChange("stripe", "publicKey", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("stripe", "publicKey", e.target.value)
+              }
               className="w-full px-4 py-3 pr-10 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="pk_test_..."
             />
@@ -288,14 +324,18 @@ export default function CompletePaymentSettingsModal({
             </button>
           </div>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Secret Key</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Secret Key
+          </label>
           <div className="relative">
             <input
               type={showSecrets.stripe_secret ? "text" : "password"}
               value={settings.stripe.secretKey}
-              onChange={(e) => handleInputChange("stripe", "secretKey", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("stripe", "secretKey", e.target.value)
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="sk_test_..."
             />
@@ -304,7 +344,11 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("stripe_secret")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.stripe_secret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.stripe_secret ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
                 onClick={() => copyToClipboard(settings.stripe.secretKey)}
@@ -315,14 +359,18 @@ export default function CompletePaymentSettingsModal({
             </div>
           </div>
         </div>
-        
+
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-white/90 mb-2">Webhook Secret</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Webhook Secret
+          </label>
           <div className="relative">
             <input
               type={showSecrets.stripe_webhook ? "text" : "password"}
               value={settings.stripe.webhookSecret}
-              onChange={(e) => handleInputChange("stripe", "webhookSecret", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("stripe", "webhookSecret", e.target.value)
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="whsec_..."
             />
@@ -331,7 +379,11 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("stripe_webhook")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.stripe_webhook ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.stripe_webhook ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
                 onClick={() => copyToClipboard(settings.stripe.webhookSecret)}
@@ -343,7 +395,7 @@ export default function CompletePaymentSettingsModal({
           </div>
         </div>
       </div>
-      
+
       <div className="mt-4">
         <a
           href="https://dashboard.stripe.com/webhooks"
@@ -362,9 +414,17 @@ export default function CompletePaymentSettingsModal({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h3 className="text-lg font-semibold text-white">NowPayments Configuration</h3>
+          <h3 className="text-lg font-semibold text-white">
+            NowPayments Configuration
+          </h3>
           <button
-            onClick={() => handleInputChange("nowpayments", "enabled", !settings.nowpayments.enabled)}
+            onClick={() =>
+              handleInputChange(
+                "nowpayments",
+                "enabled",
+                !settings.nowpayments.enabled
+              )
+            }
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
               settings.nowpayments.enabled ? "bg-green-600" : "bg-gray-600"
             }`}
@@ -378,7 +438,9 @@ export default function CompletePaymentSettingsModal({
         </div>
         <button
           onClick={() => testPaymentMethod("nowpayments")}
-          disabled={testingMethod === "nowpayments" || !settings.nowpayments.enabled}
+          disabled={
+            testingMethod === "nowpayments" || !settings.nowpayments.enabled
+          }
           className="flex items-center space-x-2 px-4 py-2 bg-green-500/20 text-green-400 border border-green-500/30 rounded-lg hover:bg-green-500/30 transition-all duration-300 disabled:opacity-50"
         >
           {testingMethod === "nowpayments" ? (
@@ -389,15 +451,19 @@ export default function CompletePaymentSettingsModal({
           <span>Test</span>
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">API Key</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            API Key
+          </label>
           <div className="relative">
             <input
               type={showSecrets.nowpayments_api ? "text" : "password"}
               value={settings.nowpayments.apiKey}
-              onChange={(e) => handleInputChange("nowpayments", "apiKey", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("nowpayments", "apiKey", e.target.value)
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="np_..."
             />
@@ -406,7 +472,11 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("nowpayments_api")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.nowpayments_api ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.nowpayments_api ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
                 onClick={() => copyToClipboard(settings.nowpayments.apiKey)}
@@ -417,14 +487,18 @@ export default function CompletePaymentSettingsModal({
             </div>
           </div>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">IPN Secret</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            IPN Secret
+          </label>
           <div className="relative">
             <input
               type={showSecrets.nowpayments_ipn ? "text" : "password"}
               value={settings.nowpayments.ipnSecret}
-              onChange={(e) => handleInputChange("nowpayments", "ipnSecret", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("nowpayments", "ipnSecret", e.target.value)
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               placeholder="..."
             />
@@ -433,7 +507,11 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("nowpayments_ipn")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.nowpayments_ipn ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.nowpayments_ipn ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
                 onClick={() => copyToClipboard(settings.nowpayments.ipnSecret)}
@@ -444,14 +522,20 @@ export default function CompletePaymentSettingsModal({
             </div>
           </div>
         </div>
-        
+
         <div className="md:col-span-2">
           <div className="flex items-center space-x-3">
             <input
               type="checkbox"
               id="sandbox_mode"
               checked={settings.nowpayments.sandboxMode}
-              onChange={(e) => handleInputChange("nowpayments", "sandboxMode", e.target.checked)}
+              onChange={(e) =>
+                handleInputChange(
+                  "nowpayments",
+                  "sandboxMode",
+                  e.target.checked
+                )
+              }
               className="w-5 h-5 text-green-600 bg-white/10 border-white/20 rounded focus:ring-green-500 focus:ring-2"
             />
             <label htmlFor="sandbox_mode" className="text-white/90">
@@ -460,19 +544,24 @@ export default function CompletePaymentSettingsModal({
           </div>
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-white/90 mb-2">Supported Cryptocurrencies</label>
+        <label className="block text-sm font-medium text-white/90 mb-2">
+          Supported Cryptocurrencies
+        </label>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
           {settings.nowpayments.supportedCoins.map((coin) => (
-            <div key={coin} className="flex items-center space-x-2 p-2 bg-white/5 border border-white/10 rounded-lg">
+            <div
+              key={coin}
+              className="flex items-center space-x-2 p-2 bg-white/5 border border-white/10 rounded-lg"
+            >
               <Coins className="w-4 h-4 text-green-400" />
               <span className="text-white/90 text-sm">{coin}</span>
             </div>
           ))}
         </div>
       </div>
-      
+
       <div className="mt-4">
         <a
           href="https://nowpayments.io/dashboard"
@@ -491,9 +580,17 @@ export default function CompletePaymentSettingsModal({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h3 className="text-lg font-semibold text-white">Flutterwave Configuration</h3>
+          <h3 className="text-lg font-semibold text-white">
+            Flutterwave Configuration
+          </h3>
           <button
-            onClick={() => handleInputChange("flutterwave", "enabled", !settings.flutterwave.enabled)}
+            onClick={() =>
+              handleInputChange(
+                "flutterwave",
+                "enabled",
+                !settings.flutterwave.enabled
+              )
+            }
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
               settings.flutterwave.enabled ? "bg-orange-600" : "bg-gray-600"
             }`}
@@ -507,7 +604,9 @@ export default function CompletePaymentSettingsModal({
         </div>
         <button
           onClick={() => testPaymentMethod("flutterwave")}
-          disabled={testingMethod === "flutterwave" || !settings.flutterwave.enabled}
+          disabled={
+            testingMethod === "flutterwave" || !settings.flutterwave.enabled
+          }
           className="flex items-center space-x-2 px-4 py-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-lg hover:bg-orange-500/30 transition-all duration-300 disabled:opacity-50"
         >
           {testingMethod === "flutterwave" ? (
@@ -518,15 +617,19 @@ export default function CompletePaymentSettingsModal({
           <span>Test</span>
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Public Key</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Public Key
+          </label>
           <div className="relative">
             <input
               type="text"
               value={settings.flutterwave.publicKey}
-              onChange={(e) => handleInputChange("flutterwave", "publicKey", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("flutterwave", "publicKey", e.target.value)
+              }
               className="w-full px-4 py-3 pr-10 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="FLWPUBK-..."
             />
@@ -538,14 +641,18 @@ export default function CompletePaymentSettingsModal({
             </button>
           </div>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Secret Key</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Secret Key
+          </label>
           <div className="relative">
             <input
               type={showSecrets.flutterwave_secret ? "text" : "password"}
               value={settings.flutterwave.secretKey}
-              onChange={(e) => handleInputChange("flutterwave", "secretKey", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("flutterwave", "secretKey", e.target.value)
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="FLWSECK-..."
             />
@@ -554,7 +661,11 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("flutterwave_secret")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.flutterwave_secret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.flutterwave_secret ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
                 onClick={() => copyToClipboard(settings.flutterwave.secretKey)}
@@ -565,14 +676,22 @@ export default function CompletePaymentSettingsModal({
             </div>
           </div>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Encryption Key</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Encryption Key
+          </label>
           <div className="relative">
             <input
               type={showSecrets.flutterwave_encryption ? "text" : "password"}
               value={settings.flutterwave.encryptionKey}
-              onChange={(e) => handleInputChange("flutterwave", "encryptionKey", e.target.value)}
+              onChange={(e) =>
+                handleInputChange(
+                  "flutterwave",
+                  "encryptionKey",
+                  e.target.value
+                )
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="..."
             />
@@ -581,10 +700,16 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("flutterwave_encryption")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.flutterwave_encryption ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.flutterwave_encryption ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
-                onClick={() => copyToClipboard(settings.flutterwave.encryptionKey)}
+                onClick={() =>
+                  copyToClipboard(settings.flutterwave.encryptionKey)
+                }
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
                 <Copy className="w-4 h-4" />
@@ -592,14 +717,22 @@ export default function CompletePaymentSettingsModal({
             </div>
           </div>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Webhook Secret</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Webhook Secret
+          </label>
           <div className="relative">
             <input
               type={showSecrets.flutterwave_webhook ? "text" : "password"}
               value={settings.flutterwave.webhookSecret}
-              onChange={(e) => handleInputChange("flutterwave", "webhookSecret", e.target.value)}
+              onChange={(e) =>
+                handleInputChange(
+                  "flutterwave",
+                  "webhookSecret",
+                  e.target.value
+                )
+              }
               className="w-full px-4 py-3 pr-20 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               placeholder="..."
             />
@@ -608,10 +741,16 @@ export default function CompletePaymentSettingsModal({
                 onClick={() => toggleSecretVisibility("flutterwave_webhook")}
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
-                {showSecrets.flutterwave_webhook ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showSecrets.flutterwave_webhook ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
               <button
-                onClick={() => copyToClipboard(settings.flutterwave.webhookSecret)}
+                onClick={() =>
+                  copyToClipboard(settings.flutterwave.webhookSecret)
+                }
                 className="p-1 text-white/50 hover:text-white transition-colors"
               >
                 <Copy className="w-4 h-4" />
@@ -620,19 +759,24 @@ export default function CompletePaymentSettingsModal({
           </div>
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-white/90 mb-2">Supported Currencies</label>
+        <label className="block text-sm font-medium text-white/90 mb-2">
+          Supported Currencies
+        </label>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {settings.flutterwave.supportedCurrencies.map((currency) => (
-            <div key={currency} className="flex items-center space-x-2 p-2 bg-white/5 border border-white/10 rounded-lg">
+            <div
+              key={currency}
+              className="flex items-center space-x-2 p-2 bg-white/5 border border-white/10 rounded-lg"
+            >
               <Globe className="w-4 h-4 text-orange-400" />
               <span className="text-white/90 text-sm">{currency}</span>
             </div>
           ))}
         </div>
       </div>
-      
+
       <div className="mt-4">
         <a
           href="https://dashboard.flutterwave.com/settings/webhooks"
@@ -649,14 +793,20 @@ export default function CompletePaymentSettingsModal({
 
   const renderGeneralSettings = () => (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-white">General Payment Settings</h3>
-      
+      <h3 className="text-lg font-semibold text-white">
+        General Payment Settings
+      </h3>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Default Currency</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Default Currency
+          </label>
           <select
             value={settings.general.defaultCurrency}
-            onChange={(e) => handleInputChange("general", "defaultCurrency", e.target.value)}
+            onChange={(e) =>
+              handleInputChange("general", "defaultCurrency", e.target.value)
+            }
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="USD">USD - US Dollar</option>
@@ -672,12 +822,16 @@ export default function CompletePaymentSettingsModal({
             <option value="AUD">AUD - Australian Dollar</option>
           </select>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-white/90 mb-2">Refund Policy</label>
+          <label className="block text-sm font-medium text-white/90 mb-2">
+            Refund Policy
+          </label>
           <select
             value={settings.general.refundPolicy}
-            onChange={(e) => handleInputChange("general", "refundPolicy", e.target.value)}
+            onChange={(e) =>
+              handleInputChange("general", "refundPolicy", e.target.value)
+            }
             className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="7 days">7 days</option>
@@ -687,27 +841,31 @@ export default function CompletePaymentSettingsModal({
           </select>
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
           <input
             type="checkbox"
             id="test_mode"
             checked={settings.general.testMode}
-            onChange={(e) => handleInputChange("general", "testMode", e.target.checked)}
+            onChange={(e) =>
+              handleInputChange("general", "testMode", e.target.checked)
+            }
             className="w-5 h-5 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
           />
           <label htmlFor="test_mode" className="text-white/90">
             Test Mode (Use test keys for all payment methods)
           </label>
         </div>
-        
+
         <div className="flex items-center space-x-3">
           <input
             type="checkbox"
             id="auto_capture"
             checked={settings.general.autoCapture}
-            onChange={(e) => handleInputChange("general", "autoCapture", e.target.checked)}
+            onChange={(e) =>
+              handleInputChange("general", "autoCapture", e.target.checked)
+            }
             className="w-5 h-5 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
           />
           <label htmlFor="auto_capture" className="text-white/90">
@@ -732,10 +890,17 @@ export default function CompletePaymentSettingsModal({
         return (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              {React.createElement(paymentTabs.find(t => t.id === activeTab)?.icon || Settings, { className: "w-8 h-8 text-white/50" })}
+              {React.createElement(
+                paymentTabs.find((t) => t.id === activeTab)?.icon || Settings,
+                { className: "w-8 h-8 text-white/50" }
+              )}
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Coming Soon</h3>
-            <p className="text-white/70">This payment method configuration is under development</p>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              Coming Soon
+            </h3>
+            <p className="text-white/70">
+              This payment method configuration is under development
+            </p>
           </div>
         );
     }
@@ -767,8 +932,12 @@ export default function CompletePaymentSettingsModal({
                   <CreditCard className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Complete Payment Settings</h2>
-                  <p className="text-white/70">Configure all payment gateways and processing settings</p>
+                  <h2 className="text-2xl font-bold text-white">
+                    Complete Payment Settings
+                  </h2>
+                  <p className="text-white/70">
+                    Configure all payment gateways and processing settings
+                  </p>
                 </div>
               </div>
               <button
@@ -810,7 +979,9 @@ export default function CompletePaymentSettingsModal({
               {isLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
-                  <span className="ml-3 text-white/70">Loading settings...</span>
+                  <span className="ml-3 text-white/70">
+                    Loading settings...
+                  </span>
                 </div>
               ) : (
                 renderContent()
@@ -825,13 +996,17 @@ export default function CompletePaymentSettingsModal({
                 {saveStatus === "success" && (
                   <div className="flex items-center space-x-2 text-green-400">
                     <CheckCircle className="w-5 h-5" />
-                    <span className="text-sm">Settings saved successfully!</span>
+                    <span className="text-sm">
+                      Settings saved successfully!
+                    </span>
                   </div>
                 )}
                 {saveStatus === "error" && (
                   <div className="flex items-center space-x-2 text-red-400">
                     <AlertCircle className="w-5 h-5" />
-                    <span className="text-sm">Failed to save settings. Please try again.</span>
+                    <span className="text-sm">
+                      Failed to save settings. Please try again.
+                    </span>
                   </div>
                 )}
               </div>

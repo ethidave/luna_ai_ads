@@ -44,9 +44,7 @@ function AdminLoginForm() {
       }
     } catch (error) {
       console.error("Admin login error:", error);
-      setError(
-        "Network error. Please check if the backend is running"
-      );
+      setError("Network error. Please check if the backend is running");
     } finally {
       setIsLoading(false);
     }
@@ -71,12 +69,14 @@ function AdminLoginForm() {
             <p className="text-white/70 text-sm sm:text-base">
               Access the Luna AI admin panel
             </p>
-            
+
             {/* Admin Credentials Info */}
             <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
               <p className="text-blue-300 text-xs">
-                <strong>Admin Credentials:</strong><br/>
-                Email: admin@lunaais.com<br/>
+                <strong>Admin Credentials:</strong>
+                <br />
+                Email: admin@lunaais.com
+                <br />
                 Password: password123
               </p>
             </div>
