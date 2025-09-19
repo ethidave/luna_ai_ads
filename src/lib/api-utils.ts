@@ -19,5 +19,27 @@ export const getApiUrl = (endpoint: string = '') => {
   return `${baseUrl}${endpoint}`;
 };
 
+// Helper function to check if backend is running
+export const checkBackendStatus = async (): Promise<{ isRunning: boolean; error?: string }> => {
+  try {
+    const response = await fetch(getApiUrl('/health'), {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // Add timeout to prevent hanging
+      signal: AbortSignal.timeout(5000)
+    });
+    
+    return { isRunning: response.ok };
+  } catch (error) {
+    return { 
+      isRunning: false, 
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+};
+
 // Helper function to get the full API URL for a specific endpoint
 export const apiUrl = (endpoint: string) => getApiUrl(endpoint);

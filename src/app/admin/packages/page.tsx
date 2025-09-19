@@ -261,7 +261,7 @@ export default function PackagesPage() {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch(apiUrl('/admin/packages'), {
+      const response = await fetch(apiUrl("/admin/packages"), {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -337,7 +337,7 @@ export default function PackagesPage() {
       const isEdit = modalMode === "edit";
       const url = isEdit
         ? apiUrl(`/admin/packages/${packageData.id}`)
-        : apiUrl('/admin/packages');
+        : apiUrl("/admin/packages");
       const method = isEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -422,17 +422,14 @@ export default function PackagesPage() {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch(
-        apiUrl(`/admin/packages/${packageId}`),
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(apiUrl(`/admin/packages/${packageId}`), {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const contentType = response.headers.get("content-type");
@@ -490,21 +487,18 @@ export default function PackagesPage() {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch(
-        apiUrl('/admin/packages/bulk-action'),
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            packageIds: selectedPackages,
-            action: bulkAction,
-          }),
-        }
-      );
+      const response = await fetch(apiUrl("/admin/packages/bulk-action"), {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          packageIds: selectedPackages,
+          action: bulkAction,
+        }),
+      });
 
       if (response.ok) {
         const data = await response.json();

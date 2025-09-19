@@ -162,16 +162,13 @@ export default function CampaignsPage() {
           throw new Error("No authentication token found. Please login again.");
         }
 
-        const response = await fetch(
-          apiUrl('/admin/campaigns'),
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(apiUrl("/admin/campaigns"), {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (response.ok) {
           const contentType = response.headers.get("content-type");
@@ -256,7 +253,7 @@ export default function CampaignsPage() {
       const isEdit = !!selectedCampaign;
       const url = isEdit
         ? apiUrl(`/admin/campaigns/${selectedCampaign.id}`)
-        : apiUrl('/admin/campaigns');
+        : apiUrl("/admin/campaigns");
       const method = isEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -337,17 +334,14 @@ export default function CampaignsPage() {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch(
-        apiUrl(`/admin/campaigns/${campaignId}`),
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(apiUrl(`/admin/campaigns/${campaignId}`), {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const contentType = response.headers.get("content-type");

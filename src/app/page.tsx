@@ -9,6 +9,7 @@ import { ErrorDisplay, LoadingWithError } from "@/components/ErrorDisplay";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { logger } from "@/lib/console-utils";
 import { apiUrl } from "@/lib/api-utils";
+import BackendConnectionError from "@/components/BackendConnectionError";
 import {
   ArrowRight,
   Zap,
@@ -165,7 +166,7 @@ export default function Home() {
     const fetchPackages = async () => {
       try {
         logger.debug("Fetching packages from API...");
-        const apiBaseUrl = apiUrl('');
+        const apiBaseUrl = apiUrl("");
 
         // Check if API URL is valid
         if (!apiBaseUrl || apiBaseUrl === "undefined") {
@@ -390,7 +391,7 @@ export default function Home() {
     setIsSubmittingContact(true);
 
     try {
-      const response = await fetch(apiUrl('/contact'), {
+      const response = await fetch(apiUrl("/contact"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -663,18 +664,18 @@ export default function Home() {
                 include our core AI features.
               </p>
 
-              {/* Fallback packages notification */}
+              {/* Backend connection error */}
               {usingFallbackPackages && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 inline-flex items-center px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 text-sm"
-                >
-                  <AlertCircle className="w-4 h-4 mr-2" />
-                  <span>
-                    Using default packages. Server connection unavailable.
-                  </span>
-                </motion.div>
+                <div className="mt-6">
+                  <BackendConnectionError 
+                    onRetry={() => {
+                      setUsingFallbackPackages(false);
+                      setPackagesLoading(true);
+                      // Trigger a re-fetch of packages
+                      window.location.reload();
+                    }}
+                  />
+                </div>
               )}
             </div>
 
