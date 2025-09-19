@@ -247,7 +247,7 @@ export class AdminApiService {
 
   // Authentication
   async adminLogin(email: string, password: string): Promise<ApiResponse<{ user: AdminUser; token: string }>> {
-    return this.makeRequest('/auth/signin', {
+    return this.makeRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });

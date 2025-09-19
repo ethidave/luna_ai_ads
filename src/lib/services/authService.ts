@@ -198,13 +198,22 @@ class AuthService {
 
   // Admin Authentication
   async adminLogin(credentials: LoginCredentials): Promise<AuthResponse> {
+    // Use regular login endpoint since admin endpoint doesn't exist
     const response = await this.makeRequest<{ user: User; token: string }>(
-      '/admin/auth/login',
+      '/auth/login',
       {
         method: 'POST',
         body: JSON.stringify(credentials),
       }
     );
+
+    // Check if user has admin privileges
+    if (response.success && response.user && !response.user.is_admin) {
+      return {
+        success: false,
+        error: 'Access denied. Admin privileges required.',
+      };
+    }
 
     return {
       success: response.success,
