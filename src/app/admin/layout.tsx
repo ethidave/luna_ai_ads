@@ -238,12 +238,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all duration-300"
+          className="p-2 sm:p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all duration-300 touch-manipulation"
+          aria-label="Toggle mobile menu"
         >
           {mobileMenuOpen ? (
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           ) : (
-            <Menu className="w-6 h-6" />
+            <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
           )}
         </button>
       </div>
@@ -269,22 +270,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className={`fixed left-0 top-0 h-full w-80 bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 ${
+            className={`fixed left-0 top-0 h-full w-72 sm:w-80 bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 ${
               mobileMenuOpen ? "block" : "hidden lg:block"
             }`}
           >
             {/* Sidebar Header */}
-            <div className="p-6 border-b border-white/10">
+            <div className="p-4 sm:p-6 border-b border-white/10">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-white" />
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                    <Shield className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold text-white">
+                    <h1 className="text-lg sm:text-xl font-bold text-white">
                       Admin Panel
                     </h1>
-                    <p className="text-white/70 text-sm">Control Center</p>
+                    <p className="text-white/70 text-xs sm:text-sm">Control Center</p>
                   </div>
                 </div>
                 <button
@@ -297,15 +298,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
 
             {/* Search Bar */}
-            <div className="p-4 border-b border-white/10">
+            <div className="p-3 sm:p-4 border-b border-white/10">
               <div className="relative search-container">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-5 h-5" />
+                <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-white/50 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="text"
                   placeholder="Search admin functions..."
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 />
                 {isSearching && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -335,7 +336,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2">
+            <nav className="flex-1 p-3 sm:p-4 space-y-1 sm:space-y-2">
               {navigationItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeItem === item.id;
@@ -347,7 +348,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     onClick={() => {
                       closeMobileMenu();
                     }}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 group ${
+                    className={`flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg transition-all duration-300 group touch-manipulation ${
                       isActive
                         ? `${item.bgColor} ${item.borderColor} border text-white`
                         : "text-white/70 hover:text-white hover:bg-white/10"
@@ -356,17 +357,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Icon
-                      className={`w-5 h-5 ${
+                      className={`w-4 h-4 sm:w-5 sm:h-5 ${
                         isActive
                           ? item.color
                           : "text-white/70 group-hover:text-white"
                       }`}
                     />
-                    <span className="font-medium">{item.name}</span>
+                    <span className="font-medium text-sm sm:text-base">{item.name}</span>
                     {isActive && (
                       <motion.div
                         layoutId="activeIndicator"
-                        className="ml-auto w-2 h-2 bg-blue-400 rounded-full"
+                        className="ml-auto w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-400 rounded-full"
                       />
                     )}
                   </motion.a>
@@ -411,9 +412,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         }`}
       >
         {/* Top Bar */}
-        <div className="bg-white/5 backdrop-blur-sm border-b border-white/10 p-4">
+        <div className="bg-white/5 backdrop-blur-sm border-b border-white/10 p-3 sm:p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={toggleSidebar}
                 className="hidden lg:block p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
@@ -424,27 +425,27 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   <ChevronRight className="w-5 h-5" />
                 )}
               </button>
-              <h2 className="text-2xl font-bold text-white capitalize">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white capitalize">
                 {navigationItems.find((item) => item.id === activeItem)?.name ||
                   "Users"}
               </h2>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Refresh Button Only */}
               <button
                 onClick={handleRefresh}
-                className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+                className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300 touch-manipulation"
                 title="Refresh"
               >
-                <RefreshCw className="w-5 h-5" />
+                <RefreshCw className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Page Content */}
-        <div className="p-6">{children}</div>
+        <div className="p-3 sm:p-4 lg:p-6 overflow-x-auto">{children}</div>
       </div>
     </div>
   );
