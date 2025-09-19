@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiUrl } from "@/lib/api-utils";
 import {
   Target,
   Plus,
@@ -162,7 +163,7 @@ export default function CampaignsPage() {
         }
 
         const response = await fetch(
-          "http://127.0.0.1:8000/api/admin/campaigns",
+          apiUrl('/admin/campaigns'),
           {
             headers: {
               Accept: "application/json",
@@ -254,8 +255,8 @@ export default function CampaignsPage() {
 
       const isEdit = !!selectedCampaign;
       const url = isEdit
-        ? `http://127.0.0.1:8000/api/admin/campaigns/${selectedCampaign.id}`
-        : "http://127.0.0.1:8000/api/admin/campaigns";
+        ? apiUrl(`/admin/campaigns/${selectedCampaign.id}`)
+        : apiUrl('/admin/campaigns');
       const method = isEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -337,7 +338,7 @@ export default function CampaignsPage() {
       }
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/admin/campaigns/${campaignId}`,
+        apiUrl(`/admin/campaigns/${campaignId}`),
         {
           method: "DELETE",
           headers: {

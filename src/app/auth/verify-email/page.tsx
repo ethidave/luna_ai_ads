@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle, XCircle, Loader2, Mail, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { apiUrl } from "@/lib/api-utils";
 
 function VerifyEmailForm() {
   const [status, setStatus] = useState<
@@ -28,7 +29,7 @@ function VerifyEmailForm() {
   const verifyEmail = async (token: string) => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/auth/verify-email",
+        apiUrl('/auth/verify-email'),
         {
           method: "POST",
           headers: {
@@ -84,7 +85,7 @@ function VerifyEmailForm() {
   const resendVerification = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/auth/send-verification",
+        apiUrl('/auth/send-verification'),
         {
           method: "POST",
         }

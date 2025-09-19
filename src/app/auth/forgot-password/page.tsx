@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { apiUrl } from "@/lib/api-utils";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ export default function ForgotPasswordPage() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/auth/forgot-password",
+        apiUrl('/auth/forgot-password'),
         {
           method: "POST",
           headers: {

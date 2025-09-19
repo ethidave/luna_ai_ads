@@ -12,6 +12,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import Link from "next/link";
+import { apiUrl } from "@/lib/api-utils";
 
 function ResetPasswordForm() {
   const [password, setPassword] = useState("");
@@ -55,7 +56,7 @@ function ResetPasswordForm() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/auth/reset-password",
+        apiUrl('/auth/reset-password'),
         {
           method: "POST",
           headers: {

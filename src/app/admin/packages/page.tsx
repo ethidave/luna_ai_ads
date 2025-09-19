@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiUrl } from "@/lib/api-utils";
 import {
   Package,
   Plus,
@@ -170,7 +171,7 @@ export default function PackagesPage() {
       }
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/admin/packages/${packageId}/price-history`,
+        apiUrl(`/admin/packages/${packageId}/price-history`),
         {
           headers: {
             Accept: "application/json",
@@ -260,7 +261,7 @@ export default function PackagesPage() {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/admin/packages", {
+      const response = await fetch(apiUrl('/admin/packages'), {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -335,8 +336,8 @@ export default function PackagesPage() {
 
       const isEdit = modalMode === "edit";
       const url = isEdit
-        ? `http://127.0.0.1:8000/api/admin/packages/${packageData.id}`
-        : "http://127.0.0.1:8000/api/admin/packages";
+        ? apiUrl(`/admin/packages/${packageData.id}`)
+        : apiUrl('/admin/packages');
       const method = isEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -422,7 +423,7 @@ export default function PackagesPage() {
       }
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/admin/packages/${packageId}`,
+        apiUrl(`/admin/packages/${packageId}`),
         {
           method: "DELETE",
           headers: {
@@ -490,7 +491,7 @@ export default function PackagesPage() {
       }
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/admin/packages/bulk-action`,
+        apiUrl('/admin/packages/bulk-action'),
         {
           method: "POST",
           headers: {

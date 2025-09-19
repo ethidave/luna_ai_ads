@@ -45,7 +45,7 @@ function AdminLoginForm() {
     } catch (error) {
       console.error("Admin login error:", error);
       setError(
-        "Network error. Please check if the backend is running on http://127.0.0.1:8000"
+        "Network error. Please check if the backend is running"
       );
     } finally {
       setIsLoading(false);

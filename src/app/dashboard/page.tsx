@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorDisplay, LoadingWithError } from "@/components/ErrorDisplay";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { apiUrl } from "@/lib/api-utils";
 // Types for dashboard
 interface Package {
   id: number;
@@ -186,7 +187,7 @@ export default function DashboardPage() {
 
       // Get current package details
       const currentResponse = await fetch(
-        "http://127.0.0.1:8000/api/packages/current",
+        apiUrl('/packages/current'),
         {
           headers: {
             Accept: "application/json",
@@ -208,7 +209,7 @@ export default function DashboardPage() {
 
       // Get available upgrades
       const upgradesResponse = await fetch(
-        "http://127.0.0.1:8000/api/packages/upgrades",
+        apiUrl('/packages/upgrades'),
         {
           headers: {
             Accept: "application/json",
@@ -230,7 +231,7 @@ export default function DashboardPage() {
 
       // Get all packages for pricing display (including current package)
       const packagesResponse = await fetch(
-        "http://127.0.0.1:8000/api/packages/available",
+        apiUrl('/packages/available'),
         {
           headers: {
             Accept: "application/json",
@@ -285,7 +286,7 @@ export default function DashboardPage() {
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/ads/real-data", {
+      const response = await fetch(apiUrl('/ads/real-data'), {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
@@ -330,7 +331,7 @@ export default function DashboardPage() {
       }
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/packages/cancel",
+        apiUrl('/packages/cancel'),
         {
           method: "POST",
           headers: {
@@ -435,7 +436,7 @@ export default function DashboardPage() {
       }
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/accounts/connect",
+        apiUrl('/accounts/connect'),
         {
           headers: {
             Accept: "application/json",
@@ -960,7 +961,7 @@ export default function DashboardPage() {
                   onAnalyzeAd={async (adId) => {
                     try {
                       const response = await fetch(
-                        "http://127.0.0.1:8000/api/ads/analyze",
+                        apiUrl('/ads/analyze'),
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
@@ -993,7 +994,7 @@ export default function DashboardPage() {
                   onGenerateTags={async (adId) => {
                     try {
                       const response = await fetch(
-                        "http://127.0.0.1:8000/api/ads/generate-tags",
+                        apiUrl('/ads/generate-tags'),
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
@@ -1028,7 +1029,7 @@ export default function DashboardPage() {
                   onOptimizeAd={async (adId) => {
                     try {
                       const response = await fetch(
-                        "http://127.0.0.1:8000/api/ads/optimize",
+                        apiUrl('/ads/optimize'),
                         {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },

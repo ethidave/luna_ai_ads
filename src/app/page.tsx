@@ -8,6 +8,7 @@ import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorDisplay, LoadingWithError } from "@/components/ErrorDisplay";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { logger } from "@/lib/console-utils";
+import { apiUrl } from "@/lib/api-utils";
 import {
   ArrowRight,
   Zap,
@@ -164,11 +165,10 @@ export default function Home() {
     const fetchPackages = async () => {
       try {
         logger.debug("Fetching packages from API...");
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+        const apiBaseUrl = apiUrl('');
 
         // Check if API URL is valid
-        if (!apiUrl || apiUrl === "undefined") {
+        if (!apiBaseUrl || apiBaseUrl === "undefined") {
           logger.warn("API URL not configured, using fallback packages");
           setPackages(fallbackPackages);
           setUsingFallbackPackages(true);
@@ -183,7 +183,7 @@ export default function Home() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-        const response = await fetch(`${apiUrl}/packages`, {
+        const response = await fetch(`${apiBaseUrl}/packages`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -390,7 +390,7 @@ export default function Home() {
     setIsSubmittingContact(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/contact", {
+      const response = await fetch(apiUrl('/contact'), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -552,13 +552,17 @@ export default function Home() {
                   <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
                     50%
                   </div>
-                  <div className="text-gray-300 text-base sm:text-lg">Time Saved</div>
+                  <div className="text-gray-300 text-base sm:text-lg">
+                    Time Saved
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2">
                     10K+
                   </div>
-                  <div className="text-gray-300 text-base sm:text-lg">Happy Customers</div>
+                  <div className="text-gray-300 text-base sm:text-lg">
+                    Happy Customers
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -696,7 +700,9 @@ export default function Home() {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
                       className={`relative bg-white rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 ${
-                        pkg.isPopular ? "ring-2 ring-purple-500 sm:scale-105" : ""
+                        pkg.isPopular
+                          ? "ring-2 ring-purple-500 sm:scale-105"
+                          : ""
                       }`}
                     >
                       {pkg.isPopular && (
@@ -711,7 +717,9 @@ export default function Home() {
                         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                           {pkg.name}
                         </h3>
-                        <p className="text-gray-600 mb-4 text-sm sm:text-base">{pkg.description}</p>
+                        <p className="text-gray-600 mb-4 text-sm sm:text-base">
+                          {pkg.description}
+                        </p>
                         <div className="mb-4 sm:mb-6">
                           <span className="text-4xl sm:text-5xl font-bold text-gray-900">
                             ${pkg.price}
@@ -730,7 +738,9 @@ export default function Home() {
                               className="flex items-center"
                             >
                               <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mr-2 sm:mr-3 flex-shrink-0" />
-                              <span className="text-gray-700 text-sm sm:text-base">{feature}</span>
+                              <span className="text-gray-700 text-sm sm:text-base">
+                                {feature}
+                              </span>
                             </div>
                           )
                         )}
@@ -845,8 +855,12 @@ export default function Home() {
                       <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900 text-sm sm:text-base">Email</div>
-                      <div className="text-gray-600 text-sm sm:text-base">hello@lunaai.com</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">
+                        Email
+                      </div>
+                      <div className="text-gray-600 text-sm sm:text-base">
+                        hello@lunaai.com
+                      </div>
                     </div>
                   </div>
 
@@ -855,8 +869,12 @@ export default function Home() {
                       <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900 text-sm sm:text-base">Phone</div>
-                      <div className="text-gray-600 text-sm sm:text-base">+1 (555) 123-4567</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">
+                        Phone
+                      </div>
+                      <div className="text-gray-600 text-sm sm:text-base">
+                        +1 (555) 123-4567
+                      </div>
                     </div>
                   </div>
 
@@ -865,7 +883,9 @@ export default function Home() {
                       <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <div className="font-semibold text-gray-900 text-sm sm:text-base">Address</div>
+                      <div className="font-semibold text-gray-900 text-sm sm:text-base">
+                        Address
+                      </div>
                       <div className="text-gray-600 text-sm sm:text-base">
                         123 AI Street, Tech City, TC 12345
                       </div>
@@ -894,7 +914,10 @@ export default function Home() {
                     </p>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-6">
+                  <form
+                    onSubmit={handleContactSubmit}
+                    className="space-y-4 sm:space-y-6"
+                  >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div>
                         <label

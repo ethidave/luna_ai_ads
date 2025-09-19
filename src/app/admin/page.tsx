@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { apiUrl } from "@/lib/api-utils";
 import {
   Users,
   Package,
@@ -228,7 +229,7 @@ export default function AdminDashboard() {
         }
 
         const response = await fetch(
-          "http://127.0.0.1:8000/api/admin/dashboard",
+          apiUrl('/admin/dashboard'),
           {
             headers: {
               Accept: "application/json",
@@ -341,7 +342,7 @@ export default function AdminDashboard() {
       }
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/admin/dashboard",
+        apiUrl('/admin/dashboard'),
         {
           headers: {
             Accept: "application/json",

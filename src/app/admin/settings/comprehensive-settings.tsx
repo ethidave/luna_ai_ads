@@ -292,7 +292,9 @@ export default function ComprehensiveAdminSettings() {
 
   const renderGeneralSettings = () => (
     <div className="space-y-4 sm:space-y-6">
-      <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">General Settings</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
+        General Settings
+      </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
@@ -1261,7 +1263,9 @@ export default function ComprehensiveAdminSettings() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">Admin Settings</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+            Admin Settings
+          </h1>
           <p className="text-white/70 mt-2 text-sm sm:text-base">
             Manage your application settings and configurations
           </p>
@@ -1312,7 +1316,9 @@ export default function ComprehensiveAdminSettings() {
                       }`}
                     >
                       <Icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                      <span className="font-medium text-sm sm:text-base">{tab.name}</span>
+                      <span className="font-medium text-sm sm:text-base">
+                        {tab.name}
+                      </span>
                     </button>
                   );
                 })}
@@ -1340,7 +1346,9 @@ export default function ComprehensiveAdminSettings() {
             ) : (
               <Save className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
-            <span className="text-sm sm:text-base">{isSaving ? "Saving..." : "Save Settings"}</span>
+            <span className="text-sm sm:text-base">
+              {isSaving ? "Saving..." : "Save Settings"}
+            </span>
           </button>
         </div>
       </div>

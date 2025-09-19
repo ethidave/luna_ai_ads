@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { apiUrl } from "@/lib/api-utils";
 import {
   Search,
   Filter,
@@ -107,7 +108,7 @@ export default function ExistingAdsSelector({
         throw new Error("No authentication token found. Please login again.");
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/ads/real-data", {
+      const response = await fetch(apiUrl('/ads/real-data'), {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
